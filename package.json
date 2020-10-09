@@ -1,0 +1,170 @@
+{
+	"name": "nodemcu-tools",
+	"publisher": "boressoft",
+	"displayName": "NodeMCU-Tools",
+	"description": "NodeMCU development tools for Visual Studio Code",
+	"version": "1.0.0",
+	"author": {
+		"name": "Boris Gulay",
+		"email": "boris@gulay.name"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://BoresExpress@bitbucket.org/BoresExpress/nodemcu-tools.git"
+	},
+	"bugs": {
+		"url": "https://bitbucket.org/BoresExpress/nodemcu-tools/issues"
+	},
+	"engines": {
+		"vscode": "^1.49.0"
+	},
+	"categories": [
+		"Programming Languages",
+		"Other"
+	],
+	"keywords": [
+		"nodemcu",
+		"iot",
+		"lua"
+	],
+	"activationEvents": [
+		"workspaceContains:.nodemcutool",
+		"onView:nodemcu-tools.devices"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "nodemcu-tools.connect",
+				"title": "Connect"
+			},
+			{
+				"command": "nodemcu-tools.disconnect",
+				"title": "Disonnect"
+			},
+			{
+				"command": "nodemcu-tools.refreshTreeView",
+				"title": "Refresh",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "nodemcu-tools.deleteFile",
+				"title": "Delete"
+			},
+			{
+				"command": "nodemcu-tools.compileFile",
+				"title": "Compile"
+			},
+			{
+				"command": "nodemcu-tools.runFile",
+				"title": "Run"
+			},
+			{
+				"command": "nodemcu-tools.uploadFile",
+				"title": "Upload to device",
+				"enablement": "nodemcu-tools:isConnected"
+			},
+			{
+				"command": "nodemcu-tools.uploadFileCompile",
+				"title": "Upload to device and compile",
+				"enablement": "nodemcu-tools:isConnected"
+			},
+			{
+				"command": "nodemcu-tools.downloadFile",
+				"title": "Download"
+			},
+			{
+				"command": "nodemcu-tools.reset",
+				"title": "Reset",
+				"enablement": "viewItem == nodemcu-device-connected"
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "nodemcu-tools.uploadFile",
+					"alt": "nodemcu-tools.uploadFileCompile",
+					"group": "nodemcu-tools"
+				}
+			],
+			"view/title": [
+				{
+					"command": "nodemcu-tools.refreshTreeView",
+					"when": "view == nodemcu-tools.devices",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "nodemcu-tools.connect",
+					"when": "view == nodemcu-tools.devices && viewItem == nodemcu-device"
+				},
+				{
+					"command": "nodemcu-tools.disconnect",
+					"when": "view == nodemcu-tools.devices && viewItem == nodemcu-device-connected"
+				},
+				{
+					"command": "nodemcu-tools.deleteFile",
+					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/"
+				},
+				{
+					"command": "nodemcu-tools.compileFile",
+					"when": "view == nodemcu-tools.devices && viewItem == nodemcu-file-lua"
+				},
+				{
+					"command": "nodemcu-tools.runFile",
+					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file-(lua|lc)$/"
+				},
+				{
+					"command": "nodemcu-tools.downloadFile",
+					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/"
+				},
+				{
+					"command": "nodemcu-tools.reset",
+					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-device/"
+				}
+			]
+		},
+		"views": {
+			"explorer": [
+				{
+					"id": "nodemcu-tools.devices",
+					"name": "NodeMCU Devices"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "webpack --mode production",
+		"webpack": "webpack --mode development",
+		"lint": "eslint src --ext ts",
+		"webpack-dev": "webpack --mode development --watch",
+		"serialport:rebuiild": "electron-rebuild --version 9.2.1"
+
+	},
+	"devDependencies": {
+		"@types/node": "^14.0.27",
+		"@types/serialport": "^8.0.1",
+		"@types/vscode": "^1.49.0",
+		"@types/webpack": "^4.41.22",
+		"@typescript-eslint/eslint-plugin": "^4.1.1",
+		"@typescript-eslint/parser": "^4.1.1",
+		"electron-rebuild": "^2.2.0",
+		"eslint": "^7.9.0",
+		"eslint-plugin-optimize-regex": "^1.2.0",
+		"eslint-plugin-promise": "^4.2.1",
+		"eslint-plugin-sonarjs": "^0.5.0",
+		"fork-ts-checker-webpack-plugin": "^5.2.0",
+		"ts-loader": "^8.0.4",
+		"ts-node": "^9.0.0",
+		"typescript": "^4.0.2",
+		"webpack": "^4.44.2",
+		"webpack-cli": "^3.3.12"
+	},
+	"dependencies": {
+		"serialport": "^9.0.1"
+	}
+}
