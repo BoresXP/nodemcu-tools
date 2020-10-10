@@ -76,12 +76,17 @@ export function activate(context: ExtensionContext): void {
 	disposable = commands.registerCommand('nodemcu-tools.downloadFile', async (item: FileTreeItem) => {
 		const device = NodeMcuRepository.getOrCreate(item.parent.path)
 
-		const fileData = await device.download(item.name)
-		const array = new Uint8Array(fileData.buffer.slice(fileData.byteOffset, fileData.byteOffset + fileData.byteLength))
+		await window.withProgress(
+			{ location: ProgressLocation.Notification, cancellable: false, title: `Downloading ${item.name} from NodeMCU@${device.path}` },
+			async progress => {
+				const fileData = await device.download(item.name)
+				const array = new Uint8Array(fileData.buffer.slice(fileData.byteOffset, fileData.byteOffset + fileData.byteLength))
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const [rootFolder] = workspace.workspaceFolders!
-		await workspace.fs.writeFile(Uri.joinPath(rootFolder.uri, item.name), array)
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				const [rootFolder] = workspace.workspaceFolders!
+				await workspace.fs.writeFile(Uri.joinPath(rootFolder.uri, item.name), array)
+				progress.report({ increment: 100 })
+			})
 	})
 	context.subscriptions.push(disposable)
 
@@ -106,15 +111,15 @@ async function uploadFile(file: Uri): Promise<void> {
 
 	const device = NodeMcuRepository.getOrCreate(path)
 
-	const fileName = file.path.split('/').slice(-1)
+	const [fileName] = file.path.split('/').slice(-1)
 	await window.withProgress(
-		{ location: ProgressLocation.Notification, cancellable: false, title: `Uploading file to NodeMCU@${path}` },
+		{ location: ProgressLocation.Notification, cancellable: false, title: `Uploading ${fileName} to NodeMCU@${path}` },
 		async progress => {
 			const fileData = await workspace.fs.readFile(file)
 			const fileBuff = Buffer.from(fileData)
 			await device.upload(
 				fileBuff,
-				fileName[0],
+				fileName,
 				percent => progress.report({ increment: percent }))
 		})
 }
