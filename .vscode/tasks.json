@@ -10,7 +10,7 @@
 				"owner": "webpack",
 				"background": {
 					"beginsPattern": "^Issues checking in progress...",
-					"endsPattern": "^Hash: \\w+"
+					"endsPattern": "^(Hash: \\w+|No issues found.)"
 				},
 				"pattern": [
 					{

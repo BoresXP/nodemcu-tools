@@ -110,16 +110,6 @@
 		"@typescript-eslint/semi": ["error", "never"], // Require or disallow semicolons instead of ASI
 		"@typescript-eslint/member-delimiter-style": ["error", { "multiline": { "delimiter": "none" } }], // Require a specific member delimiter style for interfaces and type literals
 		"@typescript-eslint/member-ordering": "warn", // Require a consistent member declaration order
-		"@typescript-eslint/no-magic-numbers": [
-			"warn",
-			{
-				"ignoreNumericLiteralTypes": true,
-				"ignoreEnums": true,
-				"enforceConst": true,
-				"ignoreReadonlyClassProperties": true,
-				"ignore": [0, 1, 24, 60, 1000, -1, 100]
-			}
-		], // Disallows magic numbers
 		"@typescript-eslint/brace-style": ["error", "1tbs"], // Enforce consistent brace style for blocks
 		"@typescript-eslint/indent": ["error", "tab", { "SwitchCase": 1 }], // Enforce consistent indentation
 		"@typescript-eslint/quotes": ["error", "single", { "avoidEscape": true }], // Enforce the consistent use of either backticks, double, or single quotes
