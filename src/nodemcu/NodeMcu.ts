@@ -15,10 +15,10 @@ export default class NodeMcu extends NodeMcuSerial implements TerminalConnectabl
 		listFiles: 'local l = file.list();local s = "";for k,v in pairs(l) do s = s..k..":"..v..";" end print(s)',
 		delete: (name: string) => `file.remove("${name}");print("")`,
 		checkEncoderBase64: 'if encoder and encoder.fromBase64 then print("yes") else print("no") end',
-		writeHelperHex: '_G.__nmtwrite = function(s) for c in s:gmatch("..") do file.write(string.char(tonumber(c, 16))) end end print("")',
-		writeHelperBase64: '_G.__nmtwrite = function(s) file.write(encoder.fromBase64(s)) end print("")',
-		fileOpenWrite: (name: string) => `print(file.open("${name}", "w"))`,
-		fileWrite: (data: string) => `__nmtwrite("${data}")  print("")`,
+		writeHelperHex: '_G.__nmtwrite = function(s) for c in s:gmatch("..") do file.write(string.char(tonumber(c, 16))) end print(s.length) end print("")',
+		writeHelperBase64: '_G.__nmtwrite = function(s) file.write(encoder.fromBase64(s)) print(s.length) end print("")',
+		fileOpenWrite: (name: string) => `print(file.open("${name}", "w+"))`,
+		fileWrite: (data: string) => `__nmtwrite("${data}")`,
 		fileClose: 'file.close();print("")',
 		fileFlush: 'file.flush();print("")',
 		fileCompile: (name: string) => `node.compile("${name}");print("")`,
@@ -63,8 +63,15 @@ export default class NodeMcu extends NodeMcuSerial implements TerminalConnectabl
 	}
 
 	public async files(): Promise<DeviceFileInfo[]> {
-		const filesResponse = await this.executeCommand(NodeMcu._luaCommands.listFiles)
-		const filesArray = filesResponse.trim().split(';')
+		let filesResponse = await this.executeCommand(NodeMcu._luaCommands.listFiles)
+		if (!filesResponse) {
+			return []
+		}
+		if (filesResponse.endsWith(';')) {
+			filesResponse = filesResponse.substring(0, filesResponse.length - 1)
+		}
+
+		const filesArray = filesResponse.split(';')
 		return filesArray.map(f => {
 			const fileData = f.split(':')
 			return {
@@ -212,7 +219,6 @@ export default class NodeMcu extends NodeMcuSerial implements TerminalConnectabl
 							this._unsubscribeOnData = this.onData(text => this.handleData(text))
 
 							this._currentCommand = void 0
-							// Post buffer to terminal?
 							resolve(cmdReply)
 							break
 					}
