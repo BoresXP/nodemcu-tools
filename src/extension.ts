@@ -77,7 +77,7 @@ export function activate(context: ExtensionContext): void {
 		const device = NodeMcuRepository.getOrCreate(item.parent.path)
 
 		const fileData = await device.download(item.name)
-		const array = new Uint8Array(fileData.buffer.slice(fileData.byteLength, fileData.byteOffset + fileData.byteLength))
+		const array = new Uint8Array(fileData.buffer.slice(fileData.byteOffset, fileData.byteOffset + fileData.byteLength))
 
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const [rootFolder] = workspace.workspaceFolders!
