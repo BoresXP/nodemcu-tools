@@ -9,23 +9,25 @@ export interface DeviceFileInfo {
 }
 
 export default class NodeMcu extends NodeMcuSerial implements TerminalConnectable {
+	private static readonly _nodeMcuLineEnd = '\r\n'
+	private static readonly _nodeMcuPrompt = '> '
 	private static readonly _luaCommands = {
-		listFiles: 'local l = file.list();for k,v in pairs(l) do uart.write(0,k..":"..v..";") end print("")',
-		delete: (name: string) => `file.remove("${name}") print("")`,
+		listFiles: 'local l = file.list();local s = "";for k,v in pairs(l) do s = s..k..":"..v..";" end print(s)',
+		delete: (name: string) => `file.remove("${name}");print("")`,
 		checkEncoderBase64: 'if encoder and encoder.fromBase64 then print("yes") else print("no") end',
 		writeHelperHex: '_G.__nmtwrite = function(s) for c in s:gmatch("..") do file.write(string.char(tonumber(c, 16))) end end print("")',
 		writeHelperBase64: '_G.__nmtwrite = function(s) file.write(encoder.fromBase64(s)) end print("")',
 		fileOpenWrite: (name: string) => `print(file.open("${name}", "w"))`,
 		fileWrite: (data: string) => `__nmtwrite("${data}")  print("")`,
-		fileClose: 'file.close() print("")',
-		fileFlush: 'file.flush() print("")',
-		fileCompile: (name: string) => `node.compile("${name}") print("")`,
-		fileRun: (name: string) => `print("") dofile("${name}")`,
+		fileClose: 'file.close();print("")',
+		fileFlush: 'file.flush();print("")',
+		fileCompile: (name: string) => `node.compile("${name}");print("")`,
+		fileRun: (name: string) => `print("");dofile("${name}")`,
 		readHelperHex: 'function __nmtread() local c = file.read(1) while c ~= nil do uart.write(0, string.format("%02X", string.byte(c))) c = file.read(1) end end print("")',
-		readHelperBase64: 'function __nmtread() local c = file.read(240) while c ~= nil uart.write(0, encoder.toBase64(c)) end end print("")',
-		fileRead: '__nmtread() print("")',
+		readHelperBase64: 'function __nmtread() local c = file.read(240);while c ~= nil uart.write(0, encoder.toBase64(c)) end end;print("")',
+		fileRead: '__nmtread();print("")',
 		fileOpenRead: (name: string) => `print(file.open("${name}", "r"))`,
-		reset: 'print("") node.restart()',
+		reset: 'print("");node.restart()',
 	}
 
 	private readonly _evtToTerminal = new EventEmitter<string>()
@@ -43,6 +45,21 @@ export default class NodeMcu extends NodeMcuSerial implements TerminalConnectabl
 		this._unsubscribeOnData = this.onData(data => this.handleData(data))
 		this.onConnect(() => this.handleConnect())
 		this.onDisconnect(err => this.handleDicconnect(err))
+	}
+
+	private static getLineEnd(data: string): number {
+		if (data) {
+			const endIndx = data.indexOf(this._nodeMcuLineEnd)
+			if (endIndx >= 0) {
+				return endIndx + this._nodeMcuLineEnd.length
+			}
+
+			if (data === this._nodeMcuPrompt) {
+				return data.length
+			}
+		}
+
+		return -1
 	}
 
 	public async files(): Promise<DeviceFileInfo[]> {
@@ -156,6 +173,9 @@ export default class NodeMcu extends NodeMcuSerial implements TerminalConnectabl
 		if (!hasParser) {
 			this._evtToTerminal.fire('\x1b[33mInclude encode module into firmware - it will speed up file transfer\x1b[0m\r\n')
 		}
+
+		await this.waitForCommand()
+		await this.write(NodeMcu._nodeMcuLineEnd)
 	}
 
 	private handleDicconnect(_err?: Error): void {
@@ -165,35 +185,36 @@ export default class NodeMcu extends NodeMcuSerial implements TerminalConnectabl
 	private async executeCommand(cmd: string): Promise<string> {
 		await this.waitForCommand()
 
-		const cmdLineEnd = '\r\n'
-		const nodeMcuPrompt = '> '
-
 		this._currentCommand = new Promise(resolve => {
-			let isEcho = true
+			let step = 0
 			let buffer = ''
+			let cmdReply = ''
 
 			// All commands are sinle line and return single line response
 			const handleCommand = (data: string): void => {
 				buffer += data
 
 				let endIndx: number
-				while ((endIndx = buffer.indexOf(cmdLineEnd)) >= 0) {
-					endIndx += cmdLineEnd.length
+				while ((endIndx = NodeMcu.getLineEnd(buffer)) >= 0) {
 					const line = buffer.substring(0, endIndx)
 					buffer = buffer.substring(endIndx)
 
-					if (isEcho) {
-						isEcho = false
-					} else {
-						this._unsubscribeOnData.dispose()
-						this._unsubscribeOnData = this.onData(text => this.handleData(text))
+					switch (step) {
+						case 0:
+							step = 1
+							break
+						case 1:
+							cmdReply = line.trimEnd()
+							step = 2
+							break
+						case 2:
+							this._unsubscribeOnData.dispose()
+							this._unsubscribeOnData = this.onData(text => this.handleData(text))
 
-						this._currentCommand = void 0
-						if (buffer && buffer !== nodeMcuPrompt) {
-							this._evtToTerminal.fire(buffer)
-						}
-
-						resolve(line)
+							this._currentCommand = void 0
+							// Post buffer to terminal?
+							resolve(cmdReply)
+							break
 					}
 				}
 			}
@@ -201,7 +222,7 @@ export default class NodeMcu extends NodeMcuSerial implements TerminalConnectabl
 			this._unsubscribeOnData.dispose()
 			this._unsubscribeOnData = this.onData(handleCommand)
 
-			void this.write(cmd + cmdLineEnd)
+			void this.write(cmd + NodeMcu._nodeMcuLineEnd)
 		})
 
 		return this._currentCommand
