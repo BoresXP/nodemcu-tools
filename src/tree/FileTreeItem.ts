@@ -11,7 +11,7 @@ export default class FileTreeItem extends TreeItem {
 		this.parent = parent
 		this.name = name
 
-		this.id = `nodemcu-file-${name}`
+		this.id = `nodemcu-file-${parent.path}-${name}`
 		this.tooltip = `${size}`
 
 		this.contextValue = 'nodemcu-file'
