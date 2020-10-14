@@ -8,6 +8,7 @@ Extension brings NodeMCU device interaction to Visual Studio Code.
 * Download file from device to solution folder
 * Compile, delete, run LUA file on device
 * Reset device
+* Code completion for NodeMCU modules
 
 ## In detail
 
@@ -52,3 +53,12 @@ See [Changelog](https://bitbucket.org/BoresExpress/nodemcu-tools/src/master/CHAN
 * Tested only on Windows x64. Help to test and adopt extension on another platforms is very appreciated.
 
 Please report issues here: [bugtracker](https://bitbucket.org/BoresExpress/nodemcu-tools/issues).
+
+## Acknowledgments
+
+- Andi Dittrich for the great console app [NodeMCU-Tool](https://github.com/AndiDittrich/NodeMCU-Tool)
+- Furkan Duman for NodeMCU [extension for VSCode](https://github.com/fduman/vscode-nodemcu)
+
+## License
+
+This extension is licensed under the [MIT License](https://bitbucket.org/BoresExpress/nodemcu-tools/raw/cccc452c3dad7539e553ad45bafda68eaff7b9d7/LICENSE.md).

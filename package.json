@@ -3,11 +3,12 @@
 	"publisher": "boressoft",
 	"displayName": "NodeMCU-Tools",
 	"description": "NodeMCU development tools for Visual Studio Code",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"author": {
 		"name": "Boris Gulay",
 		"email": "boris@gulay.name"
 	},
+	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "https://BoresExpress@bitbucket.org/BoresExpress/nodemcu-tools.git"
