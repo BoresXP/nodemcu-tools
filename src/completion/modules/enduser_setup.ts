@@ -20,4 +20,4 @@ export const enduser_setup: CompletionItem[] = [
 		detail: 'stop()',
 		documentation: 'Stops the captive portal.',
 	},
-];
+]

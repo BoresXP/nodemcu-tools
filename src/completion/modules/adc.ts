@@ -31,4 +31,4 @@ export const adc: CompletionItem[] = [
 		detail: 'adc.INIT_VDD33',
 		documentation: 'Initialize VDD33 mode.',
 	},
-];
+]
