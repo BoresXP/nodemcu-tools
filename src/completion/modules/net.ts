@@ -1,0 +1,136 @@
+import { CompletionItem, CompletionItemKind } from 'vscode'
+
+export const net: CompletionItem[] = [
+	{
+		kind: CompletionItemKind.Enum,
+		label: 'TCP',
+		detail: 'TCP',
+		documentation: 'TCP',
+	},
+	{
+		kind: CompletionItemKind.Enum,
+		label: 'UDP',
+		detail: 'UDP',
+		documentation: 'UDP',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'createConnection',
+		detail: 'createConnection(type, secure)',
+		documentation: 'Creates a client.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'createServer',
+		detail: 'createServer(type, timeout)',
+		documentation: 'Creates a server.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'multicastJoin',
+		detail: 'multicastJoin(if_ip, multicast_ip)',
+		documentation: 'Join multicast group.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'multicastLeave',
+		detail: 'multicastLeave(if_ip, multicast_ip)',
+		documentation: 'Leave multicast group.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'server:close',
+		detail: 'server.close()',
+		documentation: 'Closes the server.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'server:listen',
+		detail: 'server.listen(port,[ip],function(net.socket))',
+		documentation: 'Listen on port from IP address.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'server:on',
+		detail: '',
+		documentation: 'UDP server only: Register callback functions for specific events.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'server:send',
+		detail: '',
+		documentation: 'UDP server only: Sends data to remote peer.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'socket:close',
+		detail: 'close()',
+		documentation: 'Closes socket.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'socket:connect',
+		detail: 'connect(port, ip|domain)',
+		documentation: 'Connect to a remote server.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'socket:dns',
+		detail: 'dns(domain, function(socket, ip))',
+		documentation: 'Provides DNS resolution for a hostname.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'socket:getpeer',
+		detail: 'getpeer()',
+		documentation: 'Retrieve port and ip of peer.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'socket:hold',
+		detail: 'hold()',
+		documentation: 'Throttle data reception by placing a request to block the TCP receive function. This request is not effective immediately, Espressif recommends to call it while reserving 5*1460 bytes of memory.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'socket:on',
+		detail: 'on(event, function())',
+		documentation: 'Register callback functions for specific events.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'socket:send',
+		detail: 'send(string[, function(sent)])',
+		documentation: 'Sends data to remote peer.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'socket:unhold',
+		detail: 'unhold()',
+		documentation: 'Unblock TCP receiving data by revocation of a preceding \'hold()\'.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'dns.getdnsserver',
+		detail: 'dns.getdnsserver(dns_index)',
+		documentation: 'Gets the IP address of the DNS server used to resolve hostnames.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'dns.resolve',
+		detail: 'dns.resolve(host, function(ip))',
+		documentation: 'Resolve a hostname to an IP address. Doesn\'t require a socket like [\'net.socket.dns()\'](#netsocketdns).',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'dns.setdnsserver',
+		detail: 'dns.setdnsserver(dns_ip_addr, dns_index)',
+		documentation: 'Sets the IP of the DNS server used to resolve hostnames. Default: resolver1.opendns.com (208.67.222.222). You can specify up to 2 DNS servers.',
+	},
+	{
+		kind: CompletionItemKind.Function,
+		label: 'cert.verify',
+		detail: 'cert.verify(enable)',
+		documentation: 'Controls the vertificate verification process when the Nodemcu makes a secure connection.',
+	},
+]

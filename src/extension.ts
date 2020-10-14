@@ -1,9 +1,10 @@
-import { ExtensionContext, ProgressLocation, Terminal, Uri, commands, window, workspace } from 'vscode'
+import { ExtensionContext, ProgressLocation, Terminal, Uri, commands, languages, window, workspace } from 'vscode'
 
 import DeviceTerminal from './terminal/DeviceTerminal'
 import DeviceTreeItem from './tree/DeviceTreeItem'
 import DeviceTreeProvider from './tree/DeviceTreeProvider'
 import FileTreeItem from './tree/FileTreeItem'
+import NodeMcuCompletionProvider from './completion/NodeMcuCompletionProvider'
 import NodeMcuRepository from './nodemcu/NodeMcuRepository'
 import TerminalConnectable from './terminal/TerminalConnectable'
 
@@ -94,6 +95,9 @@ export function activate(context: ExtensionContext): void {
 		const device = NodeMcuRepository.getOrCreate(item.parent.path)
 		await device.reset()
 	})
+	context.subscriptions.push(disposable)
+
+	disposable = languages.registerCompletionItemProvider({ language: 'lua' }, new NodeMcuCompletionProvider(), '.')
 	context.subscriptions.push(disposable)
 }
 
