@@ -13,8 +13,6 @@ export default abstract class NodeMcuSerial {
 		'10C4', // NodeMCU v1.1 - CP2102 Adapter | 0x10c4  Cygnal Integrated Products, Inc
 		'1A86', // NodeMCU v3 - CH340G Adapter | 0x1A86 Nanjing QinHeng Electronics Co., Ltd.
 	]
-	private static readonly _testKey = 'nodemcu-tools-test'
-	private static readonly _testCommand = `print("${NodeMcuSerial._testKey}")`
 
 	public readonly path: string
 
