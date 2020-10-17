@@ -6,3 +6,6 @@ webpack.config.ts
 .eslintrc.json
 out/*.map
 **/*.ts
+node_modules
+.travis.yml
+package-lock.json
