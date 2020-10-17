@@ -1,15 +1,18 @@
 {
 	"compilerOptions": {
 		"module": "commonjs",
-		"target": "es6",
+		"target": "es2018",
 		"outDir": "out",
 		"lib": [
-			"es6"
+			"es2018"
 		],
 		"sourceMap": true,
 		"strict": true,
 		"removeComments": true,
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"importsNotUsedAsValues": "preserve",
+		"allowSyntheticDefaultImports": true,
+		"moduleResolution": "Node"
 	},
 	"exclude": [
 		"node_modules"
