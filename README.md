@@ -9,6 +9,7 @@ Extension brings NodeMCU device interaction to Visual Studio Code.
 * Compile, delete, run LUA file on device
 * Reset device
 * Code completion for NodeMCU modules
+* Works on all platforms (Windows, Linux, MacOS)
 
 ## In detail
 
@@ -44,13 +45,13 @@ No keybindings yet
 
 No settings yet
 
-## What's New
+## What's New / Change Log
 
 See [Changelog](https://bitbucket.org/BoresExpress/nodemcu-tools/src/master/CHANGELOG.md)
 
 ## Known issues
 
-* Tested only on Windows x64. Help to test and adopt extension on another platforms is very appreciated.
+* Up/down arros in terminal working strange
 
 Please report issues here: [bugtracker](https://bitbucket.org/BoresExpress/nodemcu-tools/issues).
 

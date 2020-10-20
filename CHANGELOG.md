@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2020-10-20
+### Added
+- Ability to work on all platforms (Windows, Linux, MacOS)
+
+### Changed
+- Reduced extension package size (not including mode_modules anymore, use bundling)
+
 ## [1.1.0] - 2020-10-15
 ### Added
 - Code completion for NodeMCU modules
