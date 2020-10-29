@@ -1,14 +1,18 @@
 import DeviceTreeItem, { isDeviceTreeItem } from './DeviceTreeItem'
-import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode'
+import { Event, EventEmitter, TreeDataProvider, TreeItem, window } from 'vscode'
 import FileTreeItem, { isFileTreeItem } from './FileTreeItem'
 
 import NodeMcuRepository from '../nodemcu/NodeMcuRepository'
+import TelemetryReporter from 'vscode-extension-telemetry'
 
 export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData = new EventEmitter<undefined>()
+	private readonly _telemetryReporter: TelemetryReporter
+
 	private _deviceItems: DeviceTreeItem[] | undefined = void 0
 
-	constructor() {
+	constructor(telemetryReporter: TelemetryReporter) {
+		this._telemetryReporter = telemetryReporter
 		NodeMcuRepository.onDisconnect(() => this.refresh())
 	}
 
@@ -36,15 +40,24 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 	}
 
 	public async getChildren(element?: TreeItem): Promise<TreeItem[] | undefined> {
-		if (!element) {
-			const ports = await NodeMcuRepository.listPorts()
-			this._deviceItems = ports.map(p => new DeviceTreeItem(p))
-			return this._deviceItems
-		}
-		if (isDeviceTreeItem(element) && NodeMcuRepository.isConnected(element.path)) {
-			const device = NodeMcuRepository.getOrCreate(element.path)
-			const files = await device.files()
-			return files.map(f => new FileTreeItem(f.name, f.size, element))
+		try {
+			if (!element) {
+				const ports = await NodeMcuRepository.listPorts()
+
+				this._telemetryReporter.sendTelemetryEvent('refresh', void 0, { 'ports': ports.length })
+
+				this._deviceItems = ports.map(p => new DeviceTreeItem(p))
+				return this._deviceItems
+			}
+			if (isDeviceTreeItem(element) && NodeMcuRepository.isConnected(element.path)) {
+				const device = NodeMcuRepository.getOrCreate(element.path)
+				const files = await device.files()
+				return files.map(f => new FileTreeItem(f.name, f.size, element))
+			}
+		} catch (ex) {
+			this._telemetryReporter.sendTelemetryException(ex)
+			console.error(ex) // eslint-disable-line no-console
+			await window.showErrorMessage(`Error in nodemcu-tools: ${ex}`)
 		}
 
 		return void 0

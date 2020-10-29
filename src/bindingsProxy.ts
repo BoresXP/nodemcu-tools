@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+
 import bindings, { BindingOptions } from 'bindings'
 
 import Fs from 'fs'
@@ -21,18 +23,35 @@ function loadSerialPort(): any {
 		while (dirEntry = libDir.readSync()) { // eslint-disable-line no-cond-assign
 			if (dirEntry.isFile() && dirEntry.name.endsWith('.node')) {
 				try {
-					console.log('Trying', dirEntry.name)
+					console.log('Trying', dirEntry.name) // eslint-disable-line no-console
 					const moduleFullPath = Path.join(fullPath, dirEntry.name)
 					return requireFunc(moduleFullPath) // eslint-disable-line @typescript-eslint/no-unsafe-return
 				} catch (e) {
-					console.log('Failed to load', dirEntry.name, e)
+					console.log('Failed to load', dirEntry.name, e) // eslint-disable-line no-console
 				}
 			}
 		}
-
-		throw new Error('No compatible serialport binary module found')
 	} finally {
 		libDir.closeSync()
+	}
+
+	console.error('Failed to load Serial Port Bindings') // eslint-disable-line no-console
+
+	const errorFn = (): void => {
+		throw new Error('SerialPort native binding not loaded')
+	}
+	return {
+		open: errorFn,
+		close: errorFn,
+		read: errorFn,
+		write: errorFn,
+		update: errorFn,
+		set: errorFn,
+		get: errorFn,
+		flush: errorFn,
+		getBaudRate: errorFn,
+		drain: errorFn,
+		list: errorFn,
 	}
 }
 

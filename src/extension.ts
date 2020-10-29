@@ -7,98 +7,114 @@ import FileTreeItem from './tree/FileTreeItem'
 import NodeMcuCompletionProvider from './completion/NodeMcuCompletionProvider'
 import NodeMcuRepository from './nodemcu/NodeMcuRepository'
 import TerminalConnectable from './terminal/TerminalConnectable'
+import { getTelemetryReporter } from './telemetry'
+
+const telemetryReporter = getTelemetryReporter()
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: ExtensionContext): void {
-	const treeProvider = new DeviceTreeProvider()
-	const treeView = window.createTreeView('nodemcu-tools.devices', { treeDataProvider: treeProvider })
-	context.subscriptions.push(treeView)
+	try {
+		const treeProvider = new DeviceTreeProvider(telemetryReporter)
+		const treeView = window.createTreeView('nodemcu-tools.devices', { treeDataProvider: treeProvider })
+		context.subscriptions.push(treeView)
 
-	let disposable = commands.registerCommand('nodemcu-tools.connect', async (item: DeviceTreeItem) => {
-		const device = NodeMcuRepository.getOrCreate(item.path)
+		let disposable = commands.registerCommand('nodemcu-tools.connect', async (item: DeviceTreeItem) => {
+			const device = NodeMcuRepository.getOrCreate(item.path)
 
-		const terminal = await createTerminal(device, item.path)
-		context.subscriptions.push(terminal)
+			const terminal = await createTerminal(device, item.path)
+			context.subscriptions.push(terminal)
 
-		await device.connect()
+			await device.connect()
 
-		treeProvider.refresh()
-		await treeView.reveal(item, { select: true, expand: true })
-		await commands.executeCommand('setContext', 'nodemcu-tools:isConnected', true)
+			treeProvider.refresh()
+			await treeView.reveal(item, { select: true, expand: true })
+			await commands.executeCommand('setContext', 'nodemcu-tools:isConnected', true)
 
-		terminal.show(true)
-	})
-	context.subscriptions.push(disposable)
+			terminal.show(true)
 
-	disposable = commands.registerCommand('nodemcu-tools.disconnect', async (item: DeviceTreeItem) => {
-		const device = NodeMcuRepository.getOrCreate(item.path)
+			telemetryReporter.sendTelemetryEvent('connected')
+		})
+		context.subscriptions.push(disposable)
 
-		await device.disconnect()
+		disposable = commands.registerCommand('nodemcu-tools.disconnect', async (item: DeviceTreeItem) => {
+			const device = NodeMcuRepository.getOrCreate(item.path)
 
-		treeProvider.refresh()
-		await commands.executeCommand('setContext', 'nodemcu-tools:isConnected', NodeMcuRepository.allConnected.length > 0)
-	})
-	context.subscriptions.push(disposable)
+			await device.disconnect()
 
-	disposable = commands.registerCommand('nodemcu-tools.refreshTreeView', () => {
-		treeProvider.refresh()
-	})
-	context.subscriptions.push(disposable)
+			treeProvider.refresh()
+			await commands.executeCommand('setContext', 'nodemcu-tools:isConnected', NodeMcuRepository.allConnected.length > 0)
+		})
+		context.subscriptions.push(disposable)
 
-	disposable = commands.registerCommand('nodemcu-tools.uploadFile', async (file: Uri) => {
-		await uploadFile(file)
-		treeProvider.refresh()
-	})
-	context.subscriptions.push(disposable)
+		disposable = commands.registerCommand('nodemcu-tools.refreshTreeView', () => {
+			treeProvider.refresh()
+		})
+		context.subscriptions.push(disposable)
 
-	disposable = commands.registerCommand('nodemcu-tools.compileFile', async (item: FileTreeItem) => {
-		const device = NodeMcuRepository.getOrCreate(item.parent.path)
-		await device.compile(item.name)
-		await device.delete(item.name)
+		disposable = commands.registerCommand('nodemcu-tools.uploadFile', async (file: Uri) => {
+			await uploadFile(file)
+			treeProvider.refresh()
+		})
+		context.subscriptions.push(disposable)
 
-		treeProvider.refresh()
-	})
-	context.subscriptions.push(disposable)
+		disposable = commands.registerCommand('nodemcu-tools.compileFile', async (item: FileTreeItem) => {
+			const device = NodeMcuRepository.getOrCreate(item.parent.path)
+			await device.compile(item.name)
+			await device.delete(item.name)
 
-	disposable = commands.registerCommand('nodemcu-tools.runFile', async (item: FileTreeItem) => {
-		const device = NodeMcuRepository.getOrCreate(item.parent.path)
-		await device.run(item.name)
-	})
-	context.subscriptions.push(disposable)
+			treeProvider.refresh()
+		})
+		context.subscriptions.push(disposable)
 
-	disposable = commands.registerCommand('nodemcu-tools.deleteFile', async (item: FileTreeItem) => {
-		const device = NodeMcuRepository.getOrCreate(item.parent.path)
-		await device.delete(item.name)
-		treeProvider.refresh()
-	})
-	context.subscriptions.push(disposable)
+		disposable = commands.registerCommand('nodemcu-tools.runFile', async (item: FileTreeItem) => {
+			const device = NodeMcuRepository.getOrCreate(item.parent.path)
+			await device.run(item.name)
+		})
+		context.subscriptions.push(disposable)
 
-	disposable = commands.registerCommand('nodemcu-tools.downloadFile', async (item: FileTreeItem) => {
-		const device = NodeMcuRepository.getOrCreate(item.parent.path)
+		disposable = commands.registerCommand('nodemcu-tools.deleteFile', async (item: FileTreeItem) => {
+			const device = NodeMcuRepository.getOrCreate(item.parent.path)
+			await device.delete(item.name)
+			treeProvider.refresh()
+		})
+		context.subscriptions.push(disposable)
 
-		await window.withProgress(
-			{ location: ProgressLocation.Notification, cancellable: false, title: `Downloading ${item.name} from NodeMCU@${device.path}` },
-			async progress => {
-				const fileData = await device.download(item.name)
-				const array = new Uint8Array(fileData.buffer.slice(fileData.byteOffset, fileData.byteOffset + fileData.byteLength))
+		disposable = commands.registerCommand('nodemcu-tools.downloadFile', async (item: FileTreeItem) => {
+			const device = NodeMcuRepository.getOrCreate(item.parent.path)
 
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				const [rootFolder] = workspace.workspaceFolders!
-				await workspace.fs.writeFile(Uri.joinPath(rootFolder.uri, item.name), array)
-				progress.report({ increment: 100 })
-			})
-	})
-	context.subscriptions.push(disposable)
+			await window.withProgress(
+				{ location: ProgressLocation.Notification, cancellable: false, title: `Downloading ${item.name} from NodeMCU@${device.path}` },
+				async progress => {
+					const fileData = await device.download(item.name)
+					const array = new Uint8Array(fileData.buffer.slice(fileData.byteOffset, fileData.byteOffset + fileData.byteLength))
 
-	disposable = commands.registerCommand('nodemcu-tools.reset', async (item: FileTreeItem) => {
-		const device = NodeMcuRepository.getOrCreate(item.parent.path)
-		await device.reset()
-	})
-	context.subscriptions.push(disposable)
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					const [rootFolder] = workspace.workspaceFolders!
+					await workspace.fs.writeFile(Uri.joinPath(rootFolder.uri, item.name), array)
+					progress.report({ increment: 100 })
+				})
+		})
+		context.subscriptions.push(disposable)
 
-	disposable = languages.registerCompletionItemProvider({ language: 'lua' }, new NodeMcuCompletionProvider(), '.')
-	context.subscriptions.push(disposable)
+		disposable = commands.registerCommand('nodemcu-tools.reset', async (item: FileTreeItem) => {
+			const device = NodeMcuRepository.getOrCreate(item.parent.path)
+			await device.reset()
+		})
+		context.subscriptions.push(disposable)
+
+		disposable = languages.registerCompletionItemProvider({ language: 'lua' }, new NodeMcuCompletionProvider(), '.')
+		context.subscriptions.push(disposable)
+	} catch (ex) {
+		telemetryReporter.sendTelemetryException(ex)
+		console.error(ex) // eslint-disable-line no-console
+		void window.showErrorMessage(`Error in nodemcu-tools: ${ex}`)
+	}
+}
+
+export function deactivate(): void {
+	// This will ensure all pending events get flushed
+	void telemetryReporter.dispose()
 }
 
 async function uploadFile(file: Uri): Promise<void> {

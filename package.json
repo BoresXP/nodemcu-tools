@@ -3,7 +3,7 @@
 	"publisher": "boressoft",
 	"displayName": "NodeMCU-Tools",
 	"description": "NodeMCU development tools for Visual Studio Code",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"author": {
 		"name": "Boris Gulay",
 		"email": "boris@gulay.name"
@@ -166,6 +166,7 @@
 	},
 	"dependencies": {
 		"bindings": "^1.5.0",
-		"serialport": "^9.0.2"
+		"serialport": "^9.0.2",
+		"vscode-extension-telemetry": "^0.1.6"
 	}
 }
