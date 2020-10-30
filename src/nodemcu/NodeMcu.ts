@@ -24,7 +24,7 @@ export default class NodeMcu extends NodeMcuSerial implements TerminalConnectabl
 		fileCompile: (name: string) => `node.compile("${name}");print("")`,
 		fileRun: (name: string) => `print("");dofile("${name}")`,
 		readHelperHex: 'function __nmtread() local c = file.read(1) while c ~= nil do uart.write(0, string.format("%02X", string.byte(c))) c = file.read(1) end end print("")',
-		readHelperBase64: 'function __nmtread() local c = file.read(240);while c ~= nil uart.write(0, encoder.toBase64(c)) end end;print("")',
+		readHelperBase64: 'function __nmtread() local c = file.read(240);while c ~= nil do uart.write(0, encoder.toBase64(c));c = file.read(240) end end;print("")',
 		fileRead: '__nmtread();print("")',
 		fileOpenRead: (name: string) => `print(file.open("${name}", "r"))`,
 		reset: 'print("");node.restart()',
