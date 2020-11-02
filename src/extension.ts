@@ -97,8 +97,8 @@ export function activate(context: ExtensionContext): void {
 		})
 		context.subscriptions.push(disposable)
 
-		disposable = commands.registerCommand('nodemcu-tools.reset', async (item: FileTreeItem) => {
-			const device = NodeMcuRepository.getOrCreate(item.parent.path)
+		disposable = commands.registerCommand('nodemcu-tools.reset', async (item: DeviceTreeItem) => {
+			const device = NodeMcuRepository.getOrCreate(item.path)
 			await device.reset()
 		})
 		context.subscriptions.push(disposable)
