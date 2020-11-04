@@ -1,31 +1,33 @@
 {
-    "env": {
-        "es6": true,
-        "es2017": true
-    },
-    "root": true,
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": 6,
-        "sourceType": "module",
-        "project": "tsconfig.json"
-    },
-    "plugins": [
-        "promise",
-        "optimize-regex",
-        "sonarjs",
-        "@typescript-eslint"
-    ],
-    "extends": [
-        "eslint:recommended",
+	"env": {
+		"node": true,
+		"es6": true,
+		"es2017": true
+	},
+	"root": true,
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": 6,
+		"sourceType": "module",
+		"project": "tsconfig.json"
+	},
+	"plugins": ["react", "react-hooks", "promise", "optimize-regex", "sonarjs", "@typescript-eslint"],
+	"extends": [
+		"eslint:recommended",
+		"plugin:react/recommended",
 		"plugin:promise/recommended",
 		"plugin:sonarjs/recommended",
 		"plugin:@typescript-eslint/eslint-recommended",
 		"plugin:@typescript-eslint/recommended",
 		"plugin:@typescript-eslint/recommended-requiring-type-checking"
-    ],
-    "rules": {
-        "no-shadow": ["error", { "builtinGlobals": true }], // disallow variable declarations from shadowing variables declared in the outer scope
+	],
+	"settings": {
+		"react": {
+			"version": "detect"
+		}
+	},
+	"rules": {
+		"no-shadow": ["error", { "builtinGlobals": true }], // disallow variable declarations from shadowing variables declared in the outer scope
 		"no-duplicate-imports": ["error", { "includeExports": true }], // disallow duplicate module imports
 		"no-template-curly-in-string": "error", // disallow template literal placeholder syntax in regular strings
 		"block-scoped-var": "error", // enforce the use of variables within the scope they are defined
@@ -121,11 +123,52 @@
 		"@typescript-eslint/prefer-function-type": "warn", // Use function types instead of interfaces with call signatures
 		"@typescript-eslint/prefer-readonly": "warn", // Requires that private members are marked as readonly if they're never modified outside of the constructor
 		"@typescript-eslint/no-explicit-any": "off",
-		"@typescript-eslint/naming-convention": ["error"], // Enforces naming conventions for everything across a codebase
+		"@typescript-eslint/naming-convention": [
+			"error",
+			{
+				"selector": "default",
+				"format": ["camelCase"]
+			},
+			{
+				"selector": "variable",
+				"format": ["camelCase"]
+			},
+			{
+				"selector": "typeLike",
+				"format": ["PascalCase"]
+			},
+			{
+				"selector": "property",
+				"modifiers": ["private"],
+				"format": ["camelCase"],
+				"leadingUnderscore": "require"
+			},
+			{
+				"selector": "parameter",
+				"format": ["camelCase"],
+				"leadingUnderscore": "allow"
+			}
+		], // Enforces naming conventions for everything across a codebase
 		"@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true }],
 		"@typescript-eslint/interface-name-prefix": "off",
 		"@typescript-eslint/restrict-template-expressions": "off",
 		"@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_$" }],
-		"@typescript-eslint/no-invalid-this": "error" // disallow this keywords outside of classes or class-like objects
-    }
+		"@typescript-eslint/no-invalid-this": "error", // disallow this keywords outside of classes or class-like objects
+
+		"react/no-access-state-in-setstate": "error", // Prevent using this.state inside this.setState
+		"react/no-danger": "error", // Prevent usage of dangerous JSX properties
+		"react/no-multi-comp": "error", // Prevent multiple component definition per file
+		"react/no-this-in-sfc": "error", // Prevent using this in stateless functional components
+		"react/prefer-stateless-function": "error", // Enforce stateless React Components to be written as a pure function
+		"react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
+		"react/jsx-no-bind": "error", // Prevent usage of .bind() and arrow functions in JSX props
+		"react/jsx-no-literals": "warn", //  Prevent usage of unwrapped JSX strings
+		"react/jsx-no-useless-fragment": "error", // Disallow unnecessary fragments,
+		"react/jsx-pascal-case": "error", // Enforce PascalCase for user-defined JSX components
+
+		"react-hooks/rules-of-hooks": "error",
+		"react-hooks/exhaustive-deps": "warn",
+
+		"react/prop-types": "off"
+	}
 }

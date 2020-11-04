@@ -1,0 +1,50 @@
+{
+	"extends": "../../../.eslintrc.json",
+	"parserOptions": {
+		"project": "src/terminal/content/tsconfig.json"
+	},
+	"env": {
+		"browser": true
+	},
+	"rules": {},
+	"overrides": [
+		{
+			"files": ["*.tsx"],
+			"rules": {
+				"@typescript-eslint/naming-convention": [
+					"error",
+					{
+						"selector": "default",
+						"format": ["camelCase"]
+					},
+					{
+						"selector": "variable",
+						"format": ["camelCase"]
+					},
+					{
+						"selector": "typeLike",
+						"format": ["PascalCase"]
+					},
+					{
+						"selector": "property",
+						"modifiers": ["private"],
+						"format": ["camelCase"],
+						"leadingUnderscore": "require"
+					},
+					{
+						"selector": "parameter",
+						"format": ["camelCase"],
+						"leadingUnderscore": "allow"
+					},
+					{
+						"selector": "variable",
+						"modifiers": ["const"],
+						"types": ["function"],
+						"format": ["PascalCase"]
+					}
+				], // Enforces naming conventions for everything across a codebase
+				"@typescript-eslint/no-extra-parens": ["error", "all", { "ignoreJSX": "multi-line" }] // Disallow unnecessary parentheses
+			}
+		}
+	]
+}

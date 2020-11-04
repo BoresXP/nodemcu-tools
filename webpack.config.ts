@@ -16,7 +16,7 @@ const commonConfig: webpack.Configuration = {
 	module: {
 		rules: [
 			{
-				test: /\.ts$/,
+				test: /\.tsx?$/,
 				exclude: /node_modules/,
 				loader: 'ts-loader',
 				options: {
@@ -28,7 +28,7 @@ const commonConfig: webpack.Configuration = {
 	plugins: [
 		new ForkTsCheckerWebpackPlugin({
 			typescript: { enabled: true },
-			eslint: { enabled: true, files: './src/**/*.ts', options: {} },
+			eslint: { enabled: true, files: './src/**/*.{ts,tsx}', options: {} },
 			logger: { infrastructure: 'webpack-infrastructure' },
 		}),
 	],
@@ -52,6 +52,20 @@ const config: webpack.Configuration[] = [
 		externals: {
 			vscode: 'commonjs vscode',
 			bindings: ['./bindingsProxy', 'bindingsProxy'],
+		},
+	},
+	{
+		...commonConfig,
+		target: 'web',
+		entry: {
+			terminal: './src/terminal/content/index.tsx',
+		},
+		output: {
+			path: path.resolve('out'),
+			filename: '[name].js',
+		},
+		resolve: {
+			extensions: ['.wasm', '.mjs', '.js', '.json', '.ts', '.tsx'],
 		},
 	},
 ]

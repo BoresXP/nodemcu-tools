@@ -1,12 +1,11 @@
-import { ExtensionContext, ProgressLocation, Terminal, Uri, commands, languages, window, workspace } from 'vscode'
+import { ExtensionContext, ProgressLocation, Uri, commands, languages, window, workspace } from 'vscode'
 
-import DeviceTerminal from './terminal/DeviceTerminal'
 import DeviceTreeItem from './tree/DeviceTreeItem'
 import DeviceTreeProvider from './tree/DeviceTreeProvider'
 import FileTreeItem from './tree/FileTreeItem'
 import NodeMcuCompletionProvider from './completion/NodeMcuCompletionProvider'
 import NodeMcuRepository from './nodemcu/NodeMcuRepository'
-import TerminalConnectable from './terminal/TerminalConnectable'
+import TerminalView from './terminal/TerminalView'
 import { getTelemetryReporter } from './telemetry'
 
 const telemetryReporter = getTelemetryReporter()
@@ -22,8 +21,7 @@ export function activate(context: ExtensionContext): void {
 		let disposable = commands.registerCommand('nodemcu-tools.connect', async (item: DeviceTreeItem) => {
 			const device = NodeMcuRepository.getOrCreate(item.path)
 
-			const terminal = await createTerminal(device, item.path)
-			context.subscriptions.push(terminal)
+			const wv = TerminalView.create(context, item.path)
 
 			await device.connect()
 
@@ -31,7 +29,7 @@ export function activate(context: ExtensionContext): void {
 			await treeView.reveal(item, { select: true, expand: true })
 			await commands.executeCommand('setContext', 'nodemcu-tools:isConnected', true)
 
-			terminal.show(true)
+			wv.show()
 
 			telemetryReporter.sendTelemetryEvent('connected')
 		})
@@ -142,17 +140,4 @@ async function uploadFile(file: Uri): Promise<void> {
 				fileName,
 				percent => progress.report({ increment: percent }))
 		})
-}
-
-function createTerminal(termConn: TerminalConnectable, path: string): Promise<Terminal> {
-	return new Promise(resolve => {
-		const devTerminal = new DeviceTerminal(termConn)
-		let terminal: Terminal | undefined = void 0
-
-		devTerminal.onReady(() => {
-			resolve(terminal)
-		})
-
-		terminal = window.createTerminal({ name: `NodeMCU@${path}`, pty: devTerminal })
-	})
 }
