@@ -40,7 +40,7 @@
 						"selector": "variable",
 						"modifiers": ["const"],
 						"types": ["function"],
-						"format": ["PascalCase"]
+						"format": ["PascalCase", "camelCase"]
 					}
 				], // Enforces naming conventions for everything across a codebase
 				"@typescript-eslint/no-extra-parens": ["error", "all", { "ignoreJSX": "multi-line" }] // Disallow unnecessary parentheses

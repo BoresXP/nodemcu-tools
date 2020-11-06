@@ -21,7 +21,7 @@ export function activate(context: ExtensionContext): void {
 		let disposable = commands.registerCommand('nodemcu-tools.connect', async (item: DeviceTreeItem) => {
 			const device = NodeMcuRepository.getOrCreate(item.path)
 
-			const wv = TerminalView.create(context, item.path)
+			const wv = TerminalView.create(context, item.path, device)
 
 			await device.connect()
 

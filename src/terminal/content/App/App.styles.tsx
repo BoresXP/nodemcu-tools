@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 
 export const Page = styled.div`
 	background-color: var(--vscode-editor-background);
@@ -6,18 +6,25 @@ export const Page = styled.div`
 	display: flex;
 	flex-direction: column;
 	height: 100%;
+	font: var(--vscode-font-weight) var(--vscode-font-size) var(--vscode-font-family);
+
+	& > DIV {
+		margin: 7px 3px;
+	}
 `
 
-export const TerminalContainer = styled.div`
-	display: flex;
-	flex: 1;
-`
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const GlobalStyles = createGlobalStyle`
+HTML {
+	height: 100%;
+}
 
-export const CmdlineContainer = styled.div`
-	display: flex;
-`
+BODY {
+	height: 100%;
+	margin: 0;
+}
 
-export const SnippetsContainer = styled.div`
-	display: flex;
-	flex-wrap: wrap;
+#root {
+	height: 100%;
+}
 `

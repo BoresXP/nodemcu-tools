@@ -1,14 +1,14 @@
 import { Disposable, Event, EventEmitter } from 'vscode'
 
+import ITerminalConnectable from '../terminal/ITerminalConnectable'
 import NodeMcuSerial from './NodeMcuSerial'
-import TerminalConnectable from '../terminal/TerminalConnectable'
 
 export interface DeviceFileInfo {
 	name: string
 	size: number
 }
 
-export default class NodeMcu extends NodeMcuSerial implements TerminalConnectable {
+export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectable {
 	private static readonly _nodeMcuLineEnd = '\r\n'
 	private static readonly _nodeMcuPrompt = '> '
 	private static readonly _luaCommands = {

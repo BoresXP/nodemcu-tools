@@ -149,6 +149,8 @@
 		"@types/node": "^14.0.27",
 		"@types/react": "^16.9.55",
 		"@types/react-dom": "^16.9.9",
+		"@types/react-redux": "^7.1.11",
+		"@types/redux": "^3.6.0",
 		"@types/serialport": "^8.0.1",
 		"@types/styled-components": "^5.1.4",
 		"@types/vscode": "^1.49.0",
@@ -173,8 +175,10 @@
 		"bindings": "^1.5.0",
 		"react": "^17.0.1",
 		"react-dom": "^17.0.1",
+		"react-redux": "^7.2.2",
 		"serialport": "^9.0.2",
 		"styled-components": "^5.2.1",
+		"typesafe-actions": "^5.1.0",
 		"vscode-extension-telemetry": "^0.1.6"
 	}
 }
