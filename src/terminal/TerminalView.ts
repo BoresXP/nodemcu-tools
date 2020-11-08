@@ -1,6 +1,8 @@
 import { ExtensionContext, Uri, ViewColumn, WebviewPanel, window } from 'vscode'
 
+import IMessage from './messages/IMessage'
 import ITerminalConnectable from './ITerminalConnectable'
+import { isTerminalCommand } from './messages/TerminalCommand'
 import { terminalLine } from './messages/TerminalLine'
 
 export default class TerminalView {
@@ -16,13 +18,13 @@ export default class TerminalView {
 		this._webViewPanel = webViewPanel
 
 		this._webViewPanel.webview.html = this.getHtml(this._context.extensionUri)
+		this._webViewPanel.webview.onDidReceiveMessage(msg => this.onMessage(msg))
 		context.subscriptions.push(this._webViewPanel)
 
 		this._device.onClose(() => {
 			this._webViewPanel.dispose()
 		})
 		this._device.toTerminal(async line => {
-			console.log(line)
 			await this._webViewPanel.webview.postMessage(terminalLine(line))
 		})
 	}
@@ -54,5 +56,11 @@ export default class TerminalView {
 		<script src="${srcPath}"></script>
 	</body>
 </html>`
+	}
+
+	private onMessage(msg: IMessage) : void {
+		if (isTerminalCommand(msg)) {
+			this._device.fromTerminal(msg.text + '\n')
+		}
 	}
 }

@@ -33,18 +33,18 @@ export default abstract class NodeMcuSerial {
 
 	public connect(): Promise<void> {
 		return new Promise((resolve, reject) => {
-			this._port.open(
-				err => {
-					if (err) {
-						reject(err)
-					} else {
-						this._port.on('data', data => this.onDataHandler(data))
-						this._port.on('close', (errDiconnect: ErrorDisconnect) => this._evtClosed.fire(errDiconnect))
+			const parser = this._port.pipe(new SerialPort.parsers.Readline({ delimiter: '\n' }))
+			this._port.open(err => {
+				if (err) {
+					reject(err)
+				} else {
+					parser.on('data', data => this.onDataHandler(data))
+					this._port.on('close', (errDiconnect: ErrorDisconnect) => this._evtClosed.fire(errDiconnect))
 
-						this._evtOpened.fire()
-						resolve()
-					}
-				})
+					this._evtOpened.fire()
+					resolve()
+				}
+			})
 		})
 	}
 
@@ -65,7 +65,6 @@ export default abstract class NodeMcuSerial {
 	public get onDisconnect(): Event<ErrorDisconnect | undefined> {
 		return this._evtClosed.event
 	}
-
 
 	protected write(data: string): Promise<void> {
 		return new Promise((resolve, reject) => {

@@ -43,7 +43,6 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 	constructor(path: string) {
 		super(path)
 		this._unsubscribeOnData = this.onData(data => this.handleData(data))
-		this.onConnect(() => this.handleConnect())
 		this.onDisconnect(err => this.handleDicconnect(err))
 	}
 
@@ -62,8 +61,9 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 		return -1
 	}
 
+	// eslint-disable-next-line @typescript-eslint/require-await
 	public async files(): Promise<DeviceFileInfo[]> {
-		let filesResponse = await this.executeCommand(NodeMcu._luaCommands.listFiles)
+		let filesResponse = '' // await this.executeCommand(NodeMcu._luaCommands.listFiles)
 		if (!filesResponse) {
 			return []
 		}
@@ -173,16 +173,6 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 
 	private handleData(data: string): void {
 		this._evtToTerminal.fire(data)
-	}
-
-	private async handleConnect(): Promise<void> {
-		const hasParser = await this.checkEncoderBase64()
-		if (!hasParser) {
-			this._evtToTerminal.fire('\x1b[33mInclude encode module into firmware - it will speed up file transfer\x1b[0m\r\n')
-		}
-
-		await this.waitForCommand()
-		await this.write(NodeMcu._nodeMcuLineEnd)
 	}
 
 	private handleDicconnect(_err?: Error): void {
