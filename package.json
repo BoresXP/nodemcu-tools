@@ -76,11 +76,6 @@
 			{
 				"command": "nodemcu-tools.downloadFile",
 				"title": "Download"
-			},
-			{
-				"command": "nodemcu-tools.reset",
-				"title": "Reset",
-				"enablement": "viewItem == nodemcu-device-connected"
 			}
 		],
 		"menus": {
@@ -122,10 +117,6 @@
 				{
 					"command": "nodemcu-tools.downloadFile",
 					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/"
-				},
-				{
-					"command": "nodemcu-tools.reset",
-					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-device/"
 				}
 			]
 		},

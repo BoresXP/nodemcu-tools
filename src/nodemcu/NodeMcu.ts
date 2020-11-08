@@ -27,7 +27,6 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 		readHelperBase64: 'function __nmtread() local c = file.read(240);while c ~= nil do uart.write(0, encoder.toBase64(c));c = file.read(240) end end;print("")',
 		fileRead: '__nmtread();print("")',
 		fileOpenRead: (name: string) => `print(file.open("${name}", "r"))`,
-		reset: 'print("");node.restart()',
 	}
 
 	private readonly _evtToTerminal = new EventEmitter<string>()
@@ -148,10 +147,6 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 		await this.executeCommand(NodeMcu._luaCommands.fileClose)
 
 		return Buffer.from(fileData, this._transferEncoding)
-	}
-
-	public async reset(): Promise<void> {
-		await this.executeCommand(NodeMcu._luaCommands.reset)
 	}
 
 	// TerminalConnectable //
