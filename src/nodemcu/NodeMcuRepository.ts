@@ -54,8 +54,12 @@ export default class NodeMcuRepository {
 	}
 
 	public static isConnected(path: string): boolean {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return this._devices.has(path) && this._devices.get(path)!.isConnected
+		if (this._devices.has(path)) {
+			const device = this._devices.get(path)
+			return device ? device.isConnected : false
+		}
+
+		return false
 	}
 
 	public static get onDisconnect(): Event<DisconnectInfo> {

@@ -7,6 +7,8 @@ export interface ErrorDisconnect extends Error {
 }
 
 export default abstract class NodeMcuSerial {
+	protected static readonly lineEnd = '\r\n'
+	protected static readonly prompt = '> '
 	// list of known vendor IDs
 	private static readonly _vendorIDs = [
 		'1A86', // NodeMCU v1.0 - CH341 Adapter | 0x1a86  QinHeng Electronics
@@ -30,7 +32,7 @@ export default abstract class NodeMcuSerial {
 
 	public connect(): Promise<void> {
 		return new Promise((resolve, reject) => {
-			const parser = this._port.pipe(new SerialPort.parsers.Readline({ delimiter: '\r\n' }))
+			const parser = this._port.pipe(new SerialPort.parsers.Readline({ delimiter: NodeMcuSerial.lineEnd }))
 			this._port.open(err => {
 				if (err) {
 					reject(err)
@@ -73,9 +75,10 @@ export default abstract class NodeMcuSerial {
 				resolve()
 				return
 			}
-			if (!data.endsWith('\n')) {
-				data += '\n'
+			if (!data.endsWith(NodeMcuSerial.lineEnd)) {
+				data += NodeMcuSerial.lineEnd
 			}
+			console.log(data)
 
 			this._port.write(data, err => {
 				if (err) {

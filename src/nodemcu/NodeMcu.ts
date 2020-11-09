@@ -8,6 +8,14 @@ export interface DeviceFileInfo {
 	size: number
 }
 
+type CommandReplyHandlerType = (reply: string, state: INodeMcuCommandState) => boolean
+
+interface INodeMcuCommandState {
+	replyNumber: number
+	command: string
+	returnValue?: string
+}
+
 export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectable {
 	private static readonly _luaCommands = {
 		uartGetConfig: '=uart.getconfig(0)',
@@ -16,7 +24,7 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 		nodeDisableOutput: 'node.output(function(opipe) return false end, 0)',
 		nodeEnableOutput: 'node.output()',
 		listFiles:
-			'local l = file.list();local s = "";for k,v in pairs(l) do s = s..k..":"..v..";" end uart.write(0, s .. "\n")',
+			'local l=file.list();local s="";for k,v in pairs(l) do s=s..k..":"..v..";" end uart.write(0, s.."\\r\\n")',
 		delete: (name: string) => `file.remove("${name}");print("")`,
 		checkEncoderBase64: 'if encoder and encoder.fromBase64 then print("yes") else print("no") end',
 		writeHelperHex:
@@ -38,9 +46,10 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 
 	private readonly _evtToTerminal = new EventEmitter<string>()
 	private readonly _evtClose = new EventEmitter<void>()
+	private readonly _evtReady = new EventEmitter<Error | undefined>()
 
 	private _unsubscribeOnData: Disposable
-	private _currentCommand: Promise<string> | undefined
+	private _currentCommand: Promise<any> | undefined
 
 	private _writeHelperInstalled = false
 	private _readHelperInstalled = false
@@ -51,14 +60,29 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 		super(path)
 		this._unsubscribeOnData = this.onData(data => this.handleData(data))
 		this.onConnect(() => this.handleConnect())
-		this.onDisconnect(err => this.handleDicconnect(err))
+		this.onDisconnect(err => this.handleDisconnect(err))
+	}
+
+	public waitToBeReady(): Promise<void> {
+		return new Promise((resolve, reject) => {
+			if (this._isInitialized) {
+				resolve()
+			} else {
+				this._evtReady.event(err => {
+					if (err) {
+						reject(err)
+					} else {
+						resolve()
+					}
+				})
+			}
+		})
 	}
 
 	public async files(): Promise<DeviceFileInfo[]> {
 		this.checkInitialized()
 
-		await this.executeCommand('node.output(function(opipe) return false end, false)')
-		let filesResponse = await this.executeCommand(NodeMcu._luaCommands.listFiles)
+		let filesResponse = await this.executeSingleLineCommand(NodeMcu._luaCommands.listFiles)
 		if (!filesResponse) {
 			return []
 		}
@@ -77,7 +101,7 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 	}
 
 	public async delete(fileName: string): Promise<string> {
-		return await this.executeCommand(NodeMcu._luaCommands.delete(fileName)) ?? ''
+		return this.executeSingleLineCommand(NodeMcu._luaCommands.delete(fileName))
 	}
 
 	public async upload(data: Buffer, remoteName: string, progressCb?: (percent: number) => void): Promise<void> {
@@ -86,14 +110,14 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 				this._transferEncoding = 'hex'
 			}
 
-			await this.executeCommand(
+			await this.executeNoReplyCommand(
 				this._transferEncoding === 'hex' ? NodeMcu._luaCommands.writeHelperHex : NodeMcu._luaCommands.writeHelperBase64,
 			)
 
 			this._writeHelperInstalled = true
 		}
 
-		const openReply = await this.executeCommand(NodeMcu._luaCommands.fileOpenWrite(remoteName))
+		const openReply = await this.executeSingleLineCommand(NodeMcu._luaCommands.fileOpenWrite(remoteName))
 		if (openReply === 'nil') {
 			throw new Error(`Failed to open file '${remoteName}' on device for writing`)
 		}
@@ -104,23 +128,23 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 		const chunks = rawData.match(/.{1,232}/g) ?? []
 		let bytesWritten = 0
 		for (const chunk of chunks) {
-			await this.executeCommand(NodeMcu._luaCommands.fileWrite(chunk))
+			await this.executeNoReplyCommand(NodeMcu._luaCommands.fileWrite(chunk))
 			bytesWritten += chunk.length
 			progressCb?.(bytesWritten * 100 / rawData.length)
 		}
 
-		await this.executeCommand(NodeMcu._luaCommands.fileFlush)
-		await this.executeCommand(NodeMcu._luaCommands.fileClose)
+		await this.executeNoReplyCommand(NodeMcu._luaCommands.fileFlush)
+		await this.executeNoReplyCommand(NodeMcu._luaCommands.fileClose)
 
 		progressCb?.(100)
 	}
 
 	public async compile(fileName: string): Promise<string> {
-		return await this.executeCommand(NodeMcu._luaCommands.fileCompile(fileName)) ?? ''
+		return this.executeSingleLineCommand(NodeMcu._luaCommands.fileCompile(fileName))
 	}
 
 	public async run(fileName: string): Promise<string> {
-		return await this.executeCommand(NodeMcu._luaCommands.fileRun(fileName)) ?? ''
+		return this.executeSingleLineCommand(NodeMcu._luaCommands.fileRun(fileName))
 	}
 
 	public async download(fileName: string): Promise<Buffer> {
@@ -129,20 +153,20 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 				this._transferEncoding = 'hex'
 			}
 
-			await this.executeCommand(
+			await this.executeNoReplyCommand(
 				this._transferEncoding === 'hex' ? NodeMcu._luaCommands.readHelperHex : NodeMcu._luaCommands.readHelperBase64,
 			)
 
 			this._readHelperInstalled = true
 		}
 
-		const openReply = await this.executeCommand(NodeMcu._luaCommands.fileOpenRead(fileName))
+		const openReply = await this.executeSingleLineCommand(NodeMcu._luaCommands.fileOpenRead(fileName))
 		if (openReply === 'nil') {
 			throw new Error(`Failed to open file '${fileName}' on device for reading`)
 		}
 
-		const fileData = await this.executeCommand(NodeMcu._luaCommands.fileRead) ?? ''
-		await this.executeCommand(NodeMcu._luaCommands.fileClose)
+		const fileData = await this.executeSingleLineCommand(NodeMcu._luaCommands.fileRead)
+		await this.executeNoReplyCommand(NodeMcu._luaCommands.fileClose)
 
 		return Buffer.from(fileData, this._transferEncoding)
 	}
@@ -166,19 +190,22 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 
 	private async handleConnect(): Promise<void> {
 		try {
-			const uartSettings = await this.executeCommand(NodeMcu._luaCommands.uartGetConfig)
+			await this.executeNoReplyCommand(NodeMcu._luaCommands.nodeEnableOutput)
+
+			const uartSettings = await this.executeSingleLineCommand(NodeMcu._luaCommands.uartGetConfig)
 			const settings = /(\d+)\s+(\d)\s+(\d)\s+(\d)/.exec(uartSettings ?? '')
 			if (!settings || settings.length !== 5) {
 				throw new Error('Failed to get UART settings')
 			}
 
-			await this.executeCommand(
+			await this.executeNoReplyCommand(
 				NodeMcu._luaCommands.uartReconfig(settings[1], settings[2], settings[3], settings[4], 0),
-				false
 			)
+
 			this._isInitialized = true
+			this._evtReady.fire(void 0)
 		} catch (ex) {
-			console.error(ex)
+			this._evtReady.fire(ex)
 		}
 	}
 
@@ -186,64 +213,132 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 		this._evtToTerminal.fire(data)
 	}
 
-	private handleDicconnect(_err?: Error): void {
+	private handleDisconnect(_err?: Error): void {
 		this._evtClose.fire()
 	}
 
-	private async executeCommand(cmd: string, hasOutput = true): Promise<string | undefined> {
+	private async executeCommand(
+		command: string,
+		replyHandler: CommandReplyHandlerType | undefined,
+	): Promise<string | undefined> {
 		await this.waitForCommand()
 
-		this._currentCommand = new Promise((resolve, reject) => {
-			const timeoutCommand = (): void => {
-				this._unsubscribeOnData.dispose()
-				this._unsubscribeOnData = this.onData(text => this.handleData(text))
-
-				this._currentCommand = void 0
-				reject(new Error('Command execution timeout'))
-			}
-
-			let iteration = 0
-			const timeoutId = setTimeout(timeoutCommand, 1500)
-
-			// All commands are sinle line and return single line response
-			const handleCommand = (data: string): void => {
-				if (iteration === 0 && !this._isInitialized) {
-					if (!data.includes(cmd)) {
-						reject(new Error('invalid command echo received'))
-					}
-					if (hasOutput) {
-						iteration++
-					} else {
-						clearTimeout(timeoutId)
-
-						this._unsubscribeOnData.dispose()
-						this._unsubscribeOnData = this.onData(text => this.handleData(text))
-
-						this._currentCommand = void 0
-						resolve(void 0)
-					}
-				} else {
-					clearTimeout(timeoutId)
-
-					this._unsubscribeOnData.dispose()
-					this._unsubscribeOnData = this.onData(text => this.handleData(text))
-
-					this._currentCommand = void 0
-					resolve(data)
-				}
-			}
-
+		const unsubscribeAndClear = (): void => {
 			this._unsubscribeOnData.dispose()
-			this._unsubscribeOnData = this.onData(handleCommand)
+			this._unsubscribeOnData = this.onData(text => this.handleData(text))
 
-			void this.write(cmd)
-		})
+			this._currentCommand = void 0
+		}
 
+		const state: INodeMcuCommandState = {
+			command,
+			replyNumber: 0,
+		}
+
+		if (replyHandler) {
+			this._currentCommand = new Promise((resolve, reject) => {
+				const timeoutId = setTimeout(() => {
+					unsubscribeAndClear()
+					reject(new Error('Command execution timeout'))
+				}, 1500)
+
+				const handleCommand = (data: string): void => {
+					try {
+						const shouldContinue = replyHandler(data, state)
+						if (shouldContinue) {
+							state.replyNumber++
+						} else {
+							clearTimeout(timeoutId)
+							unsubscribeAndClear()
+							resolve(state.returnValue)
+						}
+					} catch (ex) {
+						clearTimeout(timeoutId)
+						unsubscribeAndClear()
+						reject(ex)
+					}
+				}
+
+				this._unsubscribeOnData.dispose()
+				this._unsubscribeOnData = this.onData(handleCommand)
+
+				void this.write(command)
+			})
+		} else {
+			this._currentCommand = this.write(command)
+		}
+
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return this._currentCommand
 	}
 
+	private async executeNoReplyCommand(command: string): Promise<void> {
+		let replyHandler: CommandReplyHandlerType | undefined
+		if (!this._isInitialized) {
+			replyHandler = (reply, state) => {
+				if (state.replyNumber === 0 && reply.includes(state.command)) {
+					return true
+				}
+
+				return false
+			}
+		}
+
+		try {
+			await this.executeCommand(command, replyHandler)
+		} catch (ex) {
+			// If remote echo is already turned off we will get nothing
+			const e = ex as Error
+			if (!this._isInitialized && e && e.message && e.message.includes('timeout')) {
+				return
+			}
+			throw ex
+		}
+	}
+
+	private async executeSingleLineCommand(command: string): Promise<string> {
+		let replyHandler: CommandReplyHandlerType
+		if (this._isInitialized) {
+			replyHandler = (reply, state) => {
+				state.returnValue = reply
+				return false
+			}
+		} else {
+			replyHandler = (reply, state) => {
+				if (state.replyNumber === 0 && reply.includes(state.command)) {
+					return true
+				}
+
+				state.returnValue = reply
+				return false
+			}
+		}
+
+		if (this._isInitialized) {
+			await this.executeNoReplyCommand(NodeMcu._luaCommands.nodeDisableOutput)
+		}
+
+		let reply = await this.executeCommand(command, replyHandler)
+
+		if (this._isInitialized) {
+			await this.executeNoReplyCommand(NodeMcu._luaCommands.nodeEnableOutput)
+		}
+
+		if (reply) {
+			let prevLength = 0
+			do {
+				prevLength = reply.length
+				if (reply.startsWith(NodeMcuSerial.prompt)) {
+					reply = reply.substring(NodeMcuSerial.prompt.length)
+				}
+			} while (reply.length !== prevLength)
+		}
+
+		return reply ?? ''
+	}
+
 	private async checkEncoderBase64(): Promise<boolean> {
-		const reply = await this.executeCommand(NodeMcu._luaCommands.checkEncoderBase64)
+		const reply = await this.executeSingleLineCommand(NodeMcu._luaCommands.checkEncoderBase64)
 		this._transferEncoding = reply === 'yes' ? 'base64' : 'hex'
 		return reply === 'yes'
 	}
@@ -251,6 +346,7 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 	private async waitForCommand(): Promise<void> {
 		while (this._currentCommand) {
 			await this._currentCommand
+			this._currentCommand = void 0
 		}
 	}
 

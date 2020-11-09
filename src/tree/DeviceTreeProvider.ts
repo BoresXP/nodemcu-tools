@@ -1,9 +1,9 @@
 import DeviceTreeItem, { isDeviceTreeItem } from './DeviceTreeItem'
 import { Event, EventEmitter, TreeDataProvider, TreeItem, window } from 'vscode'
+import FileTreeItem, { isFileTreeItem } from './FileTreeItem'
 
 import NodeMcuRepository from '../nodemcu/NodeMcuRepository'
 import TelemetryReporter from 'vscode-extension-telemetry'
-import { isFileTreeItem } from './FileTreeItem'
 
 export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData = new EventEmitter<undefined>()
@@ -50,10 +50,11 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 				return this._deviceItems
 			}
 			if (isDeviceTreeItem(element) && NodeMcuRepository.isConnected(element.path)) {
-				// const device = NodeMcuRepository.getOrCreate(element.path)
-				// const files = await device.files()
-				// return files.map(f => new FileTreeItem(f.name, f.size, element))
-				return []
+				const device = NodeMcuRepository.getOrCreate(element.path)
+				await device.waitToBeReady()
+
+				const files = await device.files()
+				return files.map(f => new FileTreeItem(f.name, f.size, element))
 			}
 		} catch (ex) {
 			this._telemetryReporter.sendTelemetryException(ex)
