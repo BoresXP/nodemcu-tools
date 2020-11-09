@@ -12,7 +12,7 @@ const Terminal: React.FC = () => {
 			return void 0
 		}
 
-		return lines.map((l, indx) => <TerminalLine key={indx}>{l}</TerminalLine>)
+		return lines.map((l, indx) => <TerminalLine key={indx} type={l.type}>{l.text}</TerminalLine>)
 	}, [lines])
 
 	return <TerminalStyled>{toElements()}</TerminalStyled>

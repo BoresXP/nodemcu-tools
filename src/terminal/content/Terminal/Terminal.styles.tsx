@@ -1,3 +1,4 @@
+import { TerminalLineType } from '../state/state'
 import styled from 'styled-components'
 
 export const TerminalStyled = styled.div`
@@ -9,6 +10,7 @@ export const TerminalStyled = styled.div`
 	font: var(--vscode-editor-font-weight) var(--vscode-editor-font-size) var(--vscode-editor-font-family);
 `
 
-export const TerminalLine = styled.div`
+export const TerminalLine = styled.div<{ type: TerminalLineType }>`
 	margin: 2px 5px;
+	color: ${props => props.type === 'echo' ? '#569cd6' : 'inherit'};
 `

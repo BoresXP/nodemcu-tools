@@ -17,7 +17,6 @@ ReactDOM.render(
 window.addEventListener('message', evt => {
 	const message = evt.data as IMessage
 	if (isTerminalLine(message)) {
-		console.log(message)
-		store.dispatch(terminalLineAdd(message.text))
+		store.dispatch(terminalLineAdd({ text: message.text, type: 'out' }))
 	}
 })

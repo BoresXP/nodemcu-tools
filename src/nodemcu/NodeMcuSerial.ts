@@ -14,15 +14,12 @@ export default abstract class NodeMcuSerial {
 		'1A86', // NodeMCU v3 - CH340G Adapter | 0x1A86 Nanjing QinHeng Electronics Co., Ltd.
 	]
 
-	public readonly path: string
-
 	private readonly _port: SerialPort
 	private readonly _evtOnData = new EventEmitter<string>()
 	private readonly _evtClosed = new EventEmitter<ErrorDisconnect | undefined>()
 	private readonly _evtOpened = new EventEmitter<void>()
 
 	protected constructor(path: string) {
-		this.path = path
 		this._port = new SerialPort(path, { autoOpen: false, baudRate: 115200 })
 	}
 
@@ -33,7 +30,7 @@ export default abstract class NodeMcuSerial {
 
 	public connect(): Promise<void> {
 		return new Promise((resolve, reject) => {
-			const parser = this._port.pipe(new SerialPort.parsers.Readline({ delimiter: '\n' }))
+			const parser = this._port.pipe(new SerialPort.parsers.Readline({ delimiter: '\r\n' }))
 			this._port.open(err => {
 				if (err) {
 					reject(err)
@@ -62,12 +59,24 @@ export default abstract class NodeMcuSerial {
 		return this._port.isOpen
 	}
 
+	public get path(): string {
+		return this._port.path
+	}
+
 	public get onDisconnect(): Event<ErrorDisconnect | undefined> {
 		return this._evtClosed.event
 	}
 
 	protected write(data: string): Promise<void> {
 		return new Promise((resolve, reject) => {
+			if (!data) {
+				resolve()
+				return
+			}
+			if (!data.endsWith('\n')) {
+				data += '\n'
+			}
+
 			this._port.write(data, err => {
 				if (err) {
 					reject(err)

@@ -1,6 +1,16 @@
+export type TerminalLineType = 'out' | 'echo'
+
+export interface ITerminalLine {
+	text: string
+	type: TerminalLineType
+}
+
 export interface IState {
-	terminalLines: string[]
+	terminalLines: ITerminalLine[]
 	snippets: Record<string, string>
+	settings: {
+		scrollbackMaxLines: number
+	}
 }
 
 export const initialState: IState = {
@@ -18,5 +28,8 @@ export const initialState: IState = {
 
 		// eslint-disable-next-line @typescript-eslint/naming-convention
 		'Wifi status': '=wifi.sta.status()',
+	},
+	settings: {
+		scrollbackMaxLines: 300,
 	},
 }
