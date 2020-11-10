@@ -7,14 +7,18 @@ export interface ITerminalLine {
 
 export interface IState {
 	terminalLines: ITerminalLine[]
+	terminalCommands: string[]
 	snippets: Record<string, string>
+	isDeviceBusy: boolean
 	settings: {
 		scrollbackMaxLines: number
+		historyMaxLines: number
 	}
 }
 
 export const initialState: IState = {
 	terminalLines: [],
+	terminalCommands: [],
 	snippets: {
 		// TODO: shoud be configurable with this values as defaults
 		// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -29,7 +33,9 @@ export const initialState: IState = {
 		// eslint-disable-next-line @typescript-eslint/naming-convention
 		'Wifi status': '=wifi.sta.status()',
 	},
+	isDeviceBusy: true,
 	settings: {
 		scrollbackMaxLines: 300,
+		historyMaxLines: 50,
 	},
 }

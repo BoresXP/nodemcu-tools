@@ -6,32 +6,35 @@ import {
 	TerminalInnerContainer,
 } from './TerminalContainer.styles'
 import React, { useCallback, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
-import { Button } from '../Controls'
+import { Button } from '../../controls'
 import Terminal from '../Terminal/Terminal'
-import { terminalCommand } from '../state/actions'
-import { useDispatch } from 'react-redux'
+import { getDeviceBusy } from '../../state/selectors'
+import { terminalCommand } from '../../state/actions'
 
 const TerminalContainer: React.FC = () => {
 	const dispatch = useDispatch()
 
 	const cmdLineInputRef = useRef<HTMLInputElement>(null)
 
+	const isDeviceBusy = useSelector(getDeviceBusy)
+
 	const onKeyUp = useCallback(
 		(evt: React.KeyboardEvent<HTMLInputElement>) => {
 			const domImput = evt.target as HTMLInputElement
-			if (evt.key === 'Enter') {
+			if (evt.key === 'Enter' && !isDeviceBusy) {
 				dispatch(terminalCommand(domImput.value))
 			}
 		},
-		[dispatch],
+		[dispatch, isDeviceBusy],
 	)
 	const onRun = useCallback(() => {
 		const cmd = cmdLineInputRef.current?.value
-		if (cmd) {
+		if (cmd && !isDeviceBusy) {
 			dispatch(terminalCommand(cmd))
 		}
-	}, [dispatch])
+	}, [dispatch, isDeviceBusy])
 
 	return (
 		<TerminalContainerStyled>
@@ -42,7 +45,7 @@ const TerminalContainer: React.FC = () => {
 			<TerminalControls>
 				<Button>Clear</Button>
 				<Button>Scroll</Button>
-				<RunButton onClick={onRun}>Run</RunButton>
+				<RunButton disabled={isDeviceBusy} onClick={onRun}>Run</RunButton>
 			</TerminalControls>
 		</TerminalContainerStyled>
 	)

@@ -1,4 +1,4 @@
-import { TerminalLineType } from '../state/state'
+import { TerminalLineType } from '../../state/state'
 import styled from 'styled-components'
 
 export const TerminalStyled = styled.div`

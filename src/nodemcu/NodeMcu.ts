@@ -43,17 +43,20 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 		fileRead: '__nmtread();print("")',
 		fileOpenRead: (name: string) => `print(file.open("${name}", "r"))`,
 	}
+	private static readonly _commandTimeout = 1500 // msec
 
 	private readonly _evtToTerminal = new EventEmitter<string>()
 	private readonly _evtClose = new EventEmitter<void>()
 	private readonly _evtReady = new EventEmitter<Error | undefined>()
+	private readonly _evtBusy = new EventEmitter<boolean>()
 
 	private _unsubscribeOnData: Disposable
-	private _currentCommand: Promise<any> | undefined
+	private _currentCommand: Promise<string | undefined> | undefined
 
 	private _writeHelperInstalled = false
 	private _readHelperInstalled = false
 	private _isInitialized = false
+	private _isBusy = true
 	private _transferEncoding: 'hex' | 'base64' | undefined
 
 	constructor(path: string) {
@@ -77,6 +80,10 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 				})
 			}
 		})
+	}
+
+	public get onBusyChanged(): Event<boolean> {
+		return this._evtBusy.event
 	}
 
 	public async files(): Promise<DeviceFileInfo[]> {
@@ -204,6 +211,7 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 
 			this._isInitialized = true
 			this._evtReady.fire(void 0)
+			this.setBusy(false)
 		} catch (ex) {
 			this._evtReady.fire(ex)
 		}
@@ -223,11 +231,14 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 	): Promise<string | undefined> {
 		await this.waitForCommand()
 
+		this.setBusy(true)
+
 		const unsubscribeAndClear = (): void => {
 			this._unsubscribeOnData.dispose()
 			this._unsubscribeOnData = this.onData(text => this.handleData(text))
 
 			this._currentCommand = void 0
+			this.setBusy(false)
 		}
 
 		const state: INodeMcuCommandState = {
@@ -240,7 +251,7 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 				const timeoutId = setTimeout(() => {
 					unsubscribeAndClear()
 					reject(new Error('Command execution timeout'))
-				}, 1500)
+				}, NodeMcu._commandTimeout)
 
 				const handleCommand = (data: string): void => {
 					try {
@@ -265,10 +276,13 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 				void this.write(command)
 			})
 		} else {
-			this._currentCommand = this.write(command)
+			// eslint-disable-next-line promise/prefer-await-to-then
+			this._currentCommand = this.write(command).then(() => {
+				this.setBusy(false)
+				return void 0
+			})
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return this._currentCommand
 	}
 
@@ -353,6 +367,13 @@ export default class NodeMcu extends NodeMcuSerial implements ITerminalConnectab
 	private checkInitialized(): void {
 		if (!this._isInitialized) {
 			throw new Error('Device not ready')
+		}
+	}
+
+	private setBusy(isBusy: boolean): void {
+		if (this._isInitialized && isBusy !== this._isBusy) {
+			this._isBusy = isBusy
+			this._evtBusy.fire(isBusy)
 		}
 	}
 }

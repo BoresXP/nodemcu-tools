@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { TerminalLine, TerminalStyled } from './Terminal.styles'
 
-import { getTerminalLines } from '../state/selectors'
+import { getTerminalLines } from '../../state/selectors'
 import { useSelector } from 'react-redux'
 
 const Terminal: React.FC = () => {

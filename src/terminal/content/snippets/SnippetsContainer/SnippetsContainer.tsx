@@ -1,7 +1,7 @@
 import React from 'react'
 import SnippetButton from '../SnippetButton/SnippetButton'
 import { SnippetsContainerStyled } from './SnippetsContainer.styles'
-import { getSnippets } from '../state/selectors'
+import { getSnippets } from '../../state/selectors'
 import { useSelector } from 'react-redux'
 
 const SnippetsContainer: React.FC = () => {

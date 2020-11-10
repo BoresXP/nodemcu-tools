@@ -1,4 +1,4 @@
-import { Button } from '../Controls'
+import { Button } from '../../controls'
 import styled from 'styled-components'
 
 export const TerminalContainerStyled = styled.div`
