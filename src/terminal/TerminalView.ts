@@ -1,7 +1,7 @@
 import { ExtensionContext, Uri, ViewColumn, WebviewPanel, window } from 'vscode'
 
 import IMessage from './messages/IMessage'
-import ITerminalConnectable from './ITerminalConnectable'
+import { INodeMcu } from '../nodemcu'
 import { isTerminalCommand } from './messages/TerminalCommand'
 import { terminalLine } from './messages/TerminalLine'
 
@@ -9,10 +9,10 @@ export default class TerminalView {
 	private static readonly _viewType = 'nodemcu-tools-terminal'
 
 	private readonly _context: ExtensionContext
-	private readonly _device: ITerminalConnectable
+	private readonly _device: INodeMcu
 	private readonly _webViewPanel: WebviewPanel
 
-	private constructor(context: ExtensionContext, device: ITerminalConnectable, webViewPanel: WebviewPanel) {
+	private constructor(context: ExtensionContext, device: INodeMcu, webViewPanel: WebviewPanel) {
 		this._context = context
 		this._device = device
 		this._webViewPanel = webViewPanel
@@ -29,8 +29,8 @@ export default class TerminalView {
 		})
 	}
 
-	public static create(context: ExtensionContext, path: string, device: ITerminalConnectable): TerminalView {
-		const wvPanel = window.createWebviewPanel(this._viewType, `NodeMCU@${path}`, ViewColumn.One, {
+	public static create(context: ExtensionContext, device: INodeMcu): TerminalView {
+		const wvPanel = window.createWebviewPanel(this._viewType, `NodeMCU@${device.path}`, ViewColumn.One, {
 			enableScripts: true,
 		})
 
@@ -58,9 +58,9 @@ export default class TerminalView {
 </html>`
 	}
 
-	private onMessage(msg: IMessage) : void {
+	private async onMessage(msg: IMessage) : Promise<void> {
 		if (isTerminalCommand(msg)) {
-			this._device.fromTerminal(msg.text + '\n')
+			await this._device.fromTerminal(msg.text + '\n')
 		}
 	}
 }

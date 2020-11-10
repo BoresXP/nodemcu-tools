@@ -1,6 +1,7 @@
 import { Event, EventEmitter } from 'vscode'
 
 import { ErrorDisconnect } from './NodeMcuSerial'
+import { INodeMcu } from '.'
 import NodeMcu from './NodeMcu'
 
 export interface SerialPortInfo {
@@ -37,7 +38,7 @@ export default class NodeMcuRepository {
 		}))
 	}
 
-	public static getOrCreate(path: string): NodeMcu {
+	public static getOrCreate(path: string): INodeMcu {
 		if (this._devices.has(path)) {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			return this._devices.get(path)!
@@ -66,7 +67,7 @@ export default class NodeMcuRepository {
 		return this._evtDisconnect.event
 	}
 
-	public static get allConnected(): NodeMcu[] {
+	public static get allConnected(): INodeMcu[] {
 		return Array.from(this._devices.values()).filter(d => d.isConnected)
 	}
 }

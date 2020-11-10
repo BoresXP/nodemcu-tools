@@ -53,7 +53,7 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 				const device = NodeMcuRepository.getOrCreate(element.path)
 				await device.waitToBeReady()
 
-				const files = await device.files()
+				const files = await device.commands.files()
 				return files.map(f => new FileTreeItem(f.name, f.size, element))
 			}
 		} catch (ex) {
