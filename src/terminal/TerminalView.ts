@@ -2,6 +2,7 @@ import { ExtensionContext, Uri, ViewColumn, WebviewPanel, window } from 'vscode'
 
 import IMessage from './messages/IMessage'
 import { INodeMcu } from '../nodemcu'
+import { deviceState } from './messages/DeviceState'
 import { isTerminalCommand } from './messages/TerminalCommand'
 import { terminalLine } from './messages/TerminalLine'
 
@@ -26,6 +27,9 @@ export default class TerminalView {
 		})
 		this._device.toTerminal(async line => {
 			await this._webViewPanel.webview.postMessage(terminalLine(line))
+		})
+		this._device.onBusyChanged(async isBusy => {
+			await this._webViewPanel.webview.postMessage(deviceState(isBusy))
 		})
 	}
 

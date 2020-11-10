@@ -9,6 +9,7 @@ export default interface INodeMcu {
 	fromTerminal: (text: string) => Promise<void>
 
 	onClose: Event<void>
+	onBusyChanged: Event<boolean>
 
 	connect: () => Promise<void>
 	disconnect: () => Promise<void>
