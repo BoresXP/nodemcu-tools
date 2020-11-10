@@ -16,6 +16,11 @@ const Button = styled.button`
 		outline: 1px solid var(--vscode-button-background);
 		outline-offset: 2px;
 	}
+
+	&:disabled {
+		color: var(--vscode-button-secondaryForeground);
+		background-color: var(--vscode-button-secondaryBackground);
+	}
 `
 
 export default Button
