@@ -6,12 +6,12 @@ import {
 	TerminalInnerContainer,
 } from './TerminalContainer.styles'
 import React, { useCallback, useRef } from 'react'
+import { terminalCommand, terminalLinesClear } from '../../state/actions'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Button } from '../../controls'
 import Terminal from '../Terminal/Terminal'
 import { getDeviceBusy } from '../../state/selectors'
-import { terminalCommand } from '../../state/actions'
 
 const TerminalContainer: React.FC = () => {
 	const dispatch = useDispatch()
@@ -35,6 +35,9 @@ const TerminalContainer: React.FC = () => {
 			dispatch(terminalCommand(cmd))
 		}
 	}, [dispatch, isDeviceBusy])
+	const onClear = useCallback(() => {
+		dispatch(terminalLinesClear())
+	}, [dispatch])
 
 	return (
 		<TerminalContainerStyled>
@@ -43,9 +46,10 @@ const TerminalContainer: React.FC = () => {
 				<CmdLineInput ref={cmdLineInputRef} onKeyUp={onKeyUp} />
 			</TerminalInnerContainer>
 			<TerminalControls>
-				<Button>Clear</Button>
-				<Button>Scroll</Button>
-				<RunButton disabled={isDeviceBusy} onClick={onRun}>Run</RunButton>
+				<Button onClick={onClear}>Clear</Button>
+				<RunButton disabled={isDeviceBusy} onClick={onRun}>
+					Run
+				</RunButton>
 			</TerminalControls>
 		</TerminalContainerStyled>
 	)

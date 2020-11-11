@@ -36,5 +36,9 @@ const reducer = createReducer<IState, AllActions>(initialState)
 		...state,
 		isDeviceBusy: action.payload,
 	}))
+	.handleAction(Actions.terminalLinesClear, state => ({
+		...state,
+		terminalLines: [],
+	}))
 
 export default reducer
