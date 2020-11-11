@@ -14,9 +14,7 @@ interface INodeMcuCommandState {
 
 export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	private static readonly _luaCommands = {
-		uartGetConfig: '=uart.getconfig(0)',
-		uartReconfig: (baud: string, databits: string, parity: string, stopbits: string, echo: 0 | 1) =>
-			`uart.setup(0, ${baud}, ${databits}, ${parity}, ${stopbits}, ${echo})`,
+		uartReconfig: 'local u={0, uart.getconfig(0)};table.insert(u, 0);uart.setup(unpack(u))',
 		nodeDisableOutput: 'node.output(function(opipe) return false end, 0)',
 		nodeEnableOutput: 'node.output()',
 	}
@@ -154,17 +152,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 	private async handleConnect(): Promise<void> {
 		try {
-			await this.executeNoReplyCommand(NodeMcu._luaCommands.nodeEnableOutput)
-
-			const uartSettings = await this.executeSingleLineCommand(NodeMcu._luaCommands.uartGetConfig)
-			const settings = /(\d+)\s+(\d)\s+(\d)\s+(\d)/.exec(uartSettings ?? '')
-			if (!settings || settings.length !== 5) {
-				throw new Error('Failed to get UART settings')
-			}
-
-			await this.executeNoReplyCommand(
-				NodeMcu._luaCommands.uartReconfig(settings[1], settings[2], settings[3], settings[4], 0),
-			)
+			await this.executeNoReplyCommand(NodeMcu._luaCommands.uartReconfig)
 
 			this._isInitialized = true
 			this._evtReady.fire(void 0)

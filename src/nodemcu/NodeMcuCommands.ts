@@ -9,7 +9,7 @@ export default class NodeMcuCommands {
 	private static readonly _luaCommands = {
 		listFiles:
 			'local l=file.list();local s="";for k,v in pairs(l) do s=s..k..":"..v..";" end uart.write(0, s.."\\r\\n")',
-		delete: (name: string) => `file.remove("${name}");print("")`,
+		delete: (name: string) => `file.remove("${name}")`,
 		checkEncoderBase64: 'if encoder and encoder.fromBase64 then print("yes") else print("no") end',
 		writeHelperHex:
 			'_G.__nmtwrite = function(s) for c in s:gmatch("..") do file.write(string.char(tonumber(c, 16))) end print(s.length) end print("")',
@@ -18,8 +18,8 @@ export default class NodeMcuCommands {
 		fileWrite: (data: string) => `__nmtwrite("${data}")`,
 		fileClose: 'file.close();print("")',
 		fileFlush: 'file.flush();print("")',
-		fileCompile: (name: string) => `node.compile("${name}");print("")`,
-		fileRun: (name: string) => `print("");dofile("${name}")`,
+		fileCompile: (name: string) => `node.compile("${name}")`,
+		fileRun: (name: string) => `dofile("${name}")`,
 		readHelperHex:
 			'function __nmtread() local c = file.read(1) while c ~= nil do uart.write(0, string.format("%02X", string.byte(c))) c = file.read(1) end end print("")',
 		readHelperBase64:
@@ -59,8 +59,8 @@ export default class NodeMcuCommands {
 		})
 	}
 
-	public async delete(fileName: string): Promise<string> {
-		return this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.delete(fileName))
+	public async delete(fileName: string): Promise<void> {
+		return this._device.executeNoReplyCommand(NodeMcuCommands._luaCommands.delete(fileName))
 	}
 
 	public async upload(data: Buffer, remoteName: string, progressCb?: (percent: number) => void): Promise<void> {
@@ -100,12 +100,12 @@ export default class NodeMcuCommands {
 		progressCb?.(100)
 	}
 
-	public async compile(fileName: string): Promise<string> {
-		return this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.fileCompile(fileName))
+	public async compile(fileName: string): Promise<void> {
+		return this._device.executeNoReplyCommand(NodeMcuCommands._luaCommands.fileCompile(fileName))
 	}
 
-	public async run(fileName: string): Promise<string> {
-		return this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.fileRun(fileName))
+	public async run(fileName: string): Promise<void> {
+		return this._device.executeNoReplyCommand(NodeMcuCommands._luaCommands.fileRun(fileName))
 	}
 
 	public async download(fileName: string): Promise<Buffer> {
