@@ -12,22 +12,17 @@ export default class NodeMcuCommands {
 
 		delete: (name: string) => `file.remove("${name}");uart.write(0, "Done\\r\\n")`,
 
-		checkEncoderBase64: 'if encoder and encoder.fromBase64 then print("yes") else print("no") end',
-		writeHelperHex:
-			'_G.__nmtwrite = function(s) for c in s:gmatch("..") do file.write(string.char(tonumber(c, 16))) end print(s.length) end print("")',
-		writeHelperBase64: '_G.__nmtwrite = function(s) file.write(encoder.fromBase64(s)) print(s.length) end print("")',
-		fileClose: 'file.close();print("")',
 		fileCompile: (name: string) => `node.compile("${name}");uart.write(0, "Done\\r\\n")`,
+
 		fileRun: (name: string) => `dofile("${name}");uart.write(0, "Done\\r\\n")`,
-		readHelperHex:
-			'function __nmtread() local c = file.read(1) while c ~= nil do uart.write(0, string.format("%02X", string.byte(c))) c = file.read(1) end end print("")',
-		readHelperBase64:
-			'function __nmtread() local c = file.read(240);while c ~= nil do uart.write(0, encoder.toBase64(c));c = file.read(240) end end;print("")',
-		fileRead: '__nmtread();print("")',
-		fileOpenRead: (name: string) => `print(file.open("${name}", "r"))`,
 
 		writeFileHelper: (name: string, fileSize: number) =>
 			`file.open("${name}", "w+");local bw = 0;uart.on("data", 0, function(data) bw = bw + 1;file.write(data);if bw == ${fileSize} then uart.on("data");file.close();uart.write(0,"Done uploading\\r\\n") end end, 0);uart.write(0,"Ready\\r\\n")`,
+
+		readFileHelper: (name: string) =>
+			`file.open("${name}", "r");uart.on("data", 0, function(data) while true do local b=file.read(240);if b==nil then uart.on("data");file.close();break end uart.write(0, b) end end, 0);uart.write(0,"Ready\\r\\n")`,
+
+		getFileSize: (name: string) => `local s=file.stat("${name}");uart.write(0, s.size .. "\\r\\n")`,
 	}
 
 	private readonly _device: NodeMcu
@@ -103,29 +98,26 @@ export default class NodeMcuCommands {
 	}
 
 	public async download(fileName: string): Promise<Buffer> {
-		if (!this._readHelperInstalled) {
-			if (!this._transferEncoding) {
-				this._transferEncoding = 'hex'
-			}
+		await this.checkReady()
 
-			await this._device.executeSingleLineCommand(
-				this._transferEncoding === 'hex'
-					? NodeMcuCommands._luaCommands.readHelperHex
-					: NodeMcuCommands._luaCommands.readHelperBase64,
-			)
+		const fileSize = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.getFileSize(fileName), false)
+		let retVal = Buffer.alloc(0, void 0, 'binary')
 
-			this._readHelperInstalled = true
-		}
+		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.readFileHelper(fileName))
 
-		const openReply = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.fileOpenRead(fileName))
-		if (openReply === 'nil') {
-			throw new Error(`Failed to open file '${fileName}' on device for reading`)
-		}
+		return new Promise(resolve => {
+			const unsubscribe = this._device.onDataRaw(async data => {
+				retVal = Buffer.concat([retVal, data])
+				if (retVal.length === parseInt(fileSize, 10)) {
+					unsubscribe.dispose()
+					await this._device.toggleNodeOutput(true)
+					this._device.setBusy(false)
 
-		const fileData = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.fileRead)
-		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.fileClose)
-
-		return Buffer.from(fileData, this._transferEncoding)
+					resolve(retVal)
+				}
+			})
+			void this._device.writeRaw(Buffer.alloc(1, '\0'))
+		})
 	}
 
 	private async checkReady(): Promise<void> {

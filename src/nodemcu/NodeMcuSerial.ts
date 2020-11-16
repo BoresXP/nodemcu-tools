@@ -18,6 +18,7 @@ export default abstract class NodeMcuSerial {
 
 	private readonly _port: SerialPort
 	private readonly _evtOnData = new EventEmitter<string>()
+	private readonly _evtOnDataRaw = new EventEmitter<Buffer>()
 	private readonly _evtClosed = new EventEmitter<ErrorDisconnect | undefined>()
 	private readonly _evtOpened = new EventEmitter<void>()
 
@@ -38,6 +39,7 @@ export default abstract class NodeMcuSerial {
 					reject(err)
 				} else {
 					parser.on('data', data => this.onDataHandler(data))
+					this._port.on('data', data => this.onDataRawHandler(data))
 					this._port.on('close', (errDiconnect: ErrorDisconnect) => this._evtClosed.fire(errDiconnect))
 
 					this._evtOpened.fire()
@@ -98,11 +100,19 @@ export default abstract class NodeMcuSerial {
 		return this._evtOnData.event
 	}
 
+	public get onDataRaw(): Event<Buffer> {
+		return this._evtOnDataRaw.event
+	}
+
 	protected get onConnect(): Event<void> {
 		return this._evtOpened.event
 	}
 
 	private onDataHandler(data: Buffer): void {
 		this._evtOnData.fire(data.toString('utf-8'))
+	}
+
+	private onDataRawHandler(data: Buffer): void {
+		this._evtOnDataRaw.fire(data)
 	}
 }

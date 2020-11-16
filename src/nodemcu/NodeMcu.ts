@@ -17,7 +17,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		nodeDisableOutput: 'node.output(function(opipe) return false end, 0);uart.write(0, "Done\\r\\n")',
 		nodeEnableOutput: 'node.output();uart.write(0, "Done\\r\\n")',
 	}
-	private static readonly _commandTimeout = 1500 // msec
+	private static readonly _commandTimeout = 15000 // msec
 
 	private readonly _evtToTerminal = new EventEmitter<string>()
 	private readonly _evtClose = new EventEmitter<void>()
@@ -153,7 +153,9 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	}
 
 	private handleData(data: string): void {
-		this._evtToTerminal.fire(data)
+		if (!this._isBusy) {
+			this._evtToTerminal.fire(data)
+		}
 	}
 
 	private handleDisconnect(_err?: Error): void {
