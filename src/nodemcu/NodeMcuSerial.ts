@@ -69,17 +69,21 @@ export default abstract class NodeMcuSerial {
 		return this._evtClosed.event
 	}
 
+	public writeRaw(data: Buffer): Promise<void> {
+		return new Promise((resolve, reject) => {
+			this._port.write(data, 'binary', err => {
+				if (err) {
+					reject(err)
+				} else {
+					this._port.drain(err1 => err1 ? reject(err1) : resolve())
+				}
+			})
+		})
+	}
+
 	protected write(data: string): Promise<void> {
 		return new Promise((resolve, reject) => {
-			if (!data) {
-				resolve()
-				return
-			}
-			if (!data.endsWith(NodeMcuSerial.lineEnd)) {
-				data += NodeMcuSerial.lineEnd
-			}
-			console.log(data)
-
+			// eslint-disable-next-line sonarjs/no-identical-functions
 			this._port.write(data, err => {
 				if (err) {
 					reject(err)
