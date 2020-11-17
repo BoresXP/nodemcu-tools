@@ -1,4 +1,5 @@
 import NodeMcu from './NodeMcu'
+import NodeMcuSerial from './NodeMcuSerial'
 
 export interface DeviceFileInfo {
 	name: string
@@ -16,8 +17,8 @@ export default class NodeMcuCommands {
 
 		fileRun: (name: string) => `dofile("${name}");uart.write(0, "Done\\r\\n")`,
 
-		writeFileHelper: (name: string, fileSize: number) =>
-			`file.open("${name}", "w+");local bw = 0;uart.on("data", 0, function(data) bw = bw + 1;file.write(data);if bw == ${fileSize} then uart.on("data");file.close();uart.write(0,"Done uploading\\r\\n") end end, 0);uart.write(0,"Ready\\r\\n")`,
+		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
+			`file.open("${name}","${mode}");local bw=0;uart.on("data",${blockSize},function(data) bw=bw+${blockSize};file.write(data);uart.write(0,"kxyJ\\r\\n");if bw>=${fileSize} then uart.on("data");file.close();uart.write(0,"QKiw\\r\\n") end end, 0);uart.write(0,"ju8s\\r\\n")`,
 
 		readFileHelper: (name: string) =>
 			`file.open("${name}", "r");uart.on("data", 0, function(data) while true do local b=file.read(240);if b==nil then uart.on("data");file.close();break end uart.write(0, b) end end, 0);uart.write(0,"Ready\\r\\n")`,
@@ -26,9 +27,6 @@ export default class NodeMcuCommands {
 	}
 
 	private readonly _device: NodeMcu
-
-	private _readHelperInstalled = false
-	private _transferEncoding: 'hex' | 'base64' | undefined
 
 	constructor(device: NodeMcu) {
 		this._device = device
@@ -65,22 +63,38 @@ export default class NodeMcuCommands {
 
 		progressCb?.(0)
 
-		await this._device.executeSingleLineCommand(
-			NodeMcuCommands._luaCommands.writeFileHelper(remoteName, data.length),
-			false,
-		)
+		let tailWriteMode = 'w'
+		const tailSize = data.length % NodeMcuSerial.maxLineLength
 
-		const doneUploading = new Promise(resolve => {
-			const unsubscribe = this._device.toTerminal(line => {
-				if (line.includes('Done uploading')) {
-					unsubscribe.dispose()
-					resolve()
+		if (data.length > NodeMcuSerial.maxLineLength) {
+			await this.waitDone('QKiw', async () => {
+				await this._device.executeSingleLineCommand(
+					NodeMcuCommands._luaCommands.writeFileHelper(remoteName, data.length - tailSize, NodeMcuSerial.maxLineLength, 'w'),
+					false,
+				)
+
+				let offset = 0
+				while (data.length - offset > NodeMcuSerial.maxLineLength) {
+					const block = data.slice(offset, offset + NodeMcuSerial.maxLineLength)
+					await this.waitDone('kxyJ', async () => {
+						await this._device.writeRaw(block)
+					})
+
+					offset += NodeMcuSerial.maxLineLength
+					progressCb?.(offset * 100 / data.length)
 				}
 			})
-		})
 
-		await this._device.writeRaw(data)
-		await doneUploading
+			tailWriteMode = 'a'
+		}
+
+		await this.waitDone('QKiw', async () => {
+			await this._device.executeSingleLineCommand(
+				NodeMcuCommands._luaCommands.writeFileHelper(remoteName, tailSize, tailSize, tailWriteMode),
+				false,
+			)
+			await this._device.writeRaw(data.length > 254 ? data.slice(data.length - tailSize) : data)
+		})
 
 		progressCb?.(100)
 		await this._device.toggleNodeOutput(true)
@@ -100,7 +114,10 @@ export default class NodeMcuCommands {
 	public async download(fileName: string): Promise<Buffer> {
 		await this.checkReady()
 
-		const fileSize = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.getFileSize(fileName), false)
+		const fileSize = await this._device.executeSingleLineCommand(
+			NodeMcuCommands._luaCommands.getFileSize(fileName),
+			false,
+		)
 		let retVal = Buffer.alloc(0, void 0, 'binary')
 
 		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.readFileHelper(fileName))
@@ -117,6 +134,18 @@ export default class NodeMcuCommands {
 				}
 			})
 			void this._device.writeRaw(Buffer.alloc(1, '\0'))
+		})
+	}
+
+	private waitDone(key: string, processCb: () => any): Promise<void> {
+		return new Promise(resolve => {
+			const unsubscribe = this._device.onData(line => {
+				if (line.endsWith(key)) {
+					unsubscribe.dispose()
+					resolve()
+				}
+			})
+			processCb()
 		})
 	}
 

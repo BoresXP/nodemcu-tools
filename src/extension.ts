@@ -140,7 +140,14 @@ async function uploadFile(file: Uri): Promise<void> {
 		async progress => {
 			const fileData = await workspace.fs.readFile(file)
 			const fileBuff = Buffer.from(fileData)
-			await device.commands.upload(fileBuff, fileName, percent => progress.report({ increment: percent }))
+			let prevPercent = 0
+			await device.commands.upload(
+				fileBuff,
+				fileName,
+				percent => {
+					progress.report({ increment: percent - prevPercent })
+					prevPercent = percent
+				})
 		},
 	)
 }

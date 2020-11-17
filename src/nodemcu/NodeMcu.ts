@@ -107,7 +107,8 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			return false
 		}
 
-		if (!wasBusy) {
+		// eslint-disable-next-line no-constant-condition, sonarjs/no-redundant-boolean
+		if (!wasBusy && false) {
 			await this.toggleNodeOutput(false)
 		}
 
@@ -153,6 +154,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	}
 
 	private handleData(data: string): void {
+		console.log('R: ' + data)
 		if (!this._isBusy) {
 			this._evtToTerminal.fire(data)
 		}
@@ -185,6 +187,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 			const handleCommand = (data: string): void => {
 				try {
+					console.log('CR: ' + data)
 					const shouldContinue = replyHandler(data, state)
 					if (shouldContinue) {
 						state.replyNumber++
