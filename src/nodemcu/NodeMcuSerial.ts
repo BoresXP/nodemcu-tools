@@ -7,6 +7,7 @@ export interface ErrorDisconnect extends Error {
 }
 
 export default abstract class NodeMcuSerial {
+	public static readonly maxLineLength = 254
 	protected static readonly lineEnd = '\r\n'
 	protected static readonly prompt = '> '
 	// list of known vendor IDs
@@ -73,6 +74,10 @@ export default abstract class NodeMcuSerial {
 
 	public writeRaw(data: Buffer): Promise<void> {
 		return new Promise((resolve, reject) => {
+			if (data.length > NodeMcuSerial.maxLineLength) {
+				reject(new Error(`Data is too long: ${data.length} bytes`))
+			}
+
 			this._port.write(data, 'binary', err => {
 				if (err) {
 					reject(err)
@@ -85,6 +90,10 @@ export default abstract class NodeMcuSerial {
 
 	protected write(data: string): Promise<void> {
 		return new Promise((resolve, reject) => {
+			if (data.length > NodeMcuSerial.maxLineLength) {
+				reject(new Error(`Data is too long: ${data.length} chars`))
+			}
+
 			// eslint-disable-next-line sonarjs/no-identical-functions
 			this._port.write(data, err => {
 				if (err) {
@@ -96,7 +105,7 @@ export default abstract class NodeMcuSerial {
 		})
 	}
 
-	protected get onData(): Event<string> {
+	public get onData(): Event<string> {
 		return this._evtOnData.event
 	}
 
