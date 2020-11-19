@@ -18,10 +18,10 @@ export default class NodeMcuCommands {
 		fileRun: (name: string) => `dofile("${name}");uart.write(0, "Done\\r\\n")`,
 
 		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
-			`file.open("${name}","${mode}");local bw=0;uart.on("data",${blockSize},function(data) bw=bw+${blockSize};file.write(data);uart.write(0,"kxyJ\\r\\n");if bw>=${fileSize} then uart.on("data");file.close();uart.write(0,"QKiw\\r\\n") end end, 0);uart.write(0,"ju8s\\r\\n")`,
+			`file.open("${name}","${mode}");local bw=0;uart.on("data",${blockSize},function(data) bw=bw+${blockSize};file.write(data);uart.write(0,"kxyJ\\r\\n");if bw>=${fileSize} then uart.on("data");file.close();uart.write(0,"QKiw\\r\\n") end end, 0);uart.write(0,"Ready\\r\\n")`,
 
 		readFileHelper: (name: string) =>
-			`file.open("${name}", "r");uart.on("data", 0, function(data) while true do local b=file.read(240);if b==nil then uart.on("data");file.close();break end uart.write(0, b) end end, 0);uart.write(0,"Ready\\r\\n")`,
+			`file.open("${name}", "r");uart.on("data",0,function(data) while true do local b=file.read(${NodeMcuSerial.maxLineLength});if b==nil then uart.on("data");file.close();break end uart.write(0,b) end end, 0);uart.write(0,"Ready\\r\\n")`,
 
 		getFileSize: (name: string) => `local s=file.stat("${name}");uart.write(0, s.size .. "\\r\\n")`,
 	}
@@ -111,25 +111,31 @@ export default class NodeMcuCommands {
 		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.fileRun(fileName))
 	}
 
-	public async download(fileName: string): Promise<Buffer> {
+	public async download(fileName: string, progressCb?: (percent: number) => void): Promise<Buffer> {
 		await this.checkReady()
 
-		const fileSize = await this._device.executeSingleLineCommand(
+		progressCb?.(0)
+
+		const fileSizeStr = await this._device.executeSingleLineCommand(
 			NodeMcuCommands._luaCommands.getFileSize(fileName),
 			false,
 		)
-		let retVal = Buffer.alloc(0, void 0, 'binary')
+		const fileSize = parseInt(fileSizeStr, 10)
+		let retVal: Buffer | undefined = void 0
 
 		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.readFileHelper(fileName))
 
 		return new Promise(resolve => {
 			const unsubscribe = this._device.onDataRaw(async data => {
-				retVal = Buffer.concat([retVal, data])
-				if (retVal.length === parseInt(fileSize, 10)) {
+				retVal = retVal ? Buffer.concat([retVal, data]) : data
+				progressCb?.(retVal.length * 100 / fileSize)
+
+				if (retVal.length === fileSize) {
 					unsubscribe.dispose()
 					await this._device.toggleNodeOutput(true)
 					this._device.setBusy(false)
 
+					progressCb?.(100)
 					resolve(retVal)
 				}
 			})

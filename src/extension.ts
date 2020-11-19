@@ -92,7 +92,11 @@ export function activate(context: ExtensionContext): void {
 					title: `Downloading ${item.name} from NodeMCU@${device.path}`,
 				},
 				async progress => {
-					const fileData = await device.commands.download(item.name)
+					let prevPercent = 0
+					const fileData = await device.commands.download(item.name, percent => {
+						progress.report({ increment: percent - prevPercent })
+						prevPercent = percent
+					})
 					const array = new Uint8Array(
 						fileData.buffer.slice(fileData.byteOffset, fileData.byteOffset + fileData.byteLength),
 					)
@@ -100,7 +104,6 @@ export function activate(context: ExtensionContext): void {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const [rootFolder] = workspace.workspaceFolders!
 					await workspace.fs.writeFile(Uri.joinPath(rootFolder.uri, item.name), array)
-					progress.report({ increment: 100 })
 				},
 			)
 		})
@@ -141,13 +144,10 @@ async function uploadFile(file: Uri): Promise<void> {
 			const fileData = await workspace.fs.readFile(file)
 			const fileBuff = Buffer.from(fileData)
 			let prevPercent = 0
-			await device.commands.upload(
-				fileBuff,
-				fileName,
-				percent => {
-					progress.report({ increment: percent - prevPercent })
-					prevPercent = percent
-				})
+			await device.commands.upload(fileBuff, fileName, percent => {
+				progress.report({ increment: percent - prevPercent })
+				prevPercent = percent
+			})
 		},
 	)
 }
