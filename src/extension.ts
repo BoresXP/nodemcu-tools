@@ -6,15 +6,12 @@ import FileTreeItem from './tree/FileTreeItem'
 import NodeMcuCompletionProvider from './completion/NodeMcuCompletionProvider'
 import { NodeMcuRepository } from './nodemcu'
 import TerminalView from './terminal/TerminalView'
-import { getTelemetryReporter } from './telemetry'
-
-const telemetryReporter = getTelemetryReporter()
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: ExtensionContext): void {
 	try {
-		const treeProvider = new DeviceTreeProvider(telemetryReporter)
+		const treeProvider = new DeviceTreeProvider()
 		const treeView = window.createTreeView('nodemcu-tools.devices', { treeDataProvider: treeProvider })
 		context.subscriptions.push(treeView)
 
@@ -30,8 +27,6 @@ export function activate(context: ExtensionContext): void {
 			await commands.executeCommand('setContext', 'nodemcu-tools:isConnected', true)
 
 			wv.show()
-
-			telemetryReporter.sendTelemetryEvent('connected')
 		})
 		context.subscriptions.push(disposable)
 
@@ -112,15 +107,9 @@ export function activate(context: ExtensionContext): void {
 		disposable = languages.registerCompletionItemProvider({ language: 'lua' }, new NodeMcuCompletionProvider(), '.')
 		context.subscriptions.push(disposable)
 	} catch (ex) {
-		telemetryReporter.sendTelemetryException(ex)
 		console.error(ex) // eslint-disable-line no-console
 		void window.showErrorMessage(`Error in nodemcu-tools: ${ex}`)
 	}
-}
-
-export function deactivate(): void {
-	// This will ensure all pending events get flushed
-	void telemetryReporter.dispose()
 }
 
 async function uploadFile(file: Uri): Promise<void> {

@@ -3,16 +3,13 @@ import { Event, EventEmitter, TreeDataProvider, TreeItem, window } from 'vscode'
 import FileTreeItem, { isFileTreeItem } from './FileTreeItem'
 
 import NodeMcuRepository from '../nodemcu/NodeMcuRepository'
-import TelemetryReporter from 'vscode-extension-telemetry'
 
 export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData = new EventEmitter<undefined>()
-	private readonly _telemetryReporter: TelemetryReporter
 
 	private _deviceItems: DeviceTreeItem[] | undefined = void 0
 
-	constructor(telemetryReporter: TelemetryReporter) {
-		this._telemetryReporter = telemetryReporter
+	constructor() {
 		NodeMcuRepository.onDisconnect(() => this.refresh())
 	}
 
@@ -44,8 +41,6 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 			if (!element) {
 				const ports = await NodeMcuRepository.listPorts()
 
-				this._telemetryReporter.sendTelemetryEvent('refresh', void 0, { 'ports': ports.length })
-
 				this._deviceItems = ports.map(p => new DeviceTreeItem(p))
 				return this._deviceItems
 			}
@@ -57,7 +52,6 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 				return files.map(f => new FileTreeItem(f.name, f.size, element))
 			}
 		} catch (ex) {
-			this._telemetryReporter.sendTelemetryException(ex)
 			console.error(ex) // eslint-disable-line no-console
 			await window.showErrorMessage(`Error in nodemcu-tools: ${ex}`)
 		}
