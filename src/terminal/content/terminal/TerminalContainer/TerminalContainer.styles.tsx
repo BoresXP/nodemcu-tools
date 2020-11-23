@@ -11,6 +11,7 @@ export const TerminalInnerContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
+	min-width: 0;
 `
 
 export const TerminalControls = styled.div`
