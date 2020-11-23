@@ -8,3 +8,9 @@ export const terminalCommand = createAction('terminal/command')<string>()
 export const deviceIsBusy = createAction('device/isBusy')<boolean>()
 
 export const terminalLinesClear = createAction('terminal/clearLines')()
+
+export const termialHistoryUp = createAction('terminal/historyUp')()
+
+export const termialHistoryDown = createAction('terminal/historyDown')()
+
+export const terminalCurrentCommandText = createAction('terminal/currentCommandText')<string>()

@@ -5,3 +5,5 @@ export const getTerminalLines = (state: IState): ITerminalLine[] => state.termin
 export const getSnippets = (state: IState): Record<string, string> => state.snippets
 
 export const getDeviceBusy = (state: IState): boolean => state.isDeviceBusy
+
+export const getCurrentCommandText = (state: IState): string => state.currentCommandText

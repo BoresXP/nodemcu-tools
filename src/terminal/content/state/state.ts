@@ -8,6 +8,8 @@ export interface ITerminalLine {
 export interface IState {
 	terminalLines: ITerminalLine[]
 	terminalCommands: string[]
+	currentHistoryIndex: number
+	currentCommandText: string
 	snippets: Record<string, string>
 	isDeviceBusy: boolean
 	settings: {
@@ -19,6 +21,8 @@ export interface IState {
 export const initialState: IState = {
 	terminalLines: [],
 	terminalCommands: [],
+	currentHistoryIndex: 1,
+	currentCommandText: '',
 	snippets: {
 		// TODO: shoud be configurable with this values as defaults
 		// eslint-disable-next-line @typescript-eslint/naming-convention
