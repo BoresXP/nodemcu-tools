@@ -6,8 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [3.0.0] - 2020-11-25
+### Added
+- New extension window (with terminal)
+- Snippets (on new extension window)
+- Command line on new window has history now
+- New output window is colored
+
 ### Changed
-- Fix reset not working
+- Fix commands may interfere with node output
+- File operations (upload/download) are much faster now
+- Sort files on device alpabetically
+
+### Removed
+- Old terminal
+- Reset command (moved to snippet)
+- Extension telemetry
 
 ## [2.2.0] - 2020-10-30
 ### Changed

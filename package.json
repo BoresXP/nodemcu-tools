@@ -3,7 +3,7 @@
 	"publisher": "boressoft",
 	"displayName": "NodeMCU-Tools",
 	"description": "NodeMCU development tools for Visual Studio Code",
-	"version": "2.2.0",
+	"version": "3.0.0",
 	"author": {
 		"name": "Boris Gulay",
 		"email": "boris@gulay.name"
@@ -26,7 +26,8 @@
 	"keywords": [
 		"nodemcu",
 		"iot",
-		"lua"
+		"lua",
+		"nodemcu"
 	],
 	"activationEvents": [
 		"workspaceContains:.nodemcutool",

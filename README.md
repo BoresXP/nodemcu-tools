@@ -33,9 +33,7 @@ Here is an example. Upload LUA-file to device, compile it, run compiled file fro
 
 ![upload-download example](https://bitbucket.org/BoresExpress/nodemcu-tools/raw/e82656bada7d0b54e60b3fc71ccd95617df5063b/resources/docs/upload-download.gif)
 
-You can even work with many devices in the same session. Look, how easy you can download file from one device and upload it to another:
-
-![work with two devices](https://bitbucket.org/BoresExpress/nodemcu-tools/raw/e82656bada7d0b54e60b3fc71ccd95617df5063b/resources/docs/two.gif)
+You can even work with many devices in the same session.
 
 ## Keybindings
 
@@ -50,8 +48,6 @@ No settings yet
 See [Changelog](https://bitbucket.org/BoresExpress/nodemcu-tools/src/master/CHANGELOG.md)
 
 ## Known issues
-
-* Up/down arros in terminal working strange
 
 Please report issues here: [bugtracker](https://bitbucket.org/BoresExpress/nodemcu-tools/issues).
 
