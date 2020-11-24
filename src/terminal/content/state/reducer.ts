@@ -4,10 +4,9 @@ import { ActionType, createReducer } from 'typesafe-actions'
 import { IState, initialState } from './state'
 
 import { terminalCommand } from '../../messages/TerminalCommand'
+import vscode from './vscode'
 
 type AllActions = ActionType<typeof Actions>
-
-const vscode = acquireVsCodeApi()
 
 const reducer = createReducer<IState, AllActions>(initialState)
 	.handleAction(Actions.terminalLineAdd, (state, action) => {

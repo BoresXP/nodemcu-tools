@@ -1,6 +1,6 @@
 interface IVscodeWebview {
-	setState: (state: Record<string, unknown>) => void
-	getState: () => Record<string, unknown>
+	setState: (state: any) => void
+	getState: () => any
 	postMessage: (msg: any) => void
 }
 
