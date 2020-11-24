@@ -24,7 +24,7 @@ const Terminal: React.FC = () => {
 	useEffect(() => {
 		const divElement = messageEndRef.current as HTMLDivElement | null
 		if (divElement) {
-			divElement.scrollIntoView({ behavior: 'smooth' })
+			divElement.scrollIntoView()
 		}
 	}, [lines])
 
