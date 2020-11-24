@@ -49,7 +49,7 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 				await device.waitToBeReady()
 
 				const files = await device.commands.files()
-				return files.map(f => new FileTreeItem(f.name, f.size, element))
+				return files.sort().map(f => new FileTreeItem(f.name, f.size, element))
 			}
 		} catch (ex) {
 			console.error(ex) // eslint-disable-line no-console
