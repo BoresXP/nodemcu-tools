@@ -9,7 +9,7 @@ export interface DeviceFileInfo {
 export default class NodeMcuCommands {
 	private static readonly _luaCommands = {
 		listFiles:
-			'local l = file.list() local s = "" for k,v in pairs(l) do s = s .. k .. ":" .. v .. ";" end uart.write(0, s .. "\\r\\n")',
+			'local l=file.list() local s=";" for k,v in pairs(l) do s=s..k..":"..v..";" end uart.write(0, s.."\\r\\n")',
 
 		delete: (name: string) => `file.remove("${name}");uart.write(0, "Done\\r\\n")`,
 
@@ -35,22 +35,18 @@ export default class NodeMcuCommands {
 	public async files(): Promise<DeviceFileInfo[]> {
 		await this.checkReady()
 
-		let filesResponse = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.listFiles)
-		if (!filesResponse) {
-			return []
-		}
-		if (filesResponse.endsWith(';')) {
-			filesResponse = filesResponse.substring(0, filesResponse.length - 1)
-		}
+		const filesResponse = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.listFiles)
 
 		const filesArray = filesResponse.split(';')
-		return filesArray.map(f => {
-			const fileData = f.split(':')
-			return {
-				name: fileData[0],
-				size: parseInt(fileData[1], 10),
-			}
-		})
+		return filesArray
+			.filter(f => f.includes(':'))
+			.map(f => {
+				const fileData = f.split(':')
+				return {
+					name: fileData[0],
+					size: parseInt(fileData[1], 10),
+				}
+			})
 	}
 
 	public async delete(fileName: string): Promise<void> {
