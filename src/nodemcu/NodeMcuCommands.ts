@@ -69,7 +69,12 @@ export default class NodeMcuCommands {
 		if (data.length > NodeMcuSerial.maxLineLength) {
 			await this.waitDone('QKiw', async () => {
 				await this._device.executeSingleLineCommand(
-					NodeMcuCommands._luaCommands.writeFileHelper(remoteName, data.length - tailSize, NodeMcuSerial.maxLineLength, 'w'),
+					NodeMcuCommands._luaCommands.writeFileHelper(
+						remoteName,
+						data.length - tailSize,
+						NodeMcuSerial.maxLineLength,
+						'w',
+					),
 					false,
 				)
 
@@ -123,7 +128,7 @@ export default class NodeMcuCommands {
 		const fileSize = parseInt(fileSizeStr, 10)
 		let retVal: Buffer | undefined = void 0
 
-		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.readFileHelper(fileName))
+		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.readFileHelper(fileName), false)
 
 		return new Promise(resolve => {
 			const unsubscribe = this._device.onDataRaw(async data => {
@@ -132,10 +137,12 @@ export default class NodeMcuCommands {
 
 				if (retVal.length === fileSize) {
 					unsubscribe.dispose()
+
+					progressCb?.(100)
+
 					await this._device.toggleNodeOutput(true)
 					this._device.setBusy(false)
 
-					progressCb?.(100)
 					resolve(retVal)
 				}
 			})

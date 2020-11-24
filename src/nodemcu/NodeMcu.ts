@@ -107,8 +107,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			return false
 		}
 
-		// eslint-disable-next-line no-constant-condition, sonarjs/no-redundant-boolean
-		if (!wasBusy && false) {
+		if (!wasBusy) {
 			await this.toggleNodeOutput(false)
 		}
 
