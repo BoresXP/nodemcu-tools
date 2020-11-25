@@ -17,7 +17,7 @@
 		"url": "https://bitbucket.org/BoresExpress/nodemcu-tools/issues"
 	},
 	"engines": {
-		"vscode": "^1.51.0"
+		"vscode": "^1.48.0"
 	},
 	"categories": [
 		"Programming Languages",
@@ -145,7 +145,7 @@
 		"@types/redux": "^3.6.0",
 		"@types/serialport": "^8.0.1",
 		"@types/styled-components": "^5.1.4",
-		"@types/vscode": "^1.51.0",
+		"@types/vscode": "^1.48.0",
 		"@types/webpack": "^4.41.25",
 		"@typescript-eslint/eslint-plugin": "^4.8.2",
 		"@typescript-eslint/parser": "^4.8.2",
