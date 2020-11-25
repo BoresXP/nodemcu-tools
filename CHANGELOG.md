@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Fix Run file command
+- Relax VSCode verion requirement
+- Fix Upload and compile command was not wirking
 
 ## [3.0.0] - 2020-11-25
 ### Added
