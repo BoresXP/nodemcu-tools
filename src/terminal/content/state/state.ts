@@ -1,4 +1,4 @@
-export type TerminalLineType = 'out' | 'echo'
+import { TerminalLineType } from '../../messages/TerminalLine'
 
 export interface ITerminalLine {
 	text: string

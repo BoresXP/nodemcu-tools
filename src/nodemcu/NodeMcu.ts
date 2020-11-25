@@ -1,6 +1,7 @@
 import { Disposable, Event, EventEmitter } from 'vscode'
 
 import INodeMcu from './INodeMcu'
+import IToTerminalData from './IToTerminalData'
 import NodeMcuCommands from './NodeMcuCommands'
 import NodeMcuSerial from './NodeMcuSerial'
 
@@ -19,7 +20,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	}
 	private static readonly _commandTimeout = 15000 // msec
 
-	private readonly _evtToTerminal = new EventEmitter<string>()
+	private readonly _evtToTerminal = new EventEmitter<IToTerminalData>()
 	private readonly _evtClose = new EventEmitter<void>()
 	private readonly _evtBusy = new EventEmitter<boolean>()
 
@@ -27,6 +28,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	private _currentCommand: Promise<string | undefined> | undefined
 
 	private _isBusy = true
+	private _lastInput: string | undefined
 
 	private _commands: NodeMcuCommands | undefined
 
@@ -72,7 +74,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		return this._evtBusy.event
 	}
 
-	public get toTerminal(): Event<string> {
+	public get toTerminal(): Event<IToTerminalData> {
 		return this._evtToTerminal.event
 	}
 
@@ -87,6 +89,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		}
 		console.log('T: ' + text)
 
+		this._lastInput = text
 		await this.write(text)
 	}
 
@@ -143,19 +146,16 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	}
 
 	private handleConnect(): void {
-		try {
-			// await this.executeNoReplyCommand(NodeMcu._luaCommands.uartReconfig, false)
-
-			this.setBusy(false)
-		} catch (ex) {
-			// this._evtReady.fire(ex)
-		}
+		this.setBusy(false)
 	}
 
 	private handleData(data: string): void {
 		console.log('R: ' + data)
 		if (!this._isBusy) {
-			this._evtToTerminal.fire(data)
+			this._evtToTerminal.fire({
+				type: this._lastInput && data.endsWith(this._lastInput.trimEnd()) ? 'echo' : 'output',
+				data,
+			})
 		}
 	}
 

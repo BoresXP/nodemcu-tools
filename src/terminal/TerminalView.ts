@@ -25,8 +25,8 @@ export default class TerminalView {
 		this._device.onClose(() => {
 			this._webViewPanel.dispose()
 		})
-		this._device.toTerminal(async line => {
-			await this._webViewPanel.webview.postMessage(terminalLine(line))
+		this._device.toTerminal(async data => {
+			await this._webViewPanel.webview.postMessage(terminalLine(data.type, data.data))
 		})
 		this._device.onBusyChanged(async isBusy => {
 			await this._webViewPanel.webview.postMessage(deviceState(isBusy))
@@ -62,7 +62,7 @@ export default class TerminalView {
 </html>`
 	}
 
-	private async onMessage(msg: IMessage) : Promise<void> {
+	private async onMessage(msg: IMessage): Promise<void> {
 		if (isTerminalCommand(msg)) {
 			await this._device.fromTerminal(msg.text + '\n')
 		}

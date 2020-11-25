@@ -19,7 +19,7 @@ ReactDOM.render(
 window.addEventListener('message', evt => {
 	const message = evt.data as IMessage
 	if (isTerminalLine(message)) {
-		store.dispatch(terminalLineAdd({ text: message.text, type: 'out' }))
+		store.dispatch(terminalLineAdd({ text: message.text, type: message.textType }))
 	} else if (isDeviceState(message)) {
 		store.dispatch(deviceIsBusy(message.isBusy))
 	}

@@ -9,17 +9,12 @@ import vscode from './vscode'
 type AllActions = ActionType<typeof Actions>
 
 const reducer = createReducer<IState, AllActions>(initialState)
-	.handleAction(Actions.terminalLineAdd, (state, action) => {
-		if (action.payload.text.endsWith(state.terminalCommands[state.terminalCommands.length - 1])) {
-			action.payload.type = 'echo'
-		}
-		return {
-			...state,
-			terminalLines: state.terminalLines
-				.slice(Math.max(state.terminalLines.length - state.settings.scrollbackMaxLines, 0))
-				.concat(action.payload),
-		}
-	})
+	.handleAction(Actions.terminalLineAdd, (state, action) => ({
+		...state,
+		terminalLines: state.terminalLines
+			.slice(Math.max(state.terminalLines.length - state.settings.scrollbackMaxLines, 0))
+			.concat(action.payload),
+	}))
 	.handleAction(Actions.terminalCommand, (state, action) => {
 		if (state.isDeviceBusy) {
 			return state
@@ -52,7 +47,6 @@ const reducer = createReducer<IState, AllActions>(initialState)
 	}))
 	.handleAction(Actions.termialHistoryUp, state => {
 		const newIndex = Math.max(--state.currentHistoryIndex, 0)
-		console.log(newIndex)
 		return {
 			...state,
 			currentHistoryIndex: newIndex,
@@ -61,7 +55,6 @@ const reducer = createReducer<IState, AllActions>(initialState)
 	})
 	.handleAction(Actions.termialHistoryDown, state => {
 		const newIndex = Math.min(++state.currentHistoryIndex, state.terminalCommands.length)
-		console.log(newIndex)
 		return {
 			...state,
 			currentHistoryIndex: newIndex,

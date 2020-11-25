@@ -1,13 +1,17 @@
 import IMessage from './IMessage'
 
+export type TerminalLineType = 'echo' | 'output'
+
 export interface ITerminalLine extends IMessage {
 	type: 'terminalLine'
+	textType: 'echo' | 'output'
 	text: string
 }
 
-export function terminalLine(text: string): ITerminalLine {
+export function terminalLine(textType: TerminalLineType, text: string): ITerminalLine {
 	return {
 		type: 'terminalLine',
+		textType,
 		text,
 	}
 }
