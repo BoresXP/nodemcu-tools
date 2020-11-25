@@ -15,7 +15,7 @@ export default class NodeMcuCommands {
 
 		fileCompile: (name: string) => `node.compile("${name}");uart.write(0, "Done\\r\\n")`,
 
-		fileRun: (name: string) => `dofile("${name}");uart.write(0, "Done\\r\\n")`,
+		fileRun: (name: string) => `dofile("${name}")`,
 
 		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
 			`file.open("${name}","${mode}");local bw=0;uart.on("data",${blockSize},function(data) bw=bw+${blockSize};file.write(data);uart.write(0,"kxyJ\\r\\n");if bw>=${fileSize} then uart.on("data");file.close();uart.write(0,"QKiw\\r\\n") end end, 0);uart.write(0,"Ready\\r\\n")`,
@@ -109,7 +109,7 @@ export default class NodeMcuCommands {
 
 	public async run(fileName: string): Promise<void> {
 		await this.checkReady()
-		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.fileRun(fileName))
+		await this._device.fromTerminal(NodeMcuCommands._luaCommands.fileRun(fileName))
 	}
 
 	public async download(fileName: string, progressCb?: (percent: number) => void): Promise<Buffer> {
