@@ -30,7 +30,7 @@ export function activate(context: ExtensionContext): void {
 				treeProvider.refresh()
 				await treeView.reveal(item, { select: true, expand: true })
 
-				wv.show()
+				await wv.show()
 			}),
 		)
 

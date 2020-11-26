@@ -33,15 +33,6 @@ export default class TerminalView {
 		this._device.onBusyChanged(async isBusy => {
 			await this._webViewPanel.webview.postMessage(deviceState(isBusy))
 		})
-
-		const configuration = workspace.getConfiguration('nodemcu-tools')
-		void this._webViewPanel.webview.postMessage(
-			setConfiguration(
-				configuration.get('terminal.scrollbackSize', initialSettings.scrollbackMaxLines),
-				configuration.get('terminal.commandHistorySize', initialSettings.historyMaxLines),
-				configuration.get('snippets', initialSettings.snippets),
-			),
-		)
 	}
 
 	public static create(context: ExtensionContext, device: INodeMcu): TerminalView {
@@ -52,7 +43,8 @@ export default class TerminalView {
 		return new TerminalView(context, device, wvPanel)
 	}
 
-	public show(): void {
+	public async show(): Promise<void> {
+		await this.setConfiguration()
 		this._webViewPanel.reveal()
 	}
 
@@ -71,6 +63,20 @@ export default class TerminalView {
 		<script src="${srcPath}"></script>
 	</body>
 </html>`
+	}
+
+	private async setConfiguration(): Promise<void> {
+		const configuration = workspace.getConfiguration('nodemcu-tools')
+		const snippetsInspection = configuration.inspect<Record<string, string>>('snippets')
+		const snippetsInWorkspace = snippetsInspection?.workspaceValue
+
+		await this._webViewPanel.webview.postMessage(
+			setConfiguration(
+				configuration.get('terminal.scrollbackSize', initialSettings.scrollbackMaxLines),
+				configuration.get('terminal.commandHistorySize', initialSettings.historyMaxLines),
+				snippetsInWorkspace ?? configuration.get('snippets', initialSettings.snippets),
+			),
+		)
 	}
 
 	private async onMessage(msg: IMessage): Promise<void> {
