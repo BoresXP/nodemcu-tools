@@ -98,7 +98,7 @@ export default class NodemcuTools {
 		await device.commands.delete(deviceFileName)
 	}
 
-	public async downloadFile(devicePath: string, deviceFileName: string): Promise<void> {
+	public async downloadFile(devicePath: string, deviceFileName: string, hostFileName?: string): Promise<void> {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
 		await window.withProgress(
@@ -114,13 +114,13 @@ export default class NodemcuTools {
 					prevPercent = percent
 				})
 
-				const array = new Uint8Array(
+				const contentArray = new Uint8Array(
 					fileData.buffer.slice(fileData.byteOffset, fileData.byteOffset + fileData.byteLength),
 				)
 
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				const [rootFolder] = workspace.workspaceFolders!
-				await workspace.fs.writeFile(Uri.joinPath(rootFolder.uri, deviceFileName), array)
+				await workspace.fs.writeFile(Uri.joinPath(rootFolder.uri, hostFileName ?? deviceFileName), contentArray)
 			},
 		)
 	}

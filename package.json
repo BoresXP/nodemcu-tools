@@ -77,6 +77,10 @@
 			{
 				"command": "nodemcu-tools.downloadFile",
 				"title": "Download"
+			},
+			{
+				"command": "nodemcu-tools.downloadFileAs",
+				"title": "Download as..."
 			}
 		],
 		"menus": {
@@ -117,6 +121,7 @@
 				},
 				{
 					"command": "nodemcu-tools.downloadFile",
+					"alt": "nodemcu-tools.downloadFileAs",
 					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/"
 				}
 			]
