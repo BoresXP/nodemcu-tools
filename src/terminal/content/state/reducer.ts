@@ -13,12 +13,15 @@ const reducer = createReducer<IState, AllActions>(initialState)
 		...state,
 		settings: action.payload,
 	}))
-	.handleAction(Actions.terminalLineAdd, (state, action) => ({
-		...state,
-		terminalLines: state.terminalLines
-			.slice(Math.max(state.terminalLines.length - state.settings.scrollbackMaxLines, 0))
-			.concat(action.payload),
-	}))
+	.handleAction(Actions.terminalLineAdd, (state, action) => {
+		let newLines = state.terminalLines.concat(action.payload)
+		newLines = newLines.slice(Math.max(newLines.length - state.settings.scrollbackMaxLines, 0))
+
+		return {
+			...state,
+			terminalLines: newLines,
+		}
+	})
 	.handleAction(Actions.terminalCommand, (state, action) => {
 		if (state.isDeviceBusy) {
 			return state
@@ -26,9 +29,8 @@ const reducer = createReducer<IState, AllActions>(initialState)
 
 		vscode.postMessage(terminalCommand(action.payload))
 
-		const newCommands = state.terminalCommands
-			.slice(Math.max(state.terminalCommands.length - state.settings.historyMaxLines, 0))
-			.concat(action.payload)
+		let newCommands = state.terminalCommands.concat(action.payload)
+		newCommands = newCommands.slice(Math.max(newCommands.length - state.settings.historyMaxLines, 0))
 
 		return {
 			...state,
