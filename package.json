@@ -128,6 +128,37 @@
 					"name": "NodeMCU Devices"
 				}
 			]
+		},
+		"configuration": {
+			"title": "NodeMCU-Tools",
+			"properties": {
+				"nodemcu-tools.terminal.scrollbackSize": {
+					"type": "number",
+					"minimum": 10,
+					"maximum": 1000,
+					"default": 300,
+					"description": "How many lines will be held in terminal. Old lines over this limit will be discarded."
+				},
+				"nodemcu-tools.terminal.commandHistorySize": {
+					"type": "number",
+					"minimum": 0,
+					"maximum": 100,
+					"default": 30,
+					"description": "How many commands will be available by pressing UP in command input field. Old commands over this limit will be discarded."
+				},
+				"nodemcu-tools.snippets": {
+					"type": "object",
+					"default": {
+						"Restart": "node.restart()",
+						"Heap": "=node.heap()",
+						"ChipID": "=node.chipid()",
+						"WiFi Status": "local wifista=wifi.sta.status();for k,v in pairs(wifi) do if v==wifista and string.sub(k,1,4)=='STA_' then print(k) end end",
+						"WiFi IP": "=wifi.sta.getip()",
+						"WiFi APs": "wifi.sta.getap({show_hidden=1},1,function(t) for k,v in pairs(t) do print(k..':'..v) end end)"
+					},
+					"description": "Command snippets"
+				}
+			}
 		}
 	},
 	"scripts": {

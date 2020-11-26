@@ -9,6 +9,10 @@ import vscode from './vscode'
 type AllActions = ActionType<typeof Actions>
 
 const reducer = createReducer<IState, AllActions>(initialState)
+	.handleAction(Actions.setSettings, (state, action) => ({
+		...state,
+		settings: action.payload,
+	}))
 	.handleAction(Actions.terminalLineAdd, (state, action) => ({
 		...state,
 		terminalLines: state.terminalLines

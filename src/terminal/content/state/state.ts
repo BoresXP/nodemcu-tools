@@ -5,17 +5,25 @@ export interface ITerminalLine {
 	type: TerminalLineType
 }
 
+export interface ISettings {
+	scrollbackMaxLines: number
+	historyMaxLines: number
+	snippets: Record<string, string>
+}
+
 export interface IState {
 	terminalLines: ITerminalLine[]
 	terminalCommands: string[]
 	currentHistoryIndex: number
 	currentCommandText: string
-	snippets: Record<string, string>
 	isDeviceBusy: boolean
-	settings: {
-		scrollbackMaxLines: number
-		historyMaxLines: number
-	}
+	settings: ISettings
+}
+
+export const initialSettings: ISettings = {
+	scrollbackMaxLines: 300,
+	historyMaxLines: 30,
+	snippets: {},
 }
 
 export const initialState: IState = {
@@ -23,23 +31,6 @@ export const initialState: IState = {
 	terminalCommands: [],
 	currentHistoryIndex: 1,
 	currentCommandText: '',
-	snippets: {
-		// TODO: shoud be configurable with this values as defaults
-		// eslint-disable-next-line @typescript-eslint/naming-convention
-		Restart: 'node.restart()',
-
-		// eslint-disable-next-line @typescript-eslint/naming-convention
-		Heap: '=node.heap()',
-
-		// eslint-disable-next-line @typescript-eslint/naming-convention
-		ChipID: '=node.chipid()',
-
-		// eslint-disable-next-line @typescript-eslint/naming-convention
-		'Wifi status': '=wifi.sta.status()',
-	},
 	isDeviceBusy: true,
-	settings: {
-		scrollbackMaxLines: 300,
-		historyMaxLines: 50,
-	},
+	settings: initialSettings,
 }
