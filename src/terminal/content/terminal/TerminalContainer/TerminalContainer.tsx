@@ -1,4 +1,4 @@
-import * as Actions from '../../state/actions'
+import * as Events from '../../state/events'
 
 import {
 	CmdLineInput,
@@ -8,17 +8,14 @@ import {
 	TerminalInnerContainer,
 } from './TerminalContainer.styles'
 import React, { useCallback } from 'react'
-import { getCurrentCommandText, getDeviceBusy } from '../../state/selectors'
-import { useDispatch, useSelector } from 'react-redux'
+import { getCurrentCommandText, getDeviceBusy, useRootStore } from '../../state/selectors'
 
 import { Button } from '../../controls'
 import Terminal from '../Terminal/Terminal'
 
 const TerminalContainer: React.FC = () => {
-	const dispatch = useDispatch()
-
-	const isDeviceBusy = useSelector(getDeviceBusy)
-	const cmdText = useSelector(getCurrentCommandText)
+	const isDeviceBusy = useRootStore(getDeviceBusy)
+	const cmdText = useRootStore(getCurrentCommandText)
 
 	const onKeyUp = useCallback(
 		(evt: React.KeyboardEvent<HTMLInputElement>) => {
@@ -26,37 +23,33 @@ const TerminalContainer: React.FC = () => {
 			switch (evt.key) {
 				case 'Enter':
 					if (!isDeviceBusy) {
-						dispatch(Actions.terminalCommand(domImput.value))
-						dispatch(Actions.terminalCurrentCommandText(''))
+						Events.terminalCommand(domImput.value)
+						Events.terminalCurrentCommandText('')
 					}
 					break
 				case 'ArrowUp':
-					dispatch(Actions.termialHistoryUp())
+					Events.termialHistoryUp()
 					break
 				case 'ArrowDown':
-					dispatch(Actions.termialHistoryDown())
+					Events.termialHistoryDown()
 					break
 			}
 		},
-		[dispatch, isDeviceBusy],
+		[isDeviceBusy],
 	)
-	const onChange = useCallback(
-		(evt: React.ChangeEvent<HTMLInputElement>) => {
-			const domImput = evt.target as HTMLInputElement
-			console.log(domImput.value)
-			dispatch(Actions.terminalCurrentCommandText(domImput.value))
-		},
-		[dispatch],
-	)
+	const onChange = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
+		const domImput = evt.target as HTMLInputElement
+		Events.terminalCurrentCommandText(domImput.value)
+	}, [])
 	const onRun = useCallback(() => {
 		if (cmdText && !isDeviceBusy) {
-			dispatch(Actions.terminalCommand(cmdText))
-			dispatch(Actions.terminalCurrentCommandText(''))
+			Events.terminalCommand(cmdText)
+			Events.terminalCurrentCommandText('')
 		}
-	}, [cmdText, dispatch, isDeviceBusy])
+	}, [cmdText, isDeviceBusy])
 	const onClear = useCallback(() => {
-		dispatch(Actions.terminalLinesClear())
-	}, [dispatch])
+		Events.terminalLinesClear()
+	}, [])
 
 	return (
 		<TerminalContainerStyled>

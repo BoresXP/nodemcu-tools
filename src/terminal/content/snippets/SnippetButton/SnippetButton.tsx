@@ -1,9 +1,8 @@
 import React, { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { getDeviceBusy, useRootStore } from '../../state/selectors'
 
 import { SnippetButtonStyled } from './SnippetButton.styles'
-import { getDeviceBusy } from '../../state/selectors'
-import { terminalCommand } from '../../state/actions'
+import { terminalCommand } from '../../state/events'
 
 interface ISnippetButtonProps {
 	caption: string
@@ -11,16 +10,15 @@ interface ISnippetButtonProps {
 }
 
 const SnippetButton: React.FC<ISnippetButtonProps> = ({ caption, command }) => {
-	const dispatch = useDispatch()
+	const isDeviceBusy = useRootStore(getDeviceBusy)
 
-	const isDeviceBusy = useSelector(getDeviceBusy)
+	const onClicked = useCallback(() => terminalCommand(command), [command])
 
-	const onClicked = useCallback(
-		() => dispatch(terminalCommand(command)),
-		[command, dispatch]
+	return (
+		<SnippetButtonStyled disabled={isDeviceBusy} onClick={onClicked}>
+			{caption}
+		</SnippetButtonStyled>
 	)
-
-	return <SnippetButtonStyled disabled={isDeviceBusy} onClick={onClicked}>{caption}</SnippetButtonStyled>
 }
 
 export default SnippetButton
