@@ -1,24 +1,14 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { TerminalLine, TerminalStyled } from './Terminal.styles'
 import { getTerminalLines, useRootStore } from '../../state/selectors'
+
+import { terminalLinesStore } from '../../state/store'
+import { useList } from 'effector-react'
 
 const Terminal: React.FC = () => {
 	const messageEndRef = useRef(null)
 
 	const lines = useRootStore(getTerminalLines)
-
-	const toElements = useCallback(() => {
-		if (!lines) {
-			return void 0
-		}
-
-		return lines.map((l, indx) => (
-			<TerminalLine key={indx} type={l.type}>
-				{l.text}
-			</TerminalLine>
-		))
-	}, [lines])
-
 	useEffect(() => {
 		const divElement = messageEndRef.current as HTMLDivElement | null
 		if (divElement) {
@@ -28,7 +18,9 @@ const Terminal: React.FC = () => {
 
 	return (
 		<TerminalStyled>
-			{toElements()}
+			{useList(terminalLinesStore, line =>
+				<TerminalLine type={line.type}>{line.text}</TerminalLine>
+			)}
 			<div ref={messageEndRef} />
 		</TerminalStyled>
 	)

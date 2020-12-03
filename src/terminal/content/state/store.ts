@@ -69,3 +69,5 @@ export const rootStore = createStore<IState>(savedState ?? initialState)
 	})
 
 rootStore.watch(state => vscode.setState(state))
+
+export const terminalLinesStore = rootStore.map(s => s.terminalLines)
