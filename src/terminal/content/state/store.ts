@@ -71,3 +71,7 @@ export const rootStore = createStore<IState>(savedState ?? initialState)
 rootStore.watch(state => vscode.setState(state))
 
 export const terminalLinesStore = rootStore.map(s => s.terminalLines)
+
+export const snippetsStore = rootStore.map(s =>
+	Object.keys(s.settings.snippets).map(k => ({ name: k, command: s.settings.snippets[k] })),
+)
