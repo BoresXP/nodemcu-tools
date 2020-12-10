@@ -14,6 +14,8 @@ export interface ISettings {
 export interface IDeviceInfo {
 	numberType?: string
 	heapFree?: number
+	ssl?: boolean
+	modules?: string
 }
 
 export interface IState {

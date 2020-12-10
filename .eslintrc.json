@@ -96,7 +96,7 @@
 		"no-useless-rename": "error", // disallow renaming import, export, and destructured assignments to the same name
 		"object-shorthand": ["error", "always"], // require or disallow method and property shorthand syntax for object literals
 		"prefer-arrow-callback": "warn", // require using arrow functions for callbacks
-		"prefer-destructuring": "error", // require destructuring from arrays and/or objects
+		"prefer-destructuring": "warn", // require destructuring from arrays and/or objects
 		"rest-spread-spacing": ["error", "never"], // enforce spacing between rest and spread operators and their expressions
 		"sort-imports": "error", // enforce sorted import declarations within modules
 		"template-curly-spacing": "error", // require or disallow spacing around embedded expressions of template strings

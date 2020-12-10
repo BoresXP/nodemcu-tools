@@ -18,6 +18,8 @@ const StatusBar: React.FC = () => {
 				<StatusBarItem text={info.heapFree.toLocaleString()} tooltip="Free heap (bytes)" />
 			) : null}
 			{info.numberType ? <StatusBarItem text={info.numberType} tooltip="Number type" /> : null}
+			{info.ssl ? <StatusBarItem text="ssl" /> : null}
+			{info.modules ? <StatusBarItem text="modules" tooltip={info.modules} /> : null}
 		</StatusBarStyled>
 	)
 }

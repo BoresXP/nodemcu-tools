@@ -9,6 +9,8 @@ export interface IDeviceFileInfo {
 export interface IDeviceInfo {
 	numberType: string
 	freeHeap: number
+	ssl: boolean
+	modules: string
 }
 
 export default class NodeMcuCommands {
@@ -31,6 +33,9 @@ export default class NodeMcuCommands {
 		getFileSize: (name: string) => `local s=file.stat("${name}");uart.write(0, s.size .. "\\r\\n")`,
 
 		getFreeHeap: 'uart.write(0,tostring(node.heap()).."\\r\\n")',
+
+		getDeviceInfo:
+			'local i=node.info("build_config");local s="";for k,v in pairs(i) do s=s..k..":"..tostring(v)..";" end uart.write(0,s.."\\r\\n")',
 	}
 
 	private readonly _device: NodeMcu
@@ -156,11 +161,26 @@ export default class NodeMcuCommands {
 	public async getDeviceInfo(): Promise<IDeviceInfo> {
 		await this.checkReady()
 
-		const freeHeap = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.getFreeHeap)
+		const freeHeap = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.getFreeHeap, false)
+
+		const deviceInfo = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.getDeviceInfo, false)
+
+		this._device.setBusy(false)
+
+		const infoParams: { [name: string]: string } = {}
+		deviceInfo
+			.split(';')
+			.filter(i => i.includes(':'))
+			.forEach(i => {
+				const [name, value] = i.split(':', 2)
+				infoParams[name] = value
+			})
 
 		return {
 			freeHeap: parseInt(freeHeap, 10),
-			numberType: 'integer',
+			numberType: infoParams['number_type'],
+			ssl: infoParams['ssl'] === 'true',
+			modules: infoParams['modules'],
 		}
 	}
 
