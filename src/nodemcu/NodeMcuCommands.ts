@@ -1,9 +1,14 @@
 import NodeMcu from './NodeMcu'
 import NodeMcuSerial from './NodeMcuSerial'
 
-export interface DeviceFileInfo {
+export interface IDeviceFileInfo {
 	name: string
 	size: number
+}
+
+export interface IDeviceInfo {
+	numberType: string
+	freeHeap: number
 }
 
 export default class NodeMcuCommands {
@@ -24,6 +29,8 @@ export default class NodeMcuCommands {
 			`file.open("${name}", "r");uart.on("data",0,function(data) while true do local b=file.read(${NodeMcuSerial.maxLineLength});if b==nil then uart.on("data");file.close();break end uart.write(0,b) end end, 0);uart.write(0,"Ready\\r\\n")`,
 
 		getFileSize: (name: string) => `local s=file.stat("${name}");uart.write(0, s.size .. "\\r\\n")`,
+
+		getFreeHeap: 'uart.write(0,tostring(node.heap()).."\\r\\n")',
 	}
 
 	private readonly _device: NodeMcu
@@ -32,7 +39,7 @@ export default class NodeMcuCommands {
 		this._device = device
 	}
 
-	public async files(): Promise<DeviceFileInfo[]> {
+	public async files(): Promise<IDeviceFileInfo[]> {
 		await this.checkReady()
 
 		const filesResponse = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.listFiles)
@@ -144,6 +151,17 @@ export default class NodeMcuCommands {
 			})
 			void this._device.writeRaw(Buffer.alloc(1, '\0'))
 		})
+	}
+
+	public async getDeviceInfo(): Promise<IDeviceInfo> {
+		await this.checkReady()
+
+		const freeHeap = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.getFreeHeap)
+
+		return {
+			freeHeap: parseInt(freeHeap, 10),
+			numberType: 'integer',
+		}
 	}
 
 	private waitDone(key: string, processCb: () => any): Promise<void> {

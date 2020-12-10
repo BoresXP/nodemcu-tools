@@ -1,4 +1,4 @@
-import { IState, ITerminalLine } from './state'
+import { IDeviceInfo, IState, ITerminalLine } from './state'
 
 import { rootStore } from './store'
 import { useStoreMap } from 'effector-react'
@@ -14,3 +14,5 @@ export const getSnippets = (state: IState): Record<string, string> => state.sett
 export const getDeviceBusy = (state: IState): boolean => state.isDeviceBusy
 
 export const getCurrentCommandText = (state: IState): string => state.currentCommandText
+
+export const getDeviceInfo = (state: IState) : IDeviceInfo => state.deviceInfo

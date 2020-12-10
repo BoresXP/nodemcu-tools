@@ -67,6 +67,10 @@ export const rootStore = createStore<IState>(savedState ?? initialState)
 				newIndex === state.terminalCommands.length ? state.currentCommandText : state.terminalCommands[newIndex],
 		}
 	})
+	.on(Events.setDeviceInfo, (state, params) => ({
+		...state,
+		deviceInfo: params,
+	}))
 
 rootStore.watch(state => vscode.setState(state))
 

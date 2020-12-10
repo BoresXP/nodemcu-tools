@@ -1,4 +1,4 @@
-import { ISettings, ITerminalLine } from './state'
+import { IDeviceInfo, ISettings, ITerminalLine } from './state'
 
 import { createEvent } from 'effector'
 
@@ -17,3 +17,5 @@ export const termialHistoryDown = createEvent()
 export const terminalCurrentCommandText = createEvent<string>()
 
 export const setSettings = createEvent<ISettings>()
+
+export const setDeviceInfo = createEvent<IDeviceInfo>()

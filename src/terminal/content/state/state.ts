@@ -11,6 +11,11 @@ export interface ISettings {
 	snippets: Record<string, string>
 }
 
+export interface IDeviceInfo {
+	numberType?: string
+	heapFree?: number
+}
+
 export interface IState {
 	terminalLines: ITerminalLine[]
 	terminalCommands: string[]
@@ -18,6 +23,7 @@ export interface IState {
 	currentCommandText: string
 	isDeviceBusy: boolean
 	settings: ISettings
+	deviceInfo: IDeviceInfo
 }
 
 export const initialSettings: ISettings = {
@@ -33,4 +39,5 @@ export const initialState: IState = {
 	currentCommandText: '',
 	isDeviceBusy: true,
 	settings: initialSettings,
+	deviceInfo: {},
 }
