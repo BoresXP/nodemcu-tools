@@ -15,7 +15,7 @@ const SnippetButton: React.FC<ISnippetButtonProps> = ({ caption, command }) => {
 	const onClicked = useCallback(() => terminalCommand(command), [command])
 
 	return (
-		<SnippetButtonStyled disabled={isDeviceBusy} onClick={onClicked}>
+		<SnippetButtonStyled disabled={isDeviceBusy} onClick={onClicked} data-for="main-tooltip" data-tip={command}>
 			{caption}
 		</SnippetButtonStyled>
 	)
