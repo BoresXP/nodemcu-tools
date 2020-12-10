@@ -7,7 +7,7 @@ export interface IStatusBarItemProps {
 }
 
 const StatusBarItem: React.FC<IStatusBarItemProps> = ({ text, tooltip }) => (
-	<StatusBarItemStyled data-tip={tooltip}>{text}</StatusBarItemStyled>
+	<StatusBarItemStyled data-for="main-tooltip" data-tip={tooltip}>{text}</StatusBarItemStyled>
 )
 
 export default StatusBarItem
