@@ -20,6 +20,14 @@ const StatusBar: React.FC = () => {
 			{info.numberType ? <StatusBarItem text={info.numberType} tooltip="Number type" /> : null}
 			{info.ssl ? <StatusBarItem text="ssl" /> : null}
 			{info.modules ? <StatusBarItem text="modules" tooltip={info.modules} /> : null}
+			{info.fsTotal ? (
+				<StatusBarItem
+					text={`${info.fsUsed?.toLocaleString()} / ${info.fsTotal.toLocaleString()} (${
+						Math.round((info.fsUsed ?? 0) * 100 / info.fsTotal)
+					}%)`}
+					tooltip="File system used"
+				/>
+			) : null}
 		</StatusBarStyled>
 	)
 }

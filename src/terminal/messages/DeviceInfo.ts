@@ -6,7 +6,14 @@ export interface IDeviceInfo extends IMessage {
 	info: IDeviceInfoData
 }
 
-export function deviceInfo(numberType: string, heapFree: number, ssl: boolean, modules: string): IDeviceInfo {
+export function deviceInfo(
+	numberType: string,
+	heapFree: number,
+	ssl: boolean,
+	modules: string,
+	fsTotal: number,
+	fsUsed: number,
+): IDeviceInfo {
 	return {
 		type: 'deviceInfo',
 		info: {
@@ -14,6 +21,8 @@ export function deviceInfo(numberType: string, heapFree: number, ssl: boolean, m
 			heapFree,
 			ssl,
 			modules,
+			fsTotal,
+			fsUsed,
 		},
 	}
 }

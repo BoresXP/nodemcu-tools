@@ -16,6 +16,8 @@ export interface IDeviceInfo {
 	heapFree?: number
 	ssl?: boolean
 	modules?: string
+	fsTotal?: number
+	fsUsed?: number
 }
 
 export interface IState {

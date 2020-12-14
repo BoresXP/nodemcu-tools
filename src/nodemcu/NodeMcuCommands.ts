@@ -11,6 +11,8 @@ export interface IDeviceInfo {
 	freeHeap: number
 	ssl: boolean
 	modules: string
+	fsTotal: number
+	fsUsed: number
 }
 
 export default class NodeMcuCommands {
@@ -36,6 +38,8 @@ export default class NodeMcuCommands {
 
 		getDeviceInfo:
 			'local i=node.info("build_config");local s="";for k,v in pairs(i) do s=s..k..":"..tostring(v)..";" end uart.write(0,s.."\\r\\n")',
+
+		getFsInfo: 'local remaining,used,total=file.fsinfo();uart.write(0, remaining..";"..used..";"..total.."\\r\\n")',
 	}
 
 	private readonly _device: NodeMcu
@@ -165,6 +169,8 @@ export default class NodeMcuCommands {
 
 		const deviceInfo = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.getDeviceInfo, false)
 
+		const fsInfo = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.getFsInfo, false)
+
 		this._device.setBusy(false)
 
 		const infoParams: { [name: string]: string } = {}
@@ -176,11 +182,17 @@ export default class NodeMcuCommands {
 				infoParams[name] = value
 			})
 
+		const fsInfoArray = fsInfo
+			.split(';', 3)
+			.map(fsInfoStr => parseInt(fsInfoStr, 10))
+
 		return {
 			freeHeap: parseInt(freeHeap, 10),
 			numberType: infoParams['number_type'],
 			ssl: infoParams['ssl'] === 'true',
 			modules: infoParams['modules'],
+			fsTotal: fsInfoArray[2],
+			fsUsed: fsInfoArray[1],
 		}
 	}
 

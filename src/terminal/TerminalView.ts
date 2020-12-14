@@ -54,7 +54,9 @@ export default class TerminalView {
 
 	private async updateDeviceInfo(): Promise<void> {
 		const info = await this._device.commands.getDeviceInfo()
-		await this._webViewPanel.webview.postMessage(deviceInfo(info.numberType, info.freeHeap, info.ssl, info.modules))
+		await this._webViewPanel.webview.postMessage(
+			deviceInfo(info.numberType, info.freeHeap, info.ssl, info.modules, info.fsTotal, info.fsUsed),
+		)
 	}
 
 	private getHtml(extensionUri: Uri): string {
