@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
-import bindings, { BindingOptions } from 'bindings'
+import bindings, { Options } from 'bindings'
 
 import Fs from 'fs'
 import Path from 'path'
@@ -55,7 +55,7 @@ function loadSerialPort(): any {
 	}
 }
 
-export function bindingsProxy(opts: string | BindingOptions): any {
+export function bindingsProxy(opts: string | Options): any {
 	if (typeof opts === 'string' && opts === 'bindings.node') {
 		return loadSerialPort() // eslint-disable-line @typescript-eslint/no-unsafe-return
 	}
