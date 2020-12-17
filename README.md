@@ -1,5 +1,7 @@
 Extension brings NodeMCU device interaction to Visual Studio Code.
 
+[![Build Status](https://travis-ci.com/BoresExpress/nodemcu-tools.svg?branch=master)](https://travis-ci.com/BoresExpress/nodemcu-tools)
+
 ## Features
 *(see detailed description below)*
 * Browse devices in a special TreeView

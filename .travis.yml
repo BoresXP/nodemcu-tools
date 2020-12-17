@@ -11,6 +11,10 @@ addons:
     packages:
       - g++-4.9
 
+branches:
+  only:
+    - master
+
 before_install:
   - npm install -g vsce
 
