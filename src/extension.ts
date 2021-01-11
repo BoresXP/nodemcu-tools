@@ -61,10 +61,7 @@ export function activate(context: ExtensionContext): void {
 		)
 		context.subscriptions.push(
 			commands.registerCommand('nodemcu-tools.uploadFileRun', async (file: Uri) => {
-				const deviceFileName = await tools.uploadFileAndRun(file)
-				if (deviceFileName) {
-					treeProvider.refresh()
-				}
+				await tools.uploadFileAndRun(file)
 			})
 		)
 

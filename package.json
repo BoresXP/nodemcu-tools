@@ -84,7 +84,7 @@
 			},
 			{
 				"command": "nodemcu-tools.uploadFileRun",
-				"title": "Upload to device and compile",
+				"title": "Run on device",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .lua"
 			}
 		],
@@ -93,12 +93,12 @@
 				{
 					"command": "nodemcu-tools.uploadFile",
 					"alt": "nodemcu-tools.uploadFileCompile",
-					"group": "nodemcu-tools",
+					"group": "nodemcu-tools@10",
 					"when": "nodemcu-tools:isConnected"
 				},
 				{
 					"command": "nodemcu-tools.uploadFileRun",
-					"group": "nodemcu-tools",
+					"group": "nodemcu-tools@20",
 					"when": "nodemcu-tools:isConnected"
 				}
 			],

@@ -90,7 +90,7 @@ export default class NodemcuTools {
 
 		const deviceFileName = await NodemcuTools.uploadFileInternal(devicePath, file)
 		if (deviceFileName) {
-			await this.runFile(devicePath, deviceFileName)
+			await this.runFile(devicePath, deviceFileName, true)
 		}
 
 		return deviceFileName
@@ -102,9 +102,9 @@ export default class NodemcuTools {
 		await device.commands.delete(deviceFileName)
 	}
 
-	public async runFile(devicePath: string, deviceFileName: string): Promise<void> {
+	public async runFile(devicePath: string, deviceFileName: string, deleteAfter?: boolean): Promise<void> {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
-		await device.commands.run(deviceFileName)
+		await device.commands.run(deviceFileName, deleteAfter)
 	}
 
 	public async deleteFile(devicePath: string, deviceFileName: string): Promise<void> {

@@ -26,6 +26,8 @@ export default class NodeMcuCommands {
 
 		fileRun: (name: string) => `dofile("${name}")`,
 
+		fileRunAndDelete: (name: string) => `dofile("${name}");file.remove("${name}")`,
+
 		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
 			`file.open("${name}","${mode}");local bw=0;uart.on("data",${blockSize},function(data) bw=bw+${blockSize};file.write(data);uart.write(0,"kxyJ\\r\\n");if bw>=${fileSize} then uart.on("data");file.close();uart.write(0,"QKiw\\r\\n") end end, 0);uart.write(0,"Ready\\r\\n")`,
 
@@ -123,9 +125,13 @@ export default class NodeMcuCommands {
 		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.fileCompile(fileName))
 	}
 
-	public async run(fileName: string): Promise<void> {
+	public async run(fileName: string, deleteAfter?: boolean): Promise<void> {
 		await this.checkReady()
-		await this._device.fromTerminal(NodeMcuCommands._luaCommands.fileRun(fileName))
+		await this._device.fromTerminal(
+			deleteAfter
+				? NodeMcuCommands._luaCommands.fileRunAndDelete(fileName)
+				: NodeMcuCommands._luaCommands.fileRun(fileName),
+		)
 	}
 
 	public async download(fileName: string, progressCb?: (percent: number) => void): Promise<Buffer> {
@@ -182,9 +188,7 @@ export default class NodeMcuCommands {
 				infoParams[name] = value
 			})
 
-		const fsInfoArray = fsInfo
-			.split(';', 3)
-			.map(fsInfoStr => parseInt(fsInfoStr, 10))
+		const fsInfoArray = fsInfo.split(';', 3).map(fsInfoStr => parseInt(fsInfoStr, 10))
 
 		return {
 			freeHeap: parseInt(freeHeap, 10),
