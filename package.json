@@ -67,12 +67,12 @@
 			{
 				"command": "nodemcu-tools.uploadFile",
 				"title": "Upload to device",
-				"enablement": "nodemcu-tools:isConnected"
+				"enablement": "explorerViewletFocus && !explorerResourceIsFolder"
 			},
 			{
 				"command": "nodemcu-tools.uploadFileCompile",
 				"title": "Upload to device and compile",
-				"enablement": "nodemcu-tools:isConnected"
+				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .lua"
 			},
 			{
 				"command": "nodemcu-tools.downloadFile",
@@ -85,7 +85,7 @@
 			{
 				"command": "nodemcu-tools.uploadFileRun",
 				"title": "Upload to device and compile",
-				"enablement": "nodemcu-tools:isConnected"
+				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .lua"
 			}
 		],
 		"menus": {
@@ -93,11 +93,13 @@
 				{
 					"command": "nodemcu-tools.uploadFile",
 					"alt": "nodemcu-tools.uploadFileCompile",
-					"group": "nodemcu-tools"
+					"group": "nodemcu-tools",
+					"when": "nodemcu-tools:isConnected"
 				},
 				{
 					"command": "nodemcu-tools.uploadFileRun",
-					"group": "nodemcu-tools"
+					"group": "nodemcu-tools",
+					"when": "nodemcu-tools:isConnected"
 				}
 			],
 			"view/title": [
