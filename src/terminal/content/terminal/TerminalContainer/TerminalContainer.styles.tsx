@@ -37,3 +37,7 @@ export const BottomContainer = styled.div`
 	margin-bottom: 0;
 `
 
+export const MiddleContainer = styled.div`
+	margin-top: 4px;
+`
+

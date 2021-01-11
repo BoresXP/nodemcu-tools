@@ -3,7 +3,7 @@ import { SvgButtonStyled } from './SvgButton.styles'
 
 export interface ISvgButtonProps {
 	svgName: string
-	onClick: () => void
+	onClick?: () => void
 	disabled?: boolean
 }
 

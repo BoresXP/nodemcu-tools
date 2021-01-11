@@ -3,6 +3,7 @@ import * as Events from '../../state/events'
 import {
 	BottomContainer,
 	CmdLineInput,
+	MiddleContainer,
 	TerminalContainerStyled,
 	TerminalControls,
 	TerminalInnerContainer,
@@ -59,6 +60,9 @@ const TerminalContainer: React.FC = () => {
 			</TerminalInnerContainer>
 			<TerminalControls>
 				<SvgButton svgName="#svg-garbage" onClick={onClear} />
+				<MiddleContainer>
+					<SvgButton svgName="#svg-download" />
+				</MiddleContainer>
 				<BottomContainer>
 					<SvgButton svgName="#svg-play-button" disabled={isDeviceBusy} onClick={onRun} />
 				</BottomContainer>

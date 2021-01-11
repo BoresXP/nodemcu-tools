@@ -1,18 +1,14 @@
+import { Button } from '../../controls'
 import styled from 'styled-components'
 
-export interface ISvgButtonStyledProps {
-	disabled?: boolean
-}
-
-export const SvgButtonStyled = styled.div<ISvgButtonStyledProps>`
+export const SvgButtonStyled = styled(Button)`
 	cursor: pointer;
-	background-color: var(
-		${props => (props.disabled ? '--vscode-button-secondaryBackground' : '--vscode-button-background')}
-	);
+	background-color: var(--vscode-button-background);
 	border: 0;
+	margin: 0 2px;
+	padding: 0;
 	height: 2.5em;
 	width: 2.5em;
-	position: relative;
 
 	&:hover {
 		background-color: var(--vscode-button-hoverBackground);
@@ -23,13 +19,13 @@ export const SvgButtonStyled = styled.div<ISvgButtonStyledProps>`
 		outline-offset: 2px;
 	}
 
+	&:disabled {
+		background-color: var(--vscode-button-secondaryBackground);
+	}
+
 	& SVG {
-		height: 2em;
-		width: 2em;
+		height: 1.6em;
+		width: 1.6em;
 		fill: var(${props => (props.disabled ? '--vscode-button-secondaryForeground' : '--vscode-button-foreground')});
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
 	}
 `
