@@ -82,6 +82,20 @@ export default class NodemcuTools {
 		return deviceFileName
 	}
 
+	public async uploadFileAndRun(file: Uri): Promise<string | undefined> {
+		const devicePath = await NodemcuTools.selectConnectedDevice()
+		if (!devicePath) {
+			return void 0
+		}
+
+		const deviceFileName = await NodemcuTools.uploadFileInternal(devicePath, file)
+		if (deviceFileName) {
+			await this.runFile(devicePath, deviceFileName)
+		}
+
+		return deviceFileName
+	}
+
 	public async compileFile(devicePath: string, deviceFileName: string): Promise<void> {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 		await device.commands.compile(deviceFileName)

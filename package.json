@@ -81,6 +81,11 @@
 			{
 				"command": "nodemcu-tools.downloadFileAs",
 				"title": "Download as..."
+			},
+			{
+				"command": "nodemcu-tools.uploadFileRun",
+				"title": "Upload to device and compile",
+				"enablement": "nodemcu-tools:isConnected"
 			}
 		],
 		"menus": {
@@ -88,6 +93,10 @@
 				{
 					"command": "nodemcu-tools.uploadFile",
 					"alt": "nodemcu-tools.uploadFileCompile",
+					"group": "nodemcu-tools"
+				},
+				{
+					"command": "nodemcu-tools.uploadFileRun",
 					"group": "nodemcu-tools"
 				}
 			],
