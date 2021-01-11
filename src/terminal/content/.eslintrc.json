@@ -42,8 +42,7 @@
 						"types": ["function"],
 						"format": ["PascalCase", "camelCase"]
 					}
-				], // Enforces naming conventions for everything across a codebase
-				"@typescript-eslint/no-extra-parens": ["error", "all", { "ignoreJSX": "all" }] // Disallow unnecessary parentheses
+				] // Enforces naming conventions for everything across a codebase
 			}
 		}
 	]

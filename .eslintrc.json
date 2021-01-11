@@ -108,7 +108,6 @@
 
 		"optimize-regex/optimize-regex": "warn", // Optimize regex literals
 
-		"@typescript-eslint/no-extra-parens": ["error", "all"], // Disallow unnecessary parentheses
 		"@typescript-eslint/semi": ["error", "never"], // Require or disallow semicolons instead of ASI
 		"@typescript-eslint/member-delimiter-style": ["error", { "multiline": { "delimiter": "none" } }], // Require a specific member delimiter style for interfaces and type literals
 		"@typescript-eslint/member-ordering": "warn", // Require a consistent member declaration order
