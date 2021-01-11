@@ -83,6 +83,7 @@ Please report issues here: [bugtracker](https://bitbucket.org/BoresExpress/nodem
 
 - Andi Dittrich for the great console app [NodeMCU-Tool](https://github.com/AndiDittrich/NodeMCU-Tool)
 - Furkan Duman for NodeMCU [extension for VSCode](https://github.com/fduman/vscode-nodemcu)
+- Icons made by [Gregor Cresnar](https://flaticon.com/authors/gregor-cresnar) from [Flaticon](https://flaticon.com)
 
 ## License
 
