@@ -1,8 +1,8 @@
 import * as Events from '../../state/events'
 
 import {
+	BottomContainer,
 	CmdLineInput,
-	RunButton,
 	TerminalContainerStyled,
 	TerminalControls,
 	TerminalInnerContainer,
@@ -10,7 +10,7 @@ import {
 import React, { useCallback } from 'react'
 import { getCurrentCommandText, getDeviceBusy, useRootStore } from '../../state/selectors'
 
-import { Button } from '../../controls'
+import SvgButton from '../SvgButton/SvgButton'
 import Terminal from '../Terminal/Terminal'
 
 const TerminalContainer: React.FC = () => {
@@ -58,10 +58,10 @@ const TerminalContainer: React.FC = () => {
 				<CmdLineInput onKeyUp={onKeyUp} onChange={onChange} value={cmdText} />
 			</TerminalInnerContainer>
 			<TerminalControls>
-				<Button onClick={onClear}>Clear</Button>
-				<RunButton disabled={isDeviceBusy} onClick={onRun}>
-					Run
-				</RunButton>
+				<SvgButton svgName="#svg-garbage" onClick={onClear} />
+				<BottomContainer>
+					<SvgButton svgName="#svg-play-button" disabled={isDeviceBusy} onClick={onRun} />
+				</BottomContainer>
 			</TerminalControls>
 		</TerminalContainerStyled>
 	)

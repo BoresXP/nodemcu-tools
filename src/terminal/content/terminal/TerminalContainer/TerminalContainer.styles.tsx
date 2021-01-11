@@ -1,4 +1,3 @@
-import { Button } from '../../controls'
 import styled from 'styled-components'
 
 export const TerminalContainerStyled = styled.div`
@@ -33,7 +32,8 @@ export const CmdLineInput = styled.input`
 	}
 `
 
-export const RunButton = styled(Button)`
+export const BottomContainer = styled.div`
 	margin-top: auto;
 	margin-bottom: 0;
 `
+
