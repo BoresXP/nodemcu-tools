@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Command to run file on device
+- Button to scroll terminal to bottom
+
+### Changed
+- - Do not scroll terminal to bottom if scrolled up
 
 ## [3.3.0] - 2020-12-17
 ### Added
