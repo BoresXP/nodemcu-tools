@@ -9,7 +9,7 @@ import {
 	TerminalInnerContainer,
 } from './TerminalContainer.styles'
 import React, { useCallback } from 'react'
-import { getCurrentCommandText, getDeviceBusy, useRootStore } from '../../state/selectors'
+import { getCurrentCommandText, getDeviceBusy, getTerminalAutoscrollEnabled, useRootStore } from '../../state/selectors'
 
 import SvgButton from '../SvgButton/SvgButton'
 import Terminal from '../Terminal/Terminal'
@@ -17,6 +17,7 @@ import Terminal from '../Terminal/Terminal'
 const TerminalContainer: React.FC = () => {
 	const isDeviceBusy = useRootStore(getDeviceBusy)
 	const cmdText = useRootStore(getCurrentCommandText)
+	const autoscrollEnabled = useRootStore(getTerminalAutoscrollEnabled)
 
 	const onKeyUp = useCallback(
 		(evt: React.KeyboardEvent<HTMLInputElement>) => {
@@ -64,10 +65,10 @@ const TerminalContainer: React.FC = () => {
 			<TerminalControls>
 				<SvgButton svgName="#svg-garbage" onClick={onClear} />
 				<MiddleContainer>
-					<SvgButton svgName="#svg-download" onClick={onEnableAutoscroll} />
+					<SvgButton svgName="#svg-download" disabled={autoscrollEnabled} onClick={onEnableAutoscroll} />
 				</MiddleContainer>
 				<BottomContainer>
-					<SvgButton svgName="#svg-play-button" disabled={isDeviceBusy} onClick={onRun} />
+					<SvgButton svgName="#svg-play-button" disabled={isDeviceBusy || !cmdText} onClick={onRun} />
 				</BottomContainer>
 			</TerminalControls>
 		</TerminalContainerStyled>
