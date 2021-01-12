@@ -51,6 +51,9 @@ const TerminalContainer: React.FC = () => {
 	const onClear = useCallback(() => {
 		Events.terminalLinesClear()
 	}, [])
+	const onEnableAutoscroll = useCallback(() => {
+		Events.terminalAutoscrollSet(true)
+	}, [])
 
 	return (
 		<TerminalContainerStyled>
@@ -61,7 +64,7 @@ const TerminalContainer: React.FC = () => {
 			<TerminalControls>
 				<SvgButton svgName="#svg-garbage" onClick={onClear} />
 				<MiddleContainer>
-					<SvgButton svgName="#svg-download" />
+					<SvgButton svgName="#svg-download" onClick={onEnableAutoscroll} />
 				</MiddleContainer>
 				<BottomContainer>
 					<SvgButton svgName="#svg-play-button" disabled={isDeviceBusy} onClick={onRun} />

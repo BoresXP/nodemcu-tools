@@ -71,6 +71,10 @@ export const rootStore = createStore<IState>(savedState ?? initialState)
 		...state,
 		deviceInfo: params,
 	}))
+	.on(Events.terminalAutoscrollSet, (state, params) => ({
+		...state,
+		terminalAutoscrollEnabled: params,
+	}))
 
 rootStore.watch(state => vscode.setState(state))
 

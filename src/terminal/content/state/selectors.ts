@@ -9,10 +9,12 @@ export function useRootStore<T>(selector: (state: IState) => T): T {
 
 export const getTerminalLines = (state: IState): ITerminalLine[] => state.terminalLines
 
+export const getTerminalAutoscrollEnabled = (state: IState): boolean => state.terminalAutoscrollEnabled
+
 export const getSnippets = (state: IState): Record<string, string> => state.settings.snippets
 
 export const getDeviceBusy = (state: IState): boolean => state.isDeviceBusy
 
 export const getCurrentCommandText = (state: IState): string => state.currentCommandText
 
-export const getDeviceInfo = (state: IState) : IDeviceInfo => state.deviceInfo
+export const getDeviceInfo = (state: IState): IDeviceInfo => state.deviceInfo

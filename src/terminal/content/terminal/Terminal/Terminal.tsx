@@ -1,6 +1,8 @@
-import React, { useEffect, useRef } from 'react'
+import * as Events from '../../state/events'
+
+import React, { useCallback, useEffect, useRef } from 'react'
 import { TerminalLine, TerminalStyled } from './Terminal.styles'
-import { getTerminalLines, useRootStore } from '../../state/selectors'
+import { getTerminalAutoscrollEnabled, getTerminalLines, useRootStore } from '../../state/selectors'
 
 import { terminalLinesStore } from '../../state/store'
 import { useList } from 'effector-react'
@@ -9,18 +11,27 @@ const Terminal: React.FC = () => {
 	const messageEndRef = useRef(null)
 
 	const lines = useRootStore(getTerminalLines)
+	const autoscrollEnabled = useRootStore(getTerminalAutoscrollEnabled)
 	useEffect(() => {
-		const divElement = messageEndRef.current as HTMLDivElement | null
-		if (divElement) {
-			divElement.scrollIntoView()
+		if (autoscrollEnabled) {
+			const divElement = messageEndRef.current as HTMLDivElement | null
+			if (divElement) {
+				divElement.scrollIntoView()
+			}
 		}
-	}, [lines])
+	}, [autoscrollEnabled, lines])
+
+	const onScroll = useCallback((evt: React.UIEvent<HTMLDivElement>) => {
+		const divElement = evt.currentTarget
+		console.log(divElement.clientHeight, divElement.scrollTop, divElement.scrollHeight)
+		Events.terminalAutoscrollSet(divElement.clientHeight + divElement.scrollTop === divElement.scrollHeight)
+	}, [])
 
 	return (
-		<TerminalStyled>
-			{useList(terminalLinesStore, line =>
+		<TerminalStyled onScroll={onScroll}>
+			{useList(terminalLinesStore, line => (
 				<TerminalLine type={line.type}>{line.text}</TerminalLine>
-			)}
+			))}
 			<div ref={messageEndRef} />
 		</TerminalStyled>
 	)

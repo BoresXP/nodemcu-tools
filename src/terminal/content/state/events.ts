@@ -16,6 +16,8 @@ export const termialHistoryDown = createEvent()
 
 export const terminalCurrentCommandText = createEvent<string>()
 
+export const terminalAutoscrollSet = createEvent<boolean>()
+
 export const setSettings = createEvent<ISettings>()
 
 export const setDeviceInfo = createEvent<IDeviceInfo>()

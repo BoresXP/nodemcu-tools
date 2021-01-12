@@ -23,6 +23,7 @@ export interface IDeviceInfo {
 export interface IState {
 	terminalLines: ITerminalLine[]
 	terminalCommands: string[]
+	terminalAutoscrollEnabled: boolean
 	currentHistoryIndex: number
 	currentCommandText: string
 	isDeviceBusy: boolean
@@ -39,6 +40,7 @@ export const initialSettings: ISettings = {
 export const initialState: IState = {
 	terminalLines: [],
 	terminalCommands: [],
+	terminalAutoscrollEnabled: true,
 	currentHistoryIndex: 1,
 	currentCommandText: '',
 	isDeviceBusy: true,
