@@ -54,6 +54,7 @@ _(ALT commands are available by pressing ALT key when opening menu)_
 * **Explorer context menu:**
   * **Upload to device:** upload selected file on device. If you have more than one device connected you will be presented with QuickPick UI to select device to upload file to.
   * **[ALT] Upload to device and compile:** upload file to device (see above), compiles it and removes source.
+  * **Run on device:** upload selected file to device, execute it with `dofile` command and immediately delete it from device. Usefull for executing long configuration scripts (for example, to reconfigure LFS and SSPIF sizes).
 * **Device context menu (7):**
   * **Connect:** connect to this device. This will also open main window for this device.
   * **Disconnect:** disconnect from device. This will also close main window for device. By the way, closing main window will disconnect device too.
@@ -62,7 +63,7 @@ _(ALT commands are available by pressing ALT key when opening menu)_
   * **Delete:** delete selected file on device. No recovery possible.
   * **Download:** download file from device to host machine. File will be saved in the root of workspace.
   * **[ALT] Download as...:** download file to host machine (see above) but lets you change name under which file will be saved.
-  * **Run:** run file on device. It just executes dofile command which you will see in terminal (1).
+  * **Run:** run file on device. It just executes `dofile` command which you will see in terminal (1).
 
 ## Extension Settings
 
