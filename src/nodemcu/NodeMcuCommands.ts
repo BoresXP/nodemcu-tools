@@ -28,6 +28,8 @@ export default class NodeMcuCommands {
 
 		fileRunAndDelete: (name: string) => `dofile("${name}");file.remove("${name}")`,
 
+		fileSetLfs: (name: string) => `node.LFS.reload(${name})`,
+
 		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
 			`file.open("${name}","${mode}");local bw=0;uart.on("data",${blockSize},function(data) bw=bw+${blockSize};file.write(data);uart.write(0,"kxyJ\\r\\n");if bw>=${fileSize} then uart.on("data");file.close();uart.write(0,"QKiw\\r\\n") end end, 0);uart.write(0,"Ready\\r\\n")`,
 
@@ -100,7 +102,7 @@ export default class NodeMcuCommands {
 					})
 
 					offset += NodeMcuSerial.maxLineLength
-					progressCb?.(offset * 100 / data.length)
+					progressCb?.((offset * 100) / data.length)
 				}
 			})
 
@@ -123,6 +125,11 @@ export default class NodeMcuCommands {
 	public async compile(fileName: string): Promise<void> {
 		await this.checkReady()
 		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.fileCompile(fileName))
+	}
+
+	public async setLfs(fileName: string): Promise<void> {
+		await this.checkReady()
+		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.fileSetLfs(fileName))
 	}
 
 	public async run(fileName: string, deleteAfter?: boolean): Promise<void> {
@@ -151,7 +158,7 @@ export default class NodeMcuCommands {
 		return new Promise(resolve => {
 			const unsubscribe = this._device.onDataRaw(async data => {
 				retVal = retVal ? Buffer.concat([retVal, data]) : data
-				progressCb?.(retVal.length * 100 / fileSize)
+				progressCb?.((retVal.length * 100) / fileSize)
 
 				if (retVal.length === fileSize) {
 					unsubscribe.dispose()

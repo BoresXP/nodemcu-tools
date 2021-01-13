@@ -96,6 +96,20 @@ export default class NodemcuTools {
 		return deviceFileName
 	}
 
+	public async uploadFileAndSetLfs(file: Uri): Promise<string | undefined> {
+		const devicePath = await NodemcuTools.selectConnectedDevice()
+		if (!devicePath) {
+			return void 0
+		}
+
+		const deviceFileName = await NodemcuTools.uploadFileInternal(devicePath, file)
+		if (deviceFileName) {
+			await this.setFileLfs(devicePath, deviceFileName)
+		}
+
+		return deviceFileName
+	}
+
 	public async compileFile(devicePath: string, deviceFileName: string): Promise<void> {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 		await device.commands.compile(deviceFileName)
@@ -110,6 +124,11 @@ export default class NodemcuTools {
 	public async deleteFile(devicePath: string, deviceFileName: string): Promise<void> {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 		await device.commands.delete(deviceFileName)
+	}
+
+	public async setFileLfs(devicePath: string, deviceFileName: string): Promise<void> {
+		const device = NodeMcuRepository.getOrCreate(devicePath)
+		await device.commands.setLfs(deviceFileName)
 	}
 
 	public async downloadFile(devicePath: string, deviceFileName: string, hostFileName?: string): Promise<void> {

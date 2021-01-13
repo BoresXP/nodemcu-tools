@@ -51,6 +51,7 @@ Here is an example. Upload LUA-file to device, compile it, run compiled file fro
 ## Keybindings & Commands
 
 _(ALT commands are available by pressing ALT key when opening menu)_
+
 * **Explorer context menu:**
   * **Upload to device:** upload selected file on device. If you have more than one device connected you will be presented with QuickPick UI to select device to upload file to.
   * **[ALT] Upload to device and compile:** upload file to device (see above), compiles it and removes source.

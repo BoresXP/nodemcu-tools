@@ -64,6 +64,11 @@ export function activate(context: ExtensionContext): void {
 				await tools.uploadFileAndRun(file)
 			})
 		)
+		context.subscriptions.push(
+			commands.registerCommand('nodemcu-tools.uploadFileSetLfs', async (file: Uri) => {
+				await tools.uploadFileAndSetLfs(file)
+			})
+		)
 
 		context.subscriptions.push(
 			commands.registerCommand('nodemcu-tools.compileFile', async (item: FileTreeItem) => {
