@@ -52,6 +52,19 @@ export function activate(context: ExtensionContext): void {
 			}),
 		)
 		context.subscriptions.push(
+			commands.registerCommand('nodemcu-tools.uploadFileAs', async (file: Uri) => {
+				const newName = await renameFile(file, 'File will be saved under this name on device')
+				if (!newName) {
+					return
+				}
+
+				const deviceFileName = await tools.uploadFile(file, newName)
+				if (deviceFileName) {
+					treeProvider.refresh()
+				}
+			}),
+		)
+		context.subscriptions.push(
 			commands.registerCommand('nodemcu-tools.uploadFileCompile', async (file: Uri) => {
 				const deviceFileName = await tools.uploadFileAndCompile(file)
 				if (deviceFileName) {

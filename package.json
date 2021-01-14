@@ -63,16 +63,24 @@
 			{
 				"command": "nodemcu-tools.compileFile",
 				"title": "Compile",
-				"category": "NodeMCU"
+				"category": "NodeMCU",
+				"enablement": "viewItem == nodemcu-file-lua"
 			},
 			{
 				"command": "nodemcu-tools.runFile",
 				"title": "Run",
-				"category": "NodeMCU"
+				"category": "NodeMCU",
+				"enablement": "viewItem =~ /^nodemcu-file-(lua|lc)$/"
 			},
 			{
 				"command": "nodemcu-tools.uploadFile",
 				"title": "Upload to device",
+				"category": "NodeMCU",
+				"enablement": "explorerViewletFocus && !explorerResourceIsFolder"
+			},
+			{
+				"command": "nodemcu-tools.uploadFileAs",
+				"title": "Upload to device...",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder"
 			},
@@ -89,7 +97,7 @@
 			},
 			{
 				"command": "nodemcu-tools.downloadFileAs",
-				"title": "Download as...",
+				"title": "Download...",
 				"category": "NodeMCU"
 			},
 			{
@@ -115,19 +123,20 @@
 			"explorer/context": [
 				{
 					"command": "nodemcu-tools.uploadFile",
-					"alt": "nodemcu-tools.uploadFileCompile",
+					"alt": "nodemcu-tools.uploadFileAs",
 					"group": "nodemcu-tools@10",
-					"when": "nodemcu-tools:isConnected"
-				},
-				{
-					"command": "nodemcu-tools.uploadFileRun",
-					"group": "nodemcu-tools@20",
 					"when": "nodemcu-tools:isConnected"
 				},
 				{
 					"command": "nodemcu-tools.uploadFileSetLfs",
 					"alt": "nodemcu-tools.uploadFileSetLfsAs",
-					"group": "nodemcu-tools@30",
+					"group": "nodemcu-tools@20",
+					"when": "nodemcu-tools:isConnected"
+				},
+				{
+					"command": "nodemcu-tools.uploadFileCompile",
+					"alt": "nodemcu-tools.uploadFileRun",
+					"group": "nodemcu-tools@20",
 					"when": "nodemcu-tools:isConnected"
 				}
 			],
@@ -141,28 +150,34 @@
 			"view/item/context": [
 				{
 					"command": "nodemcu-tools.connect",
-					"when": "view == nodemcu-tools.devices && viewItem == nodemcu-device"
+					"when": "view == nodemcu-tools.devices && viewItem == nodemcu-device",
+					"group": "nodemcu-tools"
 				},
 				{
 					"command": "nodemcu-tools.disconnect",
-					"when": "view == nodemcu-tools.devices && viewItem == nodemcu-device-connected"
-				},
-				{
-					"command": "nodemcu-tools.deleteFile",
-					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/"
-				},
-				{
-					"command": "nodemcu-tools.compileFile",
-					"when": "view == nodemcu-tools.devices && viewItem == nodemcu-file-lua"
-				},
-				{
-					"command": "nodemcu-tools.runFile",
-					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file-(lua|lc)$/"
+					"when": "view == nodemcu-tools.devices && viewItem == nodemcu-device-connected",
+					"group": "nodemcu-tools"
 				},
 				{
 					"command": "nodemcu-tools.downloadFile",
 					"alt": "nodemcu-tools.downloadFileAs",
-					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/"
+					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/",
+					"group": "nodemcu-tools@10"
+				},
+				{
+					"command": "nodemcu-tools.runFile",
+					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/",
+					"group": "nodemcu-tools@20"
+				},
+				{
+					"command": "nodemcu-tools.compileFile",
+					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/",
+					"group": "nodemcu-tools@30"
+				},
+				{
+					"command": "nodemcu-tools.deleteFile",
+					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/",
+					"group": "nodemcu-tools@40"
 				}
 			]
 		},

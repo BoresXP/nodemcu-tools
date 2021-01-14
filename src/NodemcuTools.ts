@@ -63,13 +63,13 @@ export default class NodemcuTools {
 		await commands.executeCommand('setContext', 'nodemcu-tools:isConnected', NodeMcuRepository.allConnected.length > 0)
 	}
 
-	public async uploadFile(file: Uri): Promise<string | undefined> {
+	public async uploadFile(file: Uri, deviceFileName?: string): Promise<string | undefined> {
 		const devicePath = await NodemcuTools.selectConnectedDevice()
 		if (!devicePath) {
 			return void 0
 		}
 
-		return NodemcuTools.uploadFileInternal(devicePath, file)
+		return NodemcuTools.uploadFileInternal(devicePath, file, deviceFileName)
 	}
 
 	public async uploadFileAndCompile(file: Uri): Promise<string | undefined> {
