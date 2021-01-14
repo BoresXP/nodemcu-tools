@@ -4,6 +4,7 @@ export const TerminalContainerStyled = styled.div`
 	display: flex;
 	flex-grow: 1;
 	min-height: 0;
+	margin: 3px;
 `
 
 export const TerminalInnerContainer = styled.div`

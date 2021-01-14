@@ -12,8 +12,4 @@ export const Page = styled.div`
 	background-color: var(--vscode-editor-background);
 	color: var(--vscode-editor-foreground);
 	font: var(--vscode-font-weight) var(--vscode-font-size) var(--vscode-font-family);
-
-	& > DIV {
-		margin: 7px 3px;
-	}
 `

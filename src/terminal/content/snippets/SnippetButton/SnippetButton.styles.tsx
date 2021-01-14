@@ -3,4 +3,5 @@ import styled from 'styled-components'
 
 export const SnippetButtonStyled = styled(Button)`
 	min-width: 10em;
+	margin: 3px;
 `
