@@ -17,10 +17,14 @@ export default class NodemcuTools {
 		return path
 	}
 
-	private static async uploadFileInternal(devicePath: string, file: Uri): Promise<string | undefined> {
+	private static async uploadFileInternal(
+		devicePath: string,
+		file: Uri,
+		deviceFileName?: string,
+	): Promise<string | undefined> {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
-		const [fileName] = file.path.split('/').slice(-1)
+		const fileName = deviceFileName ?? file.path.split('/').slice(-1)[0]
 		await window.withProgress(
 			{
 				location: ProgressLocation.Notification,
@@ -96,13 +100,13 @@ export default class NodemcuTools {
 		return deviceFileName
 	}
 
-	public async uploadFileAndSetLfs(file: Uri): Promise<string | undefined> {
+	public async uploadFileAndSetLfs(file: Uri, newName?: string): Promise<string | undefined> {
 		const devicePath = await NodemcuTools.selectConnectedDevice()
 		if (!devicePath) {
 			return void 0
 		}
 
-		const deviceFileName = await NodemcuTools.uploadFileInternal(devicePath, file)
+		const deviceFileName = await NodemcuTools.uploadFileInternal(devicePath, file, newName)
 		if (deviceFileName) {
 			await this.setFileLfs(devicePath, deviceFileName)
 		}

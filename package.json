@@ -103,6 +103,12 @@
 				"title": "Upload to device and set as LFS",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .img"
+			},
+			{
+				"command": "nodemcu-tools.uploadFileSetLfsAs",
+				"title": "Upload to device and set as LFS...",
+				"category": "NodeMCU",
+				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .img"
 			}
 		],
 		"menus": {
@@ -120,6 +126,7 @@
 				},
 				{
 					"command": "nodemcu-tools.uploadFileSetLfs",
+					"alt": "nodemcu-tools.uploadFileSetLfsAs",
 					"group": "nodemcu-tools@30",
 					"when": "nodemcu-tools:isConnected"
 				}

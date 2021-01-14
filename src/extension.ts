@@ -69,6 +69,16 @@ export function activate(context: ExtensionContext): void {
 				await tools.uploadFileAndSetLfs(file)
 			})
 		)
+		context.subscriptions.push(
+			commands.registerCommand('nodemcu-tools.uploadFileSetLfsAs', async (file: Uri) => {
+				const newName = await renameFile(file, 'File will be saved under this name on device')
+				if (!newName) {
+					return
+				}
+
+				await tools.uploadFileAndSetLfs(file, newName)
+			})
+		)
 
 		context.subscriptions.push(
 			commands.registerCommand('nodemcu-tools.compileFile', async (item: FileTreeItem) => {
@@ -95,26 +105,28 @@ export function activate(context: ExtensionContext): void {
 				tools.downloadFile(item.parent.path, item.name),
 			),
 		)
-
 		context.subscriptions.push(
 			commands.registerCommand('nodemcu-tools.downloadFileAs', async (item: FileTreeItem) => {
-				const oldName = item.name
-				const dotPosition = oldName.lastIndexOf('.')
-				const newName = await window.showInputBox({
-					value: item.name,
-					valueSelection: [0, dotPosition > 0 ? dotPosition : oldName.length],
-					prompt: 'File will be saved under this name on host maschine',
-				})
-
+				const newName = await renameFile(item.name, 'File will be saved under this name on host machine')
 				if (!newName) {
 					return
 				}
 
-				return tools.downloadFile(item.parent.path, oldName, newName)
+				return tools.downloadFile(item.parent.path, item.name, newName)
 			}),
 		)
 	} catch (ex) {
 		console.error(ex) // eslint-disable-line no-console
 		void window.showErrorMessage(`Error in nodemcu-tools: ${ex}`)
 	}
+}
+
+async function renameFile(file: string | Uri, prompt: string): Promise<string | undefined> {
+	const oldName = typeof file === 'string' ? file : file.path.split('/').slice(-1)[0]
+	const dotPosition = oldName.lastIndexOf('.')
+	return window.showInputBox({
+		value: oldName,
+		valueSelection: [0, dotPosition > 0 ? dotPosition : oldName.length],
+		prompt,
+	})
 }
