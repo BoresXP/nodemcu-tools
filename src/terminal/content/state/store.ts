@@ -28,8 +28,11 @@ export const rootStore = createStore<IState>(savedState ?? initialState)
 
 		vscode.postMessage(terminalCommand(params))
 
-		let newCommands = state.terminalCommands.concat(params)
-		newCommands = newCommands.slice(Math.max(newCommands.length - state.settings.historyMaxLines, 0))
+		let newCommands = state.terminalCommands
+		if (newCommands.length === 0 || newCommands[newCommands.length - 1] !== params) {
+			newCommands = state.terminalCommands.concat(params)
+			newCommands = newCommands.slice(Math.max(newCommands.length - state.settings.historyMaxLines, 0))
+		}
 
 		return {
 			...state,

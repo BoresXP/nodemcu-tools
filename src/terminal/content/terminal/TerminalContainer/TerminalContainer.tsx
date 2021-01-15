@@ -24,7 +24,7 @@ const TerminalContainer: React.FC = () => {
 			const domImput = evt.target as HTMLInputElement
 			switch (evt.key) {
 				case 'Enter':
-					if (!isDeviceBusy) {
+					if (!isDeviceBusy && domImput.value) {
 						Events.terminalCommand(domImput.value)
 						Events.terminalCurrentCommandText('')
 					}
