@@ -4,10 +4,11 @@ import { StatusBarItemStyled } from './StatusBarItem.styles'
 export interface IStatusBarItemProps {
 	text: string
 	tooltip?: string
+	onClick?: () => void
 }
 
-const StatusBarItem: React.FC<IStatusBarItemProps> = ({ text, tooltip }) => (
-	<StatusBarItemStyled data-for="main-tooltip" data-tip={tooltip}>{text}</StatusBarItemStyled>
+const StatusBarItem: React.FC<IStatusBarItemProps> = ({ text, tooltip, onClick }) => (
+	<StatusBarItemStyled data-for="main-tooltip" data-tip={tooltip} onClick={onClick}>{text}</StatusBarItemStyled>
 )
 
 export default StatusBarItem

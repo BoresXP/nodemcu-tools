@@ -5,6 +5,7 @@ import { INodeMcu } from '../nodemcu'
 import { deviceInfo } from './messages/DeviceInfo'
 import { deviceState } from './messages/DeviceState'
 import { initialSettings } from './content/state/state'
+import { isDeviceInfoRequest } from './messages/DeviceInfoRequest'
 import { isTerminalCommand } from './messages/TerminalCommand'
 import { setConfiguration } from './messages/SetConfiguration'
 import { terminalLine } from './messages/TerminalLine'
@@ -93,6 +94,8 @@ export default class TerminalView {
 	private async onMessage(msg: IMessage): Promise<void> {
 		if (isTerminalCommand(msg)) {
 			await this._device.fromTerminal(msg.text + '\n')
+		} else if (isDeviceInfoRequest(msg)) {
+			await this.updateDeviceInfo()
 		}
 	}
 }
