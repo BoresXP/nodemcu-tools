@@ -9,9 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Command to run file on device
 - Button to scroll terminal to bottom
+- Command to upload file on device as LFS
+- Command to upload file on device with rename
 
 ### Changed
-- - Do not scroll terminal to bottom if scrolled up
+- Do not scroll terminal to bottom if scrolled up
+- Make margins smaller leaving more space for terminal
+- Change text buttons to icons, make buttons smaller
+- Prevent running empty command
+- Prevent adding equal commands to history
 
 ## [3.3.0] - 2020-12-17
 ### Added
