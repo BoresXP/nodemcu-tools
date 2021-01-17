@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change text buttons to icons, make buttons smaller
 - Prevent running empty command
 - Prevent adding equal commands to history
+- Update dependencies
 
 ## [3.3.0] - 2020-12-17
 ### Added
