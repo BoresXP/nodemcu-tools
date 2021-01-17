@@ -184,6 +184,7 @@ export default class NodeMcuCommands {
 
 		const fsInfo = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.getFsInfo, false)
 
+		await this._device.toggleNodeOutput(true)
 		this._device.setBusy(false)
 
 		const infoParams: { [name: string]: string } = {}
