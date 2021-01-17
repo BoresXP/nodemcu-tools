@@ -3,7 +3,9 @@ Extension brings NodeMCU device interaction to Visual Studio Code.
 [![Build Status](https://travis-ci.com/BoresExpress/nodemcu-tools.svg?branch=master)](https://travis-ci.com/BoresExpress/nodemcu-tools)
 
 ## Features
+
 *(see detailed description below)*
+
 * Browse devices in a special TreeView
 * Use terminal for each connected device to execute commands
 * Upload file to device from VSCode explorer
@@ -13,36 +15,32 @@ Extension brings NodeMCU device interaction to Visual Studio Code.
 * Code completion for NodeMCU modules
 * Works on all platforms (Windows, Linux, MacOS)
 
-## In detail
-
-Extension creates new TreeView in Explorer container:
-
-![device tree view](https://bitbucket.org/BoresExpress/nodemcu-tools/raw/556da64f849593b8d90cc34f47febe3a55af5c71/resources/docs/tree.png)
-
-In that view you can see all available NodeMCU devices and connect to them.
-
-After connecting you can browse files on device, run commands and snippets in terminal and see device output:
-
-![connected device in treeview and terminal](https://bitbucket.org/BoresExpress/nodemcu-tools/raw/556da64f849593b8d90cc34f47febe3a55af5c71/resources/docs/tree-and-term.png)
-
-You can run some [actions](#commands-device) on device with context menu: delete, compile, run and some other. Also, you can run commands directly in terminal and see output. Up/Down keys can be used to navigate command history.
-
-VSCode explorer context menu gots [new items](#commands-explorer) too: upload to device, uploading as LFS and some other. You can upload any file in solution to selected device:
-
-![upload from explorer](https://bitbucket.org/BoresExpress/nodemcu-tools/raw/556da64f849593b8d90cc34f47febe3a55af5c71/resources/docs/explorer-menu.png)
-
 ## Window layout
 
-![](https://bitbucket.org/BoresExpress/nodemcu-tools/raw/556da64f849593b8d90cc34f47febe3a55af5c71/resources/docs/main-screen.png)
+![](https://bitbucket.org/BoresExpress/nodemcu-tools/raw/9737356c0f77636223d97f1b7c9e3c86010b801d/resources/docs/main-screen.png)
 
-1. Terminal
-2. Command input
-3. [Snippets](#snippets)
-4. Devices and files tree view
-5. Command
-6. Command output
-7. Device (port)
-8. File on device
+### 1. Terminal
+
+Here you can see output from device. Data sent to device (6) and received from device (7) are listed in different colors.
+To clear terminal use button (8) on the right.
+If you scroll terminal up it will automatically stop scrolling to bottom. To restore this behavior press button (9) on the right.
+
+### 2. Command input
+
+Use this input to write or paste command. Command will be posted to device after pressing Return button or pressing button (10) on the right.
+Use Up/Down keys to navigate command history. History size can be adjusted in [Settings](#settings).
+
+### 3. Snippets
+
+Buttons to run predefined commands on press. You can customize predefined commands in [extension settings](#settings). Extension comes with some predefined snippets. You can see command text in tooltip when hovering button.
+
+### 4. Status bar
+
+Here you will find device info: free heap, free SSPIF, modules, etc. Hover status bar cells to see what they mean. By clicking any cell you can update displayed info.
+
+### 5. Devices and files tree view
+
+Here you will find all connected NodeMCU devices (11). With right click connect to it. When connected extension window will open and tree will be populated with files on device. With right click on file (12) you can run [commands](#commands-device) on in. When extension window is closed device will be disconnected.
 
 ## Keybindings & Commands
 
@@ -65,12 +63,12 @@ _(ALT commands are available by pressing ALT key when opening menu)_
   * [ALT] **Download as...:** download file to host machine (see above) but lets you change name under which file will be saved.
   * [On .lua and .lc files only] **Run:** run file on device. It just executes `dofile` command which you will see in terminal (1).
 
-## Extension Settings
+<a name="settings"></a>## Extension Settings
 
 * **Terminal:**
   * **Scrollback Size:** how many lines of scrollback will terminal (1) have. Min - 10, max - 1000, default - 300.
   * **Command History Size:** how many commands will be held in history. You can navigate command history by pressing up and down arrow keys in command input box (2). Min - 0, max - 100, default - 30.
-* <a name="snippets">**Snippets:**</a> snippets are buttons at the bottom of main window (3). These are just commands to run on device. You can configure it yourself with this setting. Setting itself is an object with each property representing one snippet: name is shown on a button, value is command text. You can set different snippets for each workspace. Workspace snippets _overrides_ ones set in user settings and defaults. With this behavior you can remove some default snippets. 
+* **Snippets:** snippets are buttons at the bottom of main window (3). These are just commands to run on device. You can configure it yourself with this setting. Setting itself is an object with each property representing one snippet: name is shown on a button, value is command text. You can set different snippets for each workspace. Workspace snippets _overrides_ ones set in user settings and defaults. With this behavior you can remove some default snippets. 
 
 ## What's New / Change Log
 
