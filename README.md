@@ -28,11 +28,11 @@ If you scroll terminal up it will automatically stop scrolling to bottom. To res
 ### 2. Command input
 
 Use this input to write or paste command. Command will be posted to device after pressing Return button or pressing button (10) on the right.
-Use Up/Down keys to navigate command history. History size can be adjusted in [Settings](#settings).
+Use Up/Down keys to navigate command history. History size can be adjusted in [Settings](#extension-settings).
 
 ### 3. Snippets
 
-Buttons to run predefined commands on press. You can customize predefined commands in [extension settings](#settings). Extension comes with some predefined snippets. You can see command text in tooltip when hovering button.
+Buttons to run predefined commands on press. You can customize predefined commands in [extension settings](#extension-settings). Extension comes with some predefined snippets. You can see command text in tooltip when hovering button.
 
 ### 4. Status bar
 
@@ -40,30 +40,35 @@ Here you will find device info: free heap, free SSPIF, modules, etc. Hover statu
 
 ### 5. Devices and files tree view
 
-Here you will find all connected NodeMCU devices (11). With right click connect to it. When connected extension window will open and tree will be populated with files on device. With right click on file (12) you can run [commands](#commands-device) on in. When extension window is closed device will be disconnected.
+Here you will find all connected NodeMCU devices (11). With right click [connect](#device-context-menu) to it. When connected extension window will open and tree will be populated with files on device. With right click on file (12) you can run [commands](#file-on-device-context-menu) on in. When extension window is closed device will be disconnected.
 
 ## Keybindings & Commands
 
 _(ALT commands are available by pressing ALT key when opening menu)_
 
-* <a name="commands-explorer"></a>**Explorer context menu:**
-  * **Upload to device** upload selected file on device. If you have more than one device connected you will be presented with QuickPick UI to select device to upload file to.
-  * [ALT] **Upload to device...** upload selected file on device (see above) but lets you change name under which file will be saved.
-  * **Upload to device and set as LFS** upload selected file on device (see above) and reloads LFS with it.
-  * [ALT] **Upload to device and set as LFS...** upload selected file on device with LFS refresh (see above) but lets you change name under which file will be saved.
-  * **Upload to device and compile:** upload file to device (see above), compile it and remove source.
-  * [ALT] **Run on device:** upload selected file to device, execute it with `dofile` command and immediately delete it from device. Usefull for executing long configuration scripts (for example, to reconfigure LFS and SSPIF sizes).
-* <a name="commands-device"></a>**Device context menu:**
-  * **Connect:** connect to this device. This will also open main window for this device.
-  * **Disconnect:** disconnect from device. This will also close main window for device. By the way, closing main window will disconnect device too.
-* **File on device context menu:**
-  * [On .lua files only] **Compile**: compile selected file on device and remove source.
-  * **Delete:** delete selected file on device. No recovery possible.
-  * **Download:** download file from device to host machine. File will be saved in the root of workspace.
-  * [ALT] **Download as...:** download file to host machine (see above) but lets you change name under which file will be saved.
-  * [On .lua and .lc files only] **Run:** run file on device. It just executes `dofile` command which you will see in terminal (1).
+### Explorer context menu:
 
-## <a name="settings"></a>Extension Settings
+* **Upload to device** upload selected file on device. If you have more than one device connected you will be presented with QuickPick UI to select device to upload file to.
+* [ALT] **Upload to device...** upload selected file on device (see above) but lets you change name under which file will be saved.
+* **Upload to device and set as LFS** upload selected file on device (see above) and reloads LFS with it.
+* [ALT] **Upload to device and set as LFS...** upload selected file on device with LFS refresh (see above) but lets you change name under which file will be saved.
+* **Upload to device and compile:** upload file to device (see above), compile it and remove source.
+* [ALT] **Run on device:** upload selected file to device, execute it with `dofile` command and immediately delete it from device. Usefull for executing long configuration scripts (for example, to reconfigure LFS and SSPIF sizes).
+
+### Device context menu:
+
+* **Connect:** connect to this device. This will also open main window for this device.
+* **Disconnect:** disconnect from device. This will also close main window for device. By the way, closing main window will disconnect device too.
+
+### File on device context menu:
+
+* [On .lua files only] **Compile**: compile selected file on device and remove source.
+* **Delete:** delete selected file on device. No recovery possible.
+* **Download:** download file from device to host machine. File will be saved in the root of workspace.
+* [ALT] **Download as...:** download file to host machine (see above) but lets you change name under which file will be saved.
+* [On .lua and .lc files only] **Run:** run file on device. It just executes `dofile` command which you will see in terminal (1).
+
+## Extension Settings
 
 * **Terminal:**
   * **Scrollback Size:** how many lines of scrollback will terminal (1) have. Min - 10, max - 1000, default - 300.
