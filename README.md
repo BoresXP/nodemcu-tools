@@ -4,7 +4,7 @@ Extension brings NodeMCU device interaction to Visual Studio Code.
 
 ## Features
 
-*(see detailed description below)*
+_(see detailed description below)_
 
 * Browse devices in a special TreeView
 * Use terminal for each connected device to execute commands
@@ -53,17 +53,17 @@ _(ALT commands are available by pressing ALT key when opening menu)_
   * [ALT] **Upload to device and set as LFS...** upload selected file on device with LFS refresh (see above) but lets you change name under which file will be saved.
   * **Upload to device and compile:** upload file to device (see above), compile it and remove source.
   * [ALT] **Run on device:** upload selected file to device, execute it with `dofile` command and immediately delete it from device. Usefull for executing long configuration scripts (for example, to reconfigure LFS and SSPIF sizes).
-* <a name="commands-device"></a>**Device context menu (7):**
+* <a name="commands-device"></a>**Device context menu:**
   * **Connect:** connect to this device. This will also open main window for this device.
   * **Disconnect:** disconnect from device. This will also close main window for device. By the way, closing main window will disconnect device too.
-* **File on device context menu: (8)**
+* **File on device context menu:**
   * [On .lua files only] **Compile**: compile selected file on device and remove source.
   * **Delete:** delete selected file on device. No recovery possible.
   * **Download:** download file from device to host machine. File will be saved in the root of workspace.
   * [ALT] **Download as...:** download file to host machine (see above) but lets you change name under which file will be saved.
   * [On .lua and .lc files only] **Run:** run file on device. It just executes `dofile` command which you will see in terminal (1).
 
-<a name="settings"></a>## Extension Settings
+## <a name="settings"></a>Extension Settings
 
 * **Terminal:**
   * **Scrollback Size:** how many lines of scrollback will terminal (1) have. Min - 10, max - 1000, default - 300.
