@@ -28,7 +28,7 @@ export default class NodeMcuCommands {
 
 		fileRunAndDelete: (name: string) => `dofile("${name}");file.remove("${name}")`,
 
-		fileSetLfs: (name: string) => `node.LFS.reload(${name})`,
+		fileSetLfs: (name: string) => `node.LFS.reload("${name}");uart.write(0, "Done\\r\\n")`,
 
 		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
 			`file.open("${name}","${mode}");local bw=0;uart.on("data",${blockSize},function(data) bw=bw+${blockSize};file.write(data);uart.write(0,"kxyJ\\r\\n");if bw>=${fileSize} then uart.on("data");file.close();uart.write(0,"QKiw\\r\\n") end end, 0);uart.write(0,"Ready\\r\\n")`,
