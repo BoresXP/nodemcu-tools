@@ -23,7 +23,7 @@ const Terminal: React.FC = () => {
 
 	const onScroll = useCallback((evt: React.UIEvent<HTMLDivElement>) => {
 		const divElement = evt.currentTarget
-		Events.terminalAutoscrollSet(divElement.clientHeight + divElement.scrollTop === divElement.scrollHeight)
+		Events.terminalAutoscrollSet(divElement.clientHeight + divElement.scrollTop >= divElement.scrollHeight)
 	}, [])
 
 	return (
