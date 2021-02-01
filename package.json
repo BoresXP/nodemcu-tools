@@ -258,7 +258,7 @@
 		"react": "^17.0.1",
 		"react-dom": "^17.0.1",
 		"react-tooltip": "^4.2.13",
-		"serialport": "^9.0.4",
+		"serialport": "^9.0.6",
 		"styled-components": "^5.2.1"
 	}
 }
