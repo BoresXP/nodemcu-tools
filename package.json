@@ -3,7 +3,7 @@
 	"publisher": "boressoft",
 	"displayName": "NodeMCU-Tools",
 	"description": "NodeMCU development tools for Visual Studio Code",
-	"version": "3.4.0",
+	"version": "3.4.1",
 	"author": {
 		"name": "Boris Gulay",
 		"email": "boris@gulay.name"
