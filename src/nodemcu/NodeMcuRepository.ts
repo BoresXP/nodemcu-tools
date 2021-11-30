@@ -1,4 +1,4 @@
-import { Event, EventEmitter } from 'vscode'
+import { EventEmitter, Event as VsEvent } from 'vscode'
 
 import { ErrorDisconnect } from './NodeMcuSerial'
 import { INodeMcu } from '.'
@@ -63,7 +63,7 @@ export default class NodeMcuRepository {
 		return false
 	}
 
-	public static get onDisconnect(): Event<DisconnectInfo> {
+	public static get onDisconnect(): VsEvent<DisconnectInfo> {
 		return this._evtDisconnect.event
 	}
 

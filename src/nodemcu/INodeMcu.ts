@@ -1,16 +1,16 @@
-import { Event } from 'vscode'
 import IToTerminalData from './IToTerminalData'
 import NodeMcuCommands from './NodeMcuCommands'
+import { Event as VsEvent } from 'vscode'
 
 export default interface INodeMcu {
 	path: string
 	commands: NodeMcuCommands
 
-	toTerminal: Event<IToTerminalData>
+	toTerminal: VsEvent<IToTerminalData>
 	fromTerminal: (text: string) => Promise<void>
 
-	onClose: Event<void>
-	onBusyChanged: Event<boolean>
+	onClose: VsEvent<void>
+	onBusyChanged: VsEvent<boolean>
 
 	connect: () => Promise<void>
 	disconnect: () => Promise<void>

@@ -1,4 +1,4 @@
-import { Event, EventEmitter } from 'vscode'
+import { EventEmitter, Event as VsEvent } from 'vscode'
 
 import SerialPort from 'serialport'
 
@@ -68,7 +68,7 @@ export default abstract class NodeMcuSerial {
 		return this._port.path
 	}
 
-	public get onDisconnect(): Event<ErrorDisconnect | undefined> {
+	public get onDisconnect(): VsEvent<ErrorDisconnect | undefined> {
 		return this._evtClosed.event
 	}
 
@@ -105,15 +105,15 @@ export default abstract class NodeMcuSerial {
 		})
 	}
 
-	public get onData(): Event<string> {
+	public get onData(): VsEvent<string> {
 		return this._evtOnData.event
 	}
 
-	public get onDataRaw(): Event<Buffer> {
+	public get onDataRaw(): VsEvent<Buffer> {
 		return this._evtOnDataRaw.event
 	}
 
-	protected get onConnect(): Event<void> {
+	protected get onConnect(): VsEvent<void> {
 		return this._evtOpened.event
 	}
 

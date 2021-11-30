@@ -1,4 +1,4 @@
-import { Disposable, Event, EventEmitter } from 'vscode'
+import { Disposable, EventEmitter, Event as VsEvent } from 'vscode'
 
 import INodeMcu from './INodeMcu'
 import IToTerminalData from './IToTerminalData'
@@ -70,11 +70,11 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		return this._isBusy
 	}
 
-	public get onBusyChanged(): Event<boolean> {
+	public get onBusyChanged(): VsEvent<boolean> {
 		return this._evtBusy.event
 	}
 
-	public get toTerminal(): Event<IToTerminalData> {
+	public get toTerminal(): VsEvent<IToTerminalData> {
 		return this._evtToTerminal.event
 	}
 
@@ -93,7 +93,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		await this.write(text)
 	}
 
-	public get onClose(): Event<void> {
+	public get onClose(): VsEvent<void> {
 		return this._evtClose.event
 	}
 

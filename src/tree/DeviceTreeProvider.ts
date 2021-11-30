@@ -1,5 +1,5 @@
 import DeviceTreeItem, { isDeviceTreeItem } from './DeviceTreeItem'
-import { Event, EventEmitter, TreeDataProvider, TreeItem, window } from 'vscode'
+import { EventEmitter, TreeDataProvider, TreeItem, Event as VsEvent, window } from 'vscode'
 import FileTreeItem, { isFileTreeItem } from './FileTreeItem'
 
 import NodeMcuRepository from '../nodemcu/NodeMcuRepository'
@@ -17,7 +17,7 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 		this._onDidChangeTreeData.fire(void 0)
 	}
 
-	public get onDidChangeTreeData(): Event<undefined> {
+	public get onDidChangeTreeData(): VsEvent<undefined> {
 		return this._onDidChangeTreeData.event
 	}
 
