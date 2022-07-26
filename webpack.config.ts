@@ -1,3 +1,4 @@
+import ESLintWebpackPlugin from 'eslint-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import path from 'path'
 import webpack from 'webpack'
@@ -28,6 +29,9 @@ const commonConfig: webpack.Configuration = {
 	plugins: [
 		new ForkTsCheckerWebpackPlugin({
 			logger: 'webpack-infrastructure',
+		}),
+		new ESLintWebpackPlugin({
+			files: './src/**/*.{ts,tsx}',
 		}),
 	],
 }
