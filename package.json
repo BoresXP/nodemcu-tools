@@ -229,7 +229,7 @@
 	},
 	"devDependencies": {
 		"@types/bindings": "^1.5.1",
-		"@types/node": "^14.14.35",
+		"@types/node": "^16.9.0",
 		"@types/react": "^17.0.37",
 		"@types/react-dom": "^17.0.11",
 		"@types/serialport": "^8.0.2",
