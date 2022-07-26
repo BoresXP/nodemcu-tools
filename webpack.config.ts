@@ -27,9 +27,7 @@ const commonConfig: webpack.Configuration = {
 	},
 	plugins: [
 		new ForkTsCheckerWebpackPlugin({
-			typescript: { enabled: true },
-			eslint: { enabled: true, files: './src/**/*.{ts,tsx}', options: {} },
-			logger: { infrastructure: 'webpack-infrastructure' },
+			logger: 'webpack-infrastructure',
 		}),
 	],
 }
