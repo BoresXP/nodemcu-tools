@@ -223,9 +223,8 @@
 	},
 	"scripts": {
 		"vscode:prepublish": "webpack --mode production",
-		"webpack": "webpack --mode development",
-		"lint": "eslint src",
-		"webpack-dev": "webpack --mode development --watch"
+		"build": "webpack --mode development",
+		"lint": "eslint src"
 	},
 	"devDependencies": {
 		"@types/bindings": "^1.5.1",

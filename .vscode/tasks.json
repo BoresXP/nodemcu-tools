@@ -5,32 +5,18 @@
 	"tasks": [
 		{
 			"type": "npm",
-			"script": "webpack-dev",
-			"problemMatcher": {
-				"owner": "webpack",
-				"background": {
-					"beginsPattern": "^Issues checking in progress...",
-					"endsPattern": "^\\<i\\> \\[ForkTsCheckerWebpackPlugin\\]"
-				},
-				"pattern": [
-					{
-						"regexp": "^(ERROR|WARNING) in (.*):(\\d+):(\\d+)\\n(.+)$",
-						"severity": 1,
-						"file": 2,
-						"line": 3,
-						"column": 4,
-						"message": 5
-					}
-				]
-			},
-			"isBackground": true,
-			"presentation": {
-				"reveal": "never"
-			},
+			"script": "build",
+			"problemMatcher": ["$eslint-stylish"],
+			"label": "npm: build",
+			"detail": "webpack --mode development",
 			"group": {
 				"kind": "build",
 				"isDefault": true
-			}
+			},
+			"presentation": {
+				"reveal": "silent",
+				"revealProblems": "onProblem"
+			},
 		}
 	]
 }
