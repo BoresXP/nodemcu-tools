@@ -23,7 +23,7 @@ export default class TerminalView {
 		this._webViewPanel = webViewPanel
 
 		this._webViewPanel.webview.html = this.getHtml(this._context.extensionUri)
-		this._webViewPanel.webview.onDidReceiveMessage(msg => this.onMessage(msg))
+		this._webViewPanel.webview.onDidReceiveMessage(msg => this.onMessage(msg as IMessage))
 		this._webViewPanel.onDidDispose(() => this._device.disconnect())
 		context.subscriptions.push(this._webViewPanel)
 

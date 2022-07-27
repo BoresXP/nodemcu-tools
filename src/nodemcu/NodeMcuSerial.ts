@@ -40,8 +40,8 @@ export default abstract class NodeMcuSerial {
 				if (err) {
 					reject(err)
 				} else {
-					parser.on('data', data => this.onDataHandler(data))
-					this._port.on('data', data => this.onDataRawHandler(data))
+					parser.on('data', data => this.onDataHandler(data as Buffer))
+					this._port.on('data', data => this.onDataRawHandler(data as Buffer))
 					this._port.on('close', (errDiconnect: ErrorDisconnect) => this._evtClosed.fire(errDiconnect))
 
 					this._evtOpened.fire()
