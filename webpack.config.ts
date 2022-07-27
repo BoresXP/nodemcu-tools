@@ -53,7 +53,7 @@ const config: webpack.Configuration[] = [
 		},
 		externals: {
 			vscode: 'commonjs vscode',
-			bindings: ['./bindingsProxy', 'bindingsProxy'],
+			'node-gyp-build': './bindingsProxy',
 		},
 	},
 	{

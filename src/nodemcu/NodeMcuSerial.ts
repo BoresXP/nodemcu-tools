@@ -1,6 +1,7 @@
 import { EventEmitter, Event as VsEvent } from 'vscode'
+import { ReadlineParser, SerialPort } from 'serialport'
 
-import SerialPort from 'serialport'
+import { PortInfo } from '@serialport/bindings-cpp'
 
 export interface ErrorDisconnect extends Error {
 	disconnected?: boolean
@@ -24,17 +25,17 @@ export default abstract class NodeMcuSerial {
 	private readonly _evtOpened = new EventEmitter<void>()
 
 	protected constructor(path: string) {
-		this._port = new SerialPort(path, { autoOpen: false, baudRate: 115200 })
+		this._port = new SerialPort({ path, autoOpen: false, baudRate: 115200 })
 	}
 
-	public static async listDevices(): Promise<SerialPort.PortInfo[]> {
+	public static async listDevices(): Promise<PortInfo[]> {
 		const ports = await SerialPort.list()
 		return ports.filter(p => this._vendorIDs.includes(p.vendorId?.toUpperCase() ?? ''))
 	}
 
 	public connect(): Promise<void> {
 		return new Promise((resolve, reject) => {
-			const parser = this._port.pipe(new SerialPort.parsers.Readline({ delimiter: NodeMcuSerial.lineEnd }))
+			const parser = this._port.pipe(new ReadlineParser({ delimiter: NodeMcuSerial.lineEnd }))
 			this._port.open(err => {
 				if (err) {
 					reject(err)

@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-
-import bindings, { Options } from 'bindings'
-
 import Fs from 'fs'
 import Path from 'path'
 import { extensions } from 'vscode'
@@ -55,11 +51,6 @@ function loadSerialPort(): any {
 	}
 }
 
-export function bindingsProxy(opts: string | Options): any {
-	if (typeof opts === 'string' && opts === 'bindings.node') {
-		return loadSerialPort() // eslint-disable-line @typescript-eslint/no-unsafe-return
-	}
-
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-	return bindings(opts)
+export default function bindingsProxy(_path: string): any {
+	return loadSerialPort()
 }
