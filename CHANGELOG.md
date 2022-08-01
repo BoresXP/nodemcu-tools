@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use new native bindings
 - Use new hook to search for bindings
 - Update dependencies
+- Update toolchain and build actions
 
 ## [3.4.3] - 2021-11-30
 ### Changed
