@@ -1,4 +1,4 @@
-import { ExtensionContext, Uri, commands, languages, window } from 'vscode'
+import { ExtensionContext, Uri, commands, languages, window, workspace } from 'vscode'
 
 import DeviceTreeItem from './tree/DeviceTreeItem'
 import DeviceTreeProvider from './tree/DeviceTreeProvider'
@@ -6,20 +6,25 @@ import FileTreeItem from './tree/FileTreeItem'
 import NodeMcuCompletionProvider from './completion/NodeMcuCompletionProvider'
 import NodemcuTools from './NodemcuTools'
 import TerminalView from './terminal/TerminalView'
+import { initialSettings } from './terminal/content/state/state'
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: ExtensionContext): void {
 	try {
+		const configuration = workspace.getConfiguration('nodemcu-tools')
 		const treeProvider = new DeviceTreeProvider()
 		const treeView = window.createTreeView('nodemcu-tools.devices', { treeDataProvider: treeProvider })
 		context.subscriptions.push(treeView)
 
 		const tools = new NodemcuTools()
 
-		context.subscriptions.push(
-			languages.registerCompletionItemProvider({ language: 'lua' }, new NodeMcuCompletionProvider(), '.'),
-		)
+		const completionEnabled = configuration.get('nodemcu-tools.completion.enabled', initialSettings.completionEnabled)
+		if (completionEnabled) {
+			context.subscriptions.push(
+				languages.registerCompletionItemProvider({ language: 'lua' }, new NodeMcuCompletionProvider(), '.'),
+			)
+		}
 
 		context.subscriptions.push(
 			commands.registerCommand('nodemcu-tools.connect', async (item: DeviceTreeItem) => {

@@ -9,6 +9,7 @@ export interface ISettings {
 	scrollbackMaxLines: number
 	historyMaxLines: number
 	snippets: Record<string, string>
+	completionEnabled: boolean
 }
 
 export interface IDeviceInfo {
@@ -35,6 +36,7 @@ export const initialSettings: ISettings = {
 	scrollbackMaxLines: 300,
 	historyMaxLines: 30,
 	snippets: {},
+	completionEnabled: true,
 }
 
 export const initialState: IState = {
