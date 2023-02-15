@@ -15,4 +15,5 @@ export default interface INodeMcu {
 	connect: () => Promise<void>
 	disconnect: () => Promise<void>
 	waitToBeReady: () => Promise<void>
+	detectArch: () => Promise<void>
 }

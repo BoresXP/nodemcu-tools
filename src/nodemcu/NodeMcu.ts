@@ -17,6 +17,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	private static readonly _luaCommands = {
 		nodeDisableOutput: 'node.output(function(opipe) return false end, 0);uart.write(0, "Done\\r\\n")',
 		nodeEnableOutput: 'node.output();uart.write(0, "Done\\r\\n")',
+		getChipID: 'uart.write(0,tostring(node.chipid()).."\\r\\n");',
 	}
 	private static readonly _commandTimeout = 15000 // msec
 
@@ -32,11 +33,24 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 	private _commands: NodeMcuCommands | undefined
 
+	private _espArch = ''
+
 	constructor(path: string) {
 		super(path)
 		this._unsubscribeOnData = this.onData(data => this.handleData(data))
 		this.onConnect(() => this.handleConnect())
 		this.onDisconnect(err => this.handleDisconnect(err))
+	}
+
+	public get espArch(): string {
+		return this._espArch
+	}
+
+	public async detectArch(): Promise<void> {
+		const chipID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID, true)
+
+		// esp32 chipid (hex with '0x' prefix)?
+		this._espArch = chipID.match(/^0x[\dA-Fa-f]+/) ? 'esp32' : 'esp8266'
 	}
 
 	private static clearReply(reply: string | undefined): string {
@@ -111,7 +125,8 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		}
 
 		if (!wasBusy) {
-			await this.toggleNodeOutput(false)
+			// await this.toggleNodeOutput(false)
+			await this.toggleNodeOutput(true)
 		}
 
 		const reply = await this.executeCommand(command, replyHandler)

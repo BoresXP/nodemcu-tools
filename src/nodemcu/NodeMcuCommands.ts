@@ -16,7 +16,7 @@ export interface IDeviceInfo {
 }
 
 export default class NodeMcuCommands {
-	private static readonly _luaCommands = {
+	private static readonly _luaCommands8266 = {
 		listFiles:
 			'local l=file.list() local s=";" for k,v in pairs(l) do s=s..k..":"..v..";" end uart.write(0, s.."\\r\\n")',
 
@@ -46,10 +46,44 @@ export default class NodeMcuCommands {
 		getFsInfo: 'local remaining,used,total=file.fsinfo();uart.write(0, remaining..";"..used..";"..total.."\\r\\n")',
 	}
 
+	private static readonly _luaCommands32 = {
+		listFiles: 'local l=file.list() local s=";" for k,v in pairs(l) do s=s..k..":"..v..";" end uart.write(0,s.."\\n")',
+
+		delete: (name: string) => `file.remove("${name}");uart.write(0,"Done\\n")`,
+
+		fileCompile: (name: string) => `node.compile("${name}");uart.write(0,"Done\\n")`,
+
+		fileRun: (name: string) => `dofile("${name}")`,
+
+		fileRunAndDelete: (name: string) => `dofile("${name}");file.remove("${name}")`,
+
+		fileSetLfs: (name: string) => `node.LFS.reload("${name}");uart.write(0,"Done\\n")`,
+
+		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
+			`__f=io.open("${name}","${mode}");local bw=0;uart.on("data",${blockSize},function(data) bw=bw+${blockSize};__f:write(data);uart.write(0,"kxyJ\\n");if bw>=${fileSize} then uart.on("data");__f:close();__f=nil;uart.write(0,"QKiw\\n") end end, 0);uart.write(0,"Ready\\n")`,
+
+		readFileHelper: (name: string) =>
+			`__f=io.input("${name}","r");uart.on(0,"data",0,function(data) while true do local b=__f:read(${NodeMcuSerial.maxLineLength});if b==nil then uart.on(0,"data");__f:close();__f=nil;break end uart.write(0,b) end end, 0);uart.write(0,"Done\\n")`,
+
+		getFileSize: (name: string) => `local s=file.stat("${name}");uart.write(0, s.size .. "\\n")`,
+
+		getFreeHeap: 'uart.write(0,tostring(node.heap()).."\\n")',
+
+		getDeviceInfo:
+			'local i={ssl=false,number_type="unknown",lfs_size=65536,modules="unknown"};local s="";for k,v in pairs(i) do s=s..k..":"..tostring(v)..";" end uart.write(0,s.."\\n")',
+
+		getFsInfo: 'local remaining,used,total=file.fsinfo();uart.write(0,remaining..";"..used..";"..total.."\\n")',
+	}
+
+	private static _luaCommands = this._luaCommands8266
+
 	private readonly _device: NodeMcu
 
 	constructor(device: NodeMcu) {
 		this._device = device
+
+		NodeMcuCommands._luaCommands = (device.espArch === 'esp32') ? NodeMcuCommands._luaCommands32 : NodeMcuCommands._luaCommands8266
+		console.log('NodeMcuCommands Arch: ', device.espArch) // eslint-disable-line no-console
 	}
 
 	public async files(): Promise<IDeviceFileInfo[]> {

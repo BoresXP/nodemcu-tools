@@ -49,6 +49,7 @@ export default class NodemcuTools {
 	public async connect(devicePath: string): Promise<INodeMcu> {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 		await device.connect()
+		await device.detectArch()
 
 		await commands.executeCommand('setContext', 'nodemcu-tools:isConnected', true)
 
