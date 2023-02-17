@@ -16,7 +16,7 @@ export interface IDeviceInfo {
 }
 
 export default class NodeMcuCommands {
-	private static readonly _luaCommands8266 = {
+	private readonly _luaCommands8266 = {
 		listFiles:
 			'local l=file.list() local s=";" for k,v in pairs(l) do s=s..k..":"..v..";" end uart.write(0, s.."\\r\\n")',
 
@@ -46,7 +46,7 @@ export default class NodeMcuCommands {
 		getFsInfo: 'local remaining,used,total=file.fsinfo();uart.write(0, remaining..";"..used..";"..total.."\\r\\n")',
 	}
 
-	private static readonly _luaCommands32 = {
+	private readonly _luaCommands32 = {
 		listFiles: 'local l=file.list() local s=";" for k,v in pairs(l) do s=s..k..":"..v..";" end uart.write(0,s.."\\n")',
 
 		delete: (name: string) => `file.remove("${name}");uart.write(0,"Done\\n")`,
@@ -75,21 +75,34 @@ export default class NodeMcuCommands {
 		getFsInfo: 'local remaining,used,total=file.fsinfo();uart.write(0,remaining..";"..used..";"..total.."\\n")',
 	}
 
-	private static _luaCommands = this._luaCommands8266
+	private readonly _luaCommands: {
+		listFiles: string
+		delete: (name: string) => string
+		fileCompile: (name: string) => string
+		fileRun: (name: string) => string
+		fileRunAndDelete: (name: string) => string
+		fileSetLfs: (name: string) => string
+		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) => string
+		readFileHelper: (name: string) => string
+		getFileSize: (name: string) => string
+		getFreeHeap: string
+		getDeviceInfo: string
+		getFsInfo: string
+	}
 
 	private readonly _device: NodeMcu
 
 	constructor(device: NodeMcu) {
 		this._device = device
+		this._luaCommands = (device.espArch === 'esp32') ? this._luaCommands32 : this._luaCommands8266
 
-		NodeMcuCommands._luaCommands = (device.espArch === 'esp32') ? NodeMcuCommands._luaCommands32 : NodeMcuCommands._luaCommands8266
 		console.log('NodeMcuCommands Arch: ', device.espArch) // eslint-disable-line no-console
 	}
 
 	public async files(): Promise<IDeviceFileInfo[]> {
 		await this.checkReady()
 
-		const filesResponse = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.listFiles)
+		const filesResponse = await this._device.executeSingleLineCommand(this._luaCommands.listFiles)
 
 		const filesArray = filesResponse.split(';')
 		return filesArray
@@ -105,7 +118,7 @@ export default class NodeMcuCommands {
 
 	public async delete(fileName: string): Promise<void> {
 		await this.checkReady()
-		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.delete(fileName))
+		await this._device.executeSingleLineCommand(this._luaCommands.delete(fileName))
 	}
 
 	public async upload(data: Buffer, remoteName: string, progressCb?: (percent: number) => void): Promise<void> {
@@ -119,7 +132,7 @@ export default class NodeMcuCommands {
 		if (data.length > NodeMcuSerial.maxLineLength) {
 			await this.waitDone('QKiw', async () => {
 				await this._device.executeSingleLineCommand(
-					NodeMcuCommands._luaCommands.writeFileHelper(
+					this._luaCommands.writeFileHelper(
 						remoteName,
 						data.length - tailSize,
 						NodeMcuSerial.maxLineLength,
@@ -145,7 +158,7 @@ export default class NodeMcuCommands {
 
 		await this.waitDone('QKiw', async () => {
 			await this._device.executeSingleLineCommand(
-				NodeMcuCommands._luaCommands.writeFileHelper(remoteName, tailSize, tailSize, tailWriteMode),
+				this._luaCommands.writeFileHelper(remoteName, tailSize, tailSize, tailWriteMode),
 				false,
 			)
 			await this._device.writeRaw(data.length > 254 ? data.slice(data.length - tailSize) : data)
@@ -158,20 +171,20 @@ export default class NodeMcuCommands {
 
 	public async compile(fileName: string): Promise<void> {
 		await this.checkReady()
-		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.fileCompile(fileName))
+		await this._device.executeSingleLineCommand(this._luaCommands.fileCompile(fileName))
 	}
 
 	public async setLfs(fileName: string): Promise<void> {
 		await this.checkReady()
-		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.fileSetLfs(fileName))
+		await this._device.executeSingleLineCommand(this._luaCommands.fileSetLfs(fileName))
 	}
 
 	public async run(fileName: string, deleteAfter?: boolean): Promise<void> {
 		await this.checkReady()
 		await this._device.fromTerminal(
 			deleteAfter
-				? NodeMcuCommands._luaCommands.fileRunAndDelete(fileName)
-				: NodeMcuCommands._luaCommands.fileRun(fileName),
+				? this._luaCommands.fileRunAndDelete(fileName)
+				: this._luaCommands.fileRun(fileName),
 		)
 	}
 
@@ -181,13 +194,13 @@ export default class NodeMcuCommands {
 		progressCb?.(0)
 
 		const fileSizeStr = await this._device.executeSingleLineCommand(
-			NodeMcuCommands._luaCommands.getFileSize(fileName),
+			this._luaCommands.getFileSize(fileName),
 			false,
 		)
 		const fileSize = parseInt(fileSizeStr, 10)
 		let retVal: Buffer | undefined = void 0
 
-		await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.readFileHelper(fileName), false)
+		await this._device.executeSingleLineCommand(this._luaCommands.readFileHelper(fileName), false)
 
 		return new Promise(resolve => {
 			const unsubscribe = this._device.onDataRaw(async data => {
@@ -212,11 +225,11 @@ export default class NodeMcuCommands {
 	public async getDeviceInfo(): Promise<IDeviceInfo> {
 		await this.checkReady()
 
-		const freeHeap = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.getFreeHeap, false)
+		const freeHeap = await this._device.executeSingleLineCommand(this._luaCommands.getFreeHeap, false)
 
-		const deviceInfo = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.getDeviceInfo, false)
+		const deviceInfo = await this._device.executeSingleLineCommand(this._luaCommands.getDeviceInfo, false)
 
-		const fsInfo = await this._device.executeSingleLineCommand(NodeMcuCommands._luaCommands.getFsInfo, false)
+		const fsInfo = await this._device.executeSingleLineCommand(this._luaCommands.getFsInfo, false)
 
 		await this._device.toggleNodeOutput(true)
 		this._device.setBusy(false)
