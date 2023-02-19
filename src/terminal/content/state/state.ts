@@ -19,6 +19,7 @@ export interface IDeviceInfo {
 	modules?: string
 	fsTotal?: number
 	fsUsed?: number
+	deviceArch?: string
 }
 
 export interface IState {

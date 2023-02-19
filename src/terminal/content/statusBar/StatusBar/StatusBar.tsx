@@ -36,6 +36,7 @@ const StatusBar: React.FC = () => {
 					onClick={onItemClick}
 				/>
 			) : null}
+			{info.deviceArch ? <StatusBarItem text={info.deviceArch} /> : null}
 		</StatusBarStyled>
 	)
 }

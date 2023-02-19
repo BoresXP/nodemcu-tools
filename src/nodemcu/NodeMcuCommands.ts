@@ -13,6 +13,7 @@ export interface IDeviceInfo {
 	modules: string
 	fsTotal: number
 	fsUsed: number
+	deviceArch: string
 }
 
 export default class NodeMcuCommands {
@@ -95,8 +96,6 @@ export default class NodeMcuCommands {
 	constructor(device: NodeMcu) {
 		this._device = device
 		this._luaCommands = (device.espArch === 'esp32') ? this._luaCommands32 : this._luaCommands8266
-
-		console.log('NodeMcuCommands Arch: ', device.espArch) // eslint-disable-line no-console
 	}
 
 	public async files(): Promise<IDeviceFileInfo[]> {
@@ -252,6 +251,7 @@ export default class NodeMcuCommands {
 			modules: infoParams['modules'],
 			fsTotal: fsInfoArray[2],
 			fsUsed: fsInfoArray[1],
+			deviceArch: this._device.espArch,
 		}
 	}
 
