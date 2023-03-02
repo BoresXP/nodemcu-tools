@@ -64,7 +64,7 @@ export default class NodeMcuCommands {
 			`__f=io.open("${name}","${mode}");local bw=0;uart.on("data",${blockSize},function(data) bw=bw+${blockSize};__f:write(data);uart.write(0,"kxyJ\\n");if bw>=${fileSize} then uart.on("data");__f:close();__f=nil;uart.write(0,"QKiw\\n") end end, 0);uart.write(0,"Ready\\n")`,
 
 		readFileHelper: (name: string) =>
-			`__f=io.input("${name}","r");uart.on(0,"data",0,function(data) while true do local b=__f:read(${NodeMcuSerial.maxLineLength});if b==nil then uart.on(0,"data");__f:close();__f=nil;break end uart.write(0,b) end end, 0);uart.write(0,"Ready\\n")`,
+			`__f=io.input("${name}","r");uart.on(0,"data",0,function(data) while true do local b=__f:read(${NodeMcuSerial.maxLineLength});if b==nil then uart.on(0,"data");__f:close();__f=nil;break end uart.write(0,b) tmr.wdclr() end end, 0);uart.write(0,"Ready\\n")`,
 
 		getFileSize: (name: string) => `local fh=io.open("${name}");local s=fh:seek('end');fh:close();uart.write(0,s.."\\n")`,
 
@@ -197,6 +197,7 @@ export default class NodeMcuCommands {
 			false,
 		)
 		const fileSize = parseInt(fileSizeStr, 10)
+		let receivedFileSize = fileSize
 		let retVal: Buffer | undefined = void 0
 
 		await this._device.executeSingleLineCommand(this._luaCommands.readFileHelper(fileName), false)
@@ -206,13 +207,31 @@ export default class NodeMcuCommands {
 				retVal = retVal ? Buffer.concat([retVal, data]) : data
 				progressCb?.((retVal.length * 100) / fileSize)
 
-				if (retVal.length === fileSize) {
+				if (this._device.espArch === 'esp32') {
+					receivedFileSize += data.filter(x => x === 10).length
+				}
+
+				if (retVal.length === receivedFileSize) {
 					unsubscribe.dispose()
 
 					progressCb?.(100)
 
 					await this._device.toggleNodeOutput(true)
 					this._device.setBusy(false)
+
+					if ((this._device.espArch === 'esp32') && (receivedFileSize !== fileSize)) {
+						let retValnoCR = new Uint8Array()
+						let startLFindex = 0
+
+						retVal.forEach((ch, indexLF, arr) => {
+							if (ch === 10) {
+								retValnoCR = Buffer.concat([retValnoCR, arr.slice(startLFindex, indexLF - 1), arr.slice(indexLF, indexLF + 1)])
+								startLFindex = indexLF + 1
+							}
+						})
+
+						retVal = Buffer.from(retValnoCR)
+					}
 
 					resolve(retVal)
 				}
