@@ -15,9 +15,9 @@ interface INodeMcuCommandState {
 
 export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	private static readonly _luaCommands = {
-		nodeDisableOutput: 'node.output(function(opipe) return false end, 0);uart.write(0, "Done\\r\\n")',
-		nodeEnableOutput: 'node.output();uart.write(0, "Done\\r\\n")',
-		getChipID: 'uart.write(0,tostring(node.chipid()).."\\r\\n");',
+		nodeDisableOutput: 'node.output(function(p) return false end,0);uart.write(0,"Done\\r\\n")',
+		nodeEnableOutput: 'node.output();uart.write(0,"Done\\r\\n")',
+		getChipID: 'uart.write(0,tostring(node.chipid()).."\\r\\n")',
 	}
 	private static readonly _commandTimeout = 15000 // msec
 
