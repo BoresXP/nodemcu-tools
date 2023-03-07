@@ -162,4 +162,27 @@ export default class NodemcuTools {
 			},
 		)
 	}
+
+	public async sendLine(line: string): Promise<void> {
+		const devicePath = await NodemcuTools.selectConnectedDevice()
+		if (!devicePath) {
+			return void 0
+		}
+		const device = NodeMcuRepository.getOrCreate(devicePath)
+
+		line = line.replace(/^(.*)--.*/, '$1').trim() // trim tail comment and leading/trailing spaces
+		await device.fromTerminal(line)
+	}
+
+	// Wip
+	public async sendBlock(block: string): Promise<void> {
+		const devicePath = await NodemcuTools.selectConnectedDevice()
+		if (!devicePath) {
+			return void 0
+		}
+		const device = NodeMcuRepository.getOrCreate(devicePath)
+		await device.fromTerminal(block)
+
+	}
+
 }

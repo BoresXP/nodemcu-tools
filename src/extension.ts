@@ -8,6 +8,7 @@ import TerminalView from './terminal/TerminalView'
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function activate(context: ExtensionContext): void {
 	try {
 		const treeProvider = new DeviceTreeProvider()
@@ -123,6 +124,31 @@ export function activate(context: ExtensionContext): void {
 				return tools.downloadFile(item.parent.path, item.name, newName)
 			}),
 		)
+
+		context.subscriptions.push(
+			commands.registerCommand('nodemcu-tools.sendLine', async () => {
+				const editor = window.activeTextEditor
+				if (editor) {
+					const currentLine = editor.document.lineAt(editor.selection.active.line)
+					if (currentLine.isEmptyOrWhitespace) {
+						return
+					}
+
+					await tools.sendLine(currentLine.text)
+				}
+			}),
+		)
+
+		context.subscriptions.push(
+			commands.registerCommand('nodemcu-tools.sendBlock', async () => {
+				const editor = window.activeTextEditor
+				if (editor) {
+					const block = editor.document.getText(editor.selection)
+					await tools.sendBlock(block)
+				}
+			}),
+		)
+
 	} catch (ex) {
 		console.error(ex) // eslint-disable-line no-console
 		void window.showErrorMessage(`Error in nodemcu-tools: ${ex}`)

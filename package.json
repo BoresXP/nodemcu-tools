@@ -118,9 +118,53 @@
 				"title": "Upload to device and set as LFS...",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .img"
+			},
+			{
+				"command": "nodemcu-tools.sendLine",
+				"title": "Send current line to device",
+				"category": "NodeMCU",
+				"enablement": "editorTextFocus && nodemcu-tools:isConnected",
+				"icon": {
+					"light": "resources/light/sendLine.svg",
+					"dark": "resources/dark/sendLine.svg"
+				}
+			},
+			{
+				"command": "nodemcu-tools.sendBlock",
+				"title": "Send selected block to device",
+				"category": "NodeMCU",
+				"enablement": "editorTextFocus && editorHasSelection == true && nodemcu-tools:isConnected",
+				"icon": {
+					"light": "resources/light/sendBlock.svg",
+					"dark": "resources/dark/sendBlock.svg"
+				}
 			}
 		],
 		"menus": {
+			"editor/title": [
+				{
+					"command": "nodemcu-tools.sendLine",
+					"when": "editorTextFocus && nodemcu-tools:isConnected",
+					"group": "navigation"
+				},
+				{
+					"command": "nodemcu-tools.sendBlock",
+					"when": "editorTextFocus && editorHasSelection == true && nodemcu-tools:isConnected",
+					"group": "navigation"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "nodemcu-tools.sendLine",
+					"group": "nodemcu-tools@10",
+					"when": "editorTextFocus && nodemcu-tools:isConnected"
+				},
+				{
+					"command": "nodemcu-tools.sendBlock",
+					"group": "nodemcu-tools@20",
+					"when": "editorTextFocus && editorHasSelection == true && nodemcu-tools:isConnected"
+				}
+			],
 			"explorer/context": [
 				{
 					"command": "nodemcu-tools.uploadFile",
