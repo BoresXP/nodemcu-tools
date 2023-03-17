@@ -223,14 +223,14 @@ export default class NodeMcuCommands {
 						let retValnoCR = new Uint8Array()
 						let startLFindex = 0
 
-						retVal.forEach((ch, indexLF, arr) => {
-							if (ch === 10) {
+						retVal.forEach((char, indexLF, arr) => {
+							if (char === 10) {
 								retValnoCR = Buffer.concat([retValnoCR, arr.slice(startLFindex, indexLF - 1), arr.slice(indexLF, indexLF + 1)])
 								startLFindex = indexLF + 1
 							}
 						})
 
-						retVal = Buffer.from(retValnoCR)
+						retVal = Buffer.concat([retValnoCR, retVal.slice(startLFindex, retVal.length)])
 					}
 
 					resolve(retVal)
