@@ -47,7 +47,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	}
 
 	public async detectArch(): Promise<void> {
-		const chipID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID, true)
+		const chipID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
 
 		// esp32 chipid (hex with '0x' prefix)?
 		this._espArch = chipID.match(/^0x[\dA-Fa-f]+\r?$/) ? 'esp32' : 'esp8266'
