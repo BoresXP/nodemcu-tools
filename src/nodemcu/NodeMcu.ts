@@ -98,8 +98,8 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		if (!text) {
 			return
 		}
-		if (!text.endsWith(NodeMcuSerial.lineEnd)) {
-			text += NodeMcuSerial.lineEnd
+		if (!text.endsWith('\n')) {
+			text += (this._espArch === 'esp8266') ? NodeMcuSerial.lineEnd : '\n'
 		}
 		console.log('T: ' + text)
 
@@ -125,7 +125,6 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		}
 
 		if (!wasBusy) {
-			// await this.toggleNodeOutput(false)
 			await this.toggleNodeOutput(true)
 		}
 
@@ -220,7 +219,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			this._unsubscribeOnData.dispose()
 			this._unsubscribeOnData = this.onData(handleCommand)
 
-			void this.write(command.endsWith(NodeMcuSerial.lineEnd) ? command : command + NodeMcuSerial.lineEnd)
+			void this.write(command.endsWith('\n') ? command : command + NodeMcuSerial.lineEnd)
 		})
 
 		console.log('C: ' + command)
