@@ -27,7 +27,8 @@
 		"nodemcu",
 		"iot",
 		"lua",
-		"nodemcu"
+		"esp8266",
+		"esp32"
 	],
 	"activationEvents": [
 		"workspaceContains:.nodemcutool",
