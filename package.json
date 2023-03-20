@@ -217,11 +217,6 @@
 						"WiFi APs": "wifi.sta.getap({show_hidden=1},1,function(t) for k,v in pairs(t) do print(k..':'..v) end end)"
 					},
 					"description": "Command snippets"
-				},
-				"nodemcu-tools.completion.enabled": {
-					"type": "boolean",
-					"default": true,
-					"description": "Is language completion provider for LUA provided by extension active or not. Switch to false if you have another language server for LUA installed and active."
 				}
 			}
 		}
