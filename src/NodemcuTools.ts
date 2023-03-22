@@ -171,8 +171,8 @@ export default class NodemcuTools {
 		}
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
-		line = line.replace(/^(.*)--.*/, '$1').trim() // trim tail comment and leading/trailing spaces
-		await device.fromTerminal(line)
+		// line = line.replace(/^(.*)--.*/, '$1').trim() // trim tail comment and leading/trailing spaces
+		await device.fromTerminal(luamin.minify(line))
 	}
 
 	// Wip
@@ -182,8 +182,9 @@ export default class NodemcuTools {
 			return void 0
 		}
 		const device = NodeMcuRepository.getOrCreate(devicePath)
-		const minifiedBlock = luamin.minify(block)
 
+		const minifiedBlock = luamin.minify(block)
+		// console.log(minifiedBlock)
 		await device.fromTerminal(minifiedBlock)
 
 	}
