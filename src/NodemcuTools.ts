@@ -1,5 +1,6 @@
 import { INodeMcu, NodeMcuRepository } from './nodemcu'
 import { ProgressLocation, Uri, commands, window, workspace } from 'vscode'
+import luamin from 'luamin'
 
 export default class NodemcuTools {
 	private static async selectConnectedDevice(): Promise<string | undefined> {
@@ -181,7 +182,9 @@ export default class NodemcuTools {
 			return void 0
 		}
 		const device = NodeMcuRepository.getOrCreate(devicePath)
-		await device.fromTerminal(block)
+		const minifiedBlock = luamin.minify(block)
+
+		await device.fromTerminal(minifiedBlock)
 
 	}
 

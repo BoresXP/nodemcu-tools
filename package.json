@@ -299,6 +299,7 @@
 	"dependencies": {
 		"effector": "^22.3.0",
 		"effector-react": "^22.1.5",
+		"luamin": "github:FATH-Mechatronics/luamin#d735925",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-tooltip": "^4.2.21",
