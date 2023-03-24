@@ -71,7 +71,7 @@ export default class NodeMcuCommands {
 		getFreeHeap: 'uart.write(0,tostring(node.heap()).."\\n")',
 
 		getDeviceInfo:
-			'local i={ssl=false,number_type="unknown",lfs_size=65536,modules="unknown"};local s="";for k,v in pairs(i) do s=s..k..":"..tostring(v)..";" end uart.write(0,s.."\\n")',
+		'local m={}for k in pairs(getmetatable(_G)["__index"])do m[#m+1]=k end;local t={ssl=false,number_type="unknown",lfs_size=65536,modules=table.concat(m,",")}local s=""for k,v in pairs(t)do s=s..k..":"..tostring(v)..";"end;uart.write(0,s.."\\n")',
 
 		getFsInfo: 'local remaining,used,total=file.fsinfo();uart.write(0,remaining..";"..used..";"..total.."\\n")',
 	}
