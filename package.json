@@ -255,11 +255,7 @@
 					"type": "object",
 					"default": {
 						"Restart": "node.restart()",
-						"Heap": "=node.heap()",
-						"ChipID": "=node.chipid()",
-						"WiFi Status": "local wifista=wifi.sta.status();for k,v in pairs(wifi) do if v==wifista and string.sub(k,1,4)=='STA_' then print(k) end end",
-						"WiFi IP": "=wifi.sta.getip()",
-						"WiFi APs": "wifi.sta.getap({show_hidden=1},1,function(t) for k,v in pairs(t) do print(k..':'..v) end end)"
+						"Heap": "=node.heap()"
 					},
 					"description": "Command snippets"
 				}
