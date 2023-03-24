@@ -10,3 +10,10 @@ pipelines:
             - npm install -g @vscode/vsce
             - npm install
             - vsce package
+      - step:
+          script:
+            - pipe: atlassian/bitbucket-upload-file:0.3.4
+              variables:
+                BITBUCKET_USERNAME: $BITBUCKET_USERNAME
+                BITBUCKET_APP_PASSWORD: $BB_APP_PASSWORD
+                FILENAME: '*.vsix'
