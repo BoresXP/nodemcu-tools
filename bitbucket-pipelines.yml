@@ -1,0 +1,12 @@
+image: node:12
+
+pipelines:
+  custom:
+    build:
+      - step:
+          caches:
+            - node
+          script:
+            - npm install -g @vscode/vsce
+            - npm install
+            - vsce package
