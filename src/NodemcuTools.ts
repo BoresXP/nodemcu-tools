@@ -171,11 +171,9 @@ export default class NodemcuTools {
 		}
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
-		// line = line.replace(/^(.*)--.*/, '$1').trim() // trim tail comment and leading/trailing spaces
 		await device.fromTerminal(luamin.minify(line))
 	}
 
-	// Wip
 	public async sendBlock(block: string): Promise<void> {
 		const devicePath = await NodemcuTools.selectConnectedDevice()
 		if (!devicePath) {
@@ -183,10 +181,7 @@ export default class NodemcuTools {
 		}
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
-		const minifiedBlock = luamin.minify(block)
-		// console.log(minifiedBlock)
-		await device.fromTerminal(minifiedBlock)
-
+		await device.commands.sendChunk(luamin.minify(block))
 	}
 
 }
