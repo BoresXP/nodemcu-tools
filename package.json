@@ -17,7 +17,7 @@
 		"url": "https://bitbucket.org/BoresExpress/nodemcu-tools/issues"
 	},
 	"engines": {
-		"vscode": "^1.53.0"
+		"vscode": "^1.75.0"
 	},
 	"categories": [
 		"Programming Languages",
@@ -31,8 +31,7 @@
 		"esp32"
 	],
 	"activationEvents": [
-		"workspaceContains:.nodemcutool",
-		"onView:nodemcu-tools.devices"
+		"workspaceContains:.nodemcutool"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -275,7 +274,7 @@
 		"@types/react-dom": "^18.0.11",
 		"@types/serialport": "^8.0.2",
 		"@types/styled-components": "^5.1.26",
-		"@types/vscode": "^1.53.0",
+		"@types/vscode": "^1.75.0",
 		"@types/webpack": "^5.28.1",
 		"@typescript-eslint/eslint-plugin": "^5.57.0",
 		"@typescript-eslint/parser": "^5.57.0",
