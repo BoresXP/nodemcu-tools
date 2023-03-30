@@ -26,6 +26,10 @@ export function activate(context: ExtensionContext): void {
 				treeProvider.refresh()
 				await treeView.reveal(item, { select: true, expand: true })
 
+				await new Promise<void>(resolve => {
+					setTimeout(() => resolve(), 200)
+				})
+
 				await wv.show()
 			}),
 		)
