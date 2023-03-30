@@ -271,10 +271,10 @@
 	"devDependencies": {
 		"@types/bindings": "^1.5.1",
 		"@types/node": "^16.11.45",
-		"@types/react": "^18.0.15",
-		"@types/react-dom": "^18.0.6",
+		"@types/react": "^18.0.31",
+		"@types/react-dom": "^18.0.11",
 		"@types/serialport": "^8.0.2",
-		"@types/styled-components": "^5.1.25",
+		"@types/styled-components": "^5.1.26",
 		"@types/vscode": "^1.53.0",
 		"@types/webpack": "^5.28.0",
 		"@typescript-eslint/eslint-plugin": "^5.57.0",
@@ -294,13 +294,13 @@
 		"webpack-cli": "^4.10.0"
 	},
 	"dependencies": {
-		"effector": "^22.3.0",
-		"effector-react": "^22.1.5",
+		"effector": "^22.7.0",
+		"effector-react": "^22.5.1",
 		"luamin": "github:FATH-Mechatronics/luamin#d735925",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"react-tooltip": "^4.2.21",
+		"react-tooltip": "^4.5.1",
 		"serialport": "^10.5.0",
-		"styled-components": "^5.3.5"
+		"styled-components": "^5.3.9"
 	}
 }
