@@ -46,12 +46,28 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		return this._espArch
 	}
 
-	public async detectArch(): Promise<void> {
-		await this.waitToBeReady()
-		const chipID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
+	public get isBusy(): boolean {
+		return this._isBusy
+	}
 
-		// esp32 chipid (hex with '0x' prefix)?
-		this._espArch = chipID.match(/^0x[\dA-Fa-f]+\r?$/) ? 'esp32' : 'esp8266'
+	public get onBusyChanged(): VsEvent<boolean> {
+		return this._evtBusy.event
+	}
+
+	public get toTerminal(): VsEvent<IToTerminalData> {
+		return this._evtToTerminal.event
+	}
+
+	public get onClose(): VsEvent<void> {
+		return this._evtClose.event
+	}
+
+	public get commands(): NodeMcuCommands {
+		if (!this._commands) {
+			this._commands = new NodeMcuCommands(this)
+		}
+
+		return this._commands
 	}
 
 	private static clearReply(reply: string | undefined): string {
@@ -68,6 +84,14 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		return reply ?? ''
 	}
 
+	public async detectArch(): Promise<void> {
+		await this.waitToBeReady()
+		const chipID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
+
+		// esp32 chipid (hex with '0x' prefix)?
+		this._espArch = chipID.match(/^0x[\dA-Fa-f]+\r?$/) ? 'esp32' : 'esp8266'
+	}
+
 	public waitToBeReady(): Promise<void> {
 		return new Promise(resolve => {
 			if (!this._isBusy) {
@@ -81,18 +105,6 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		})
 	}
 
-	public get isBusy(): boolean {
-		return this._isBusy
-	}
-
-	public get onBusyChanged(): VsEvent<boolean> {
-		return this._evtBusy.event
-	}
-
-	public get toTerminal(): VsEvent<IToTerminalData> {
-		return this._evtToTerminal.event
-	}
-
 	public async fromTerminal(text: string): Promise<void> {
 		await this.waitForCommand()
 
@@ -102,14 +114,10 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		if (!text.endsWith('\n')) {
 			text += (this._espArch === 'esp8266') ? NodeMcuSerial.lineEnd : '\n'
 		}
-		console.log('T: ' + text)
+		console.log('T: ' + text) // eslint-disable-line no-console
 
 		this._lastInput = text
 		await this.write(text)
-	}
-
-	public get onClose(): VsEvent<void> {
-		return this._evtClose.event
 	}
 
 	public async executeSingleLineCommand(command: string, restoreNodeOutputAndClearBusy = true): Promise<string> {
@@ -152,20 +160,12 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		}
 	}
 
-	public get commands(): NodeMcuCommands {
-		if (!this._commands) {
-			this._commands = new NodeMcuCommands(this)
-		}
-
-		return this._commands
-	}
-
 	private handleConnect(): void {
 		this.setBusy(false)
 	}
 
 	private handleData(data: string): void {
-		console.log('R: ' + data)
+		console.log('R: ' + data) // eslint-disable-line no-console
 		if (!this._isBusy) {
 			this._evtToTerminal.fire({
 				type: this._lastInput && data.endsWith(this._lastInput.trimEnd()) ? 'echo' : 'output',
@@ -201,7 +201,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 			const handleCommand = (data: string): void => {
 				try {
-					console.log('CR: ' + data)
+					console.log('CR: ' + data) // eslint-disable-line no-console
 					const shouldContinue = replyHandler(data, state)
 					if (shouldContinue) {
 						state.replyNumber++
@@ -223,7 +223,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			void this.write(command.endsWith('\n') ? command : command + NodeMcuSerial.lineEnd)
 		})
 
-		console.log('C: ' + command)
+		console.log('C: ' + command) // eslint-disable-line no-console
 
 		return this._currentCommand
 	}

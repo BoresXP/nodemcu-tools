@@ -26,7 +26,7 @@ const StatusBarModulesItem: React.FC<IStatusBarModulesItemProps> = ({ modules })
 				data-html={true}
 				data-class="nodemcu-tools-hover-tooltip"
 			>
-				modules
+				{'modules'}
 			</StatusBarItemStyled>
 		</>
 	)

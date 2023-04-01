@@ -20,6 +20,14 @@ export default class NodeMcuRepository {
 	private static readonly _devices = new Map<string, NodeMcu>()
 	private static readonly _evtDisconnect = new EventEmitter<DisconnectInfo>()
 
+	public static get onDisconnect(): VsEvent<DisconnectInfo> {
+		return this._evtDisconnect.event
+	}
+
+	public static get allConnected(): INodeMcu[] {
+		return Array.from(this._devices.values()).filter(d => d.isConnected)
+	}
+
 	public static async listPorts(): Promise<SerialPortInfo[]> {
 		const ports = await NodeMcu.listDevices()
 
@@ -63,11 +71,4 @@ export default class NodeMcuRepository {
 		return false
 	}
 
-	public static get onDisconnect(): VsEvent<DisconnectInfo> {
-		return this._evtDisconnect.event
-	}
-
-	public static get allConnected(): INodeMcu[] {
-		return Array.from(this._devices.values()).filter(d => d.isConnected)
-	}
 }

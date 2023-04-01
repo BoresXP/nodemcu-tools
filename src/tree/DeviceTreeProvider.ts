@@ -13,12 +13,12 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 		NodeMcuRepository.onDisconnect(() => this.refresh())
 	}
 
-	public refresh(): void {
-		this._onDidChangeTreeData.fire(void 0)
-	}
-
 	public get onDidChangeTreeData(): VsEvent<undefined> {
 		return this._onDidChangeTreeData.event
+	}
+
+	public refresh(): void {
+		this._onDidChangeTreeData.fire(void 0)
 	}
 
 	public getTreeItem(element: TreeItem): TreeItem {

@@ -9,6 +9,7 @@
 		"strict": true,
 		"removeComments": true,
 		"esModuleInterop": true,
+		"ignoreDeprecations": "5.0",
 		"importsNotUsedAsValues": "preserve",
 		"allowSyntheticDefaultImports": true
 	},

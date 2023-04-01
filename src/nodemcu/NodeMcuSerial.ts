@@ -28,6 +28,30 @@ export default abstract class NodeMcuSerial {
 		this._port = new SerialPort({ path, autoOpen: false, baudRate: 115200 })
 	}
 
+	public get isConnected(): boolean {
+		return this._port.isOpen
+	}
+
+	public get path(): string {
+		return this._port.path
+	}
+
+	public get onDisconnect(): VsEvent<ErrorDisconnect | undefined> {
+		return this._evtClosed.event
+	}
+
+	public get onData(): VsEvent<string> {
+		return this._evtOnData.event
+	}
+
+	public get onDataRaw(): VsEvent<Buffer> {
+		return this._evtOnDataRaw.event
+	}
+
+	protected get onConnect(): VsEvent<void> {
+		return this._evtOpened.event
+	}
+
 	public static async listDevices(): Promise<PortInfo[]> {
 		const ports = await SerialPort.list()
 		return ports.filter(p => this._vendorIDs.includes(p.vendorId?.toUpperCase() ?? ''))
@@ -61,18 +85,6 @@ export default abstract class NodeMcuSerial {
 		})
 	}
 
-	public get isConnected(): boolean {
-		return this._port.isOpen
-	}
-
-	public get path(): string {
-		return this._port.path
-	}
-
-	public get onDisconnect(): VsEvent<ErrorDisconnect | undefined> {
-		return this._evtClosed.event
-	}
-
 	public writeRaw(data: Buffer): Promise<void> {
 		return new Promise((resolve, reject) => {
 			if (data.length > NodeMcuSerial.maxLineLength) {
@@ -104,18 +116,6 @@ export default abstract class NodeMcuSerial {
 				}
 			})
 		})
-	}
-
-	public get onData(): VsEvent<string> {
-		return this._evtOnData.event
-	}
-
-	public get onDataRaw(): VsEvent<Buffer> {
-		return this._evtOnDataRaw.event
-	}
-
-	protected get onConnect(): VsEvent<void> {
-		return this._evtOpened.event
 	}
 
 	private onDataHandler(data: Buffer): void {
