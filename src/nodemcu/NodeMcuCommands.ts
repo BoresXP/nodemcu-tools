@@ -47,10 +47,10 @@ export default class NodeMcuCommands {
 		getFsInfo: 'local remaining,used,total=file.fsinfo()uart.write(0,remaining..";"..used..";"..total.."\\r\\n")',
 
 		sendChunkHelper: (chunkSize: number, blockSize: number, firstCall: boolean) =>
-			`if ${firstCall} then _r_B={}end;local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};_r_B[#_r_B+1]=d;uart.write(0,"kxyJ\\r\\n");if bw>=${chunkSize} then uart.on("data");uart.write(0,"QKiw\\r\\n")end end,0)uart.write(0,"Ready\\r\\n")`,
+			`if ${firstCall} then _r_B={}end;local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};_r_B[#_r_B+1]=d;uart.write(0,"kxyJ\\r\\n")if bw>=${chunkSize} then uart.on("data")uart.write(0,"QKiw\\r\\n")end end,0)uart.write(0,"Ready\\r\\n")`,
 
 		runChunk: () =>
-			'uart.write(0,"Done\\r\\n")local f,ce=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then local ok,e=pcall(f)if not ok then uart.write(0,"Execution error:\\r\\n",e.."\\r\\n")end else uart.write(0,"Compilation error:\\r\\n",ce.."\\r\\n")end;_r_B=nil',
+			'uart.write(0,".\\r\\n")local f,ce=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then local ok,e=pcall(f)if not ok then uart.write(0,"Execution error:\\r\\n",e.."\\r\\n")end else uart.write(0,"Compilation error:\\r\\n",ce.."\\r\\n")end;_r_B=nil',
 	}
 
 	private readonly _luaCommands32 = {
@@ -79,13 +79,13 @@ export default class NodeMcuCommands {
 		getDeviceInfo:
 		'local m={}for k in pairs(getmetatable(_G)["__index"])do m[#m+1]=k end;local t={ssl=false,number_type="unknown",lfs_size=65536,modules=table.concat(m,",")}local s=""for k,v in pairs(t)do s=s..k..":"..tostring(v)..";"end;uart.write(0,s.."\\n")',
 
-		getFsInfo: 'local remaining,used,total=file.fsinfo();uart.write(0,remaining..";"..used..";"..total.."\\n")',
+		getFsInfo: 'local remaining,used,total=file.fsinfo()uart.write(0,remaining..";"..used..";"..total.."\\n")',
 
 		sendChunkHelper: (chunkSize: number, blockSize: number, firstCall: boolean) =>
-			`if ${firstCall} then _r_B={}end;local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};_r_B[#_r_B+1]=d;uart.write(0,"kxyJ\\n")if bw>=${chunkSize} then uart.on("data");uart.write(0,"QKiw\\n")end end,0);uart.write(0,"Ready\\n")`,
+			`if ${firstCall} then _r_B={}end;local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};_r_B[#_r_B+1]=d;uart.write(0,"kxyJ\\n")if bw>=${chunkSize} then uart.on("data")uart.write(0,"QKiw\\n")end end,0)uart.write(0,"Ready\\n")`,
 
 		runChunk: () =>
-			'uart.write(0,"Done\\n")local f,ce=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then local ok,e=pcall(f)if not ok then uart.write(0,"Execution error:\\n",e.."\\n")end else uart.write(0,"Compilation error:\\n",ce.."\\n")end;_r_B=nil',
+			'uart.write(0,".\\n")local f,ce=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then local ok,e=pcall(f)if not ok then uart.write(0,"Execution error:\\n",e.."\\n")end else uart.write(0,"Compilation error:\\n",ce.."\\n")end;_r_B=nil',
 	}
 
 	private readonly _luaCommands: {
