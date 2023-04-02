@@ -90,6 +90,9 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 		// esp32 chipid (hex with '0x' prefix)?
 		this._espArch = chipID.match(/^0x[\dA-Fa-f]+\r?$/) ? 'esp32' : 'esp8266'
+
+		await this.toggleNodeOutput(true)
+		this.setBusy(false)
 	}
 
 	public waitToBeReady(): Promise<void> {

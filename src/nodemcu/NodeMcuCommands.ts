@@ -323,11 +323,7 @@ export default class NodeMcuCommands {
 
 		await this.waitDone('QKiw', async () => {
 			await this._device.executeSingleLineCommand(
-				this._luaCommands.sendChunkHelper(
-					tailSize,
-					tailSize,
-					firstCall
-				),
+				this._luaCommands.sendChunkHelper(tailSize, tailSize, firstCall),
 				false
 			)
 			await this._device.writeRaw(data.length > 254 ? data.slice(data.length - tailSize) : data)

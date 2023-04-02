@@ -1,5 +1,6 @@
 import { INodeMcu, NodeMcuRepository } from './nodemcu'
 import { ProgressLocation, Uri, commands, window, workspace } from 'vscode'
+import { initialSettings } from './terminal/content/state/state'
 import luamin from 'luamin'
 
 export default class NodemcuTools {
@@ -171,7 +172,23 @@ export default class NodemcuTools {
 		}
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
-		await device.fromTerminal(luamin.minify(line))
+		const minifyEnabled = workspace.getConfiguration().get(
+			'nodemcu-tools.minify.enabled',
+			initialSettings.minifyEnabled
+		)
+
+		if (minifyEnabled) {
+			try {
+				const minifiedLine = luamin.minify(line)
+				await device.fromTerminal(minifiedLine)
+			} catch (err) {
+				if (err instanceof Error) {
+					await window.showWarningMessage(`${err.message}`)
+				}
+			}
+		} else {
+			await device.fromTerminal(line)
+		}
 	}
 
 	public async sendBlock(block: string): Promise<void> {
@@ -181,7 +198,22 @@ export default class NodemcuTools {
 		}
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
-		await device.commands.sendChunk(luamin.minify(block))
-	}
+		const minifyEnabled = workspace.getConfiguration().get(
+			'nodemcu-tools.minify.enabled',
+			initialSettings.minifyEnabled
+		)
 
+		if (minifyEnabled) {
+			try {
+				const minifiedBlock = luamin.minify(block)
+				await device.commands.sendChunk(minifiedBlock)
+			} catch (err) {
+				if (err instanceof Error) {
+					await window.showWarningMessage(`${err.message}`)
+				}
+			}
+		} else {
+			await device.commands.sendChunk(block)
+		}
+	}
 }
