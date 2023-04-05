@@ -89,15 +89,16 @@ export default abstract class NodeMcuSerial {
 		return new Promise((resolve, reject) => {
 			if (data.length > NodeMcuSerial.maxLineLength) {
 				reject(new Error(`Data is too long: ${data.length} bytes`))
-			}
+			} else {
 
-			this._port.write(data, 'binary', err => {
-				if (err) {
-					reject(err)
-				} else {
-					this._port.drain(err1 => err1 ? reject(err1) : resolve())
-				}
-			})
+				this._port.write(data, 'binary', err => {
+					if (err) {
+						reject(err)
+					} else {
+						this._port.drain(err1 => err1 ? reject(err1) : resolve())
+					}
+				})
+			}
 		})
 	}
 
@@ -105,16 +106,17 @@ export default abstract class NodeMcuSerial {
 		return new Promise((resolve, reject) => {
 			if (data.length > NodeMcuSerial.maxLineLength) {
 				reject(new Error(`Data is too long: ${data.length} chars`))
-			}
+			} else {
 
-			// eslint-disable-next-line sonarjs/no-identical-functions
-			this._port.write(data, err => {
-				if (err) {
-					reject(err)
-				} else {
-					this._port.drain(err1 => err1 ? reject(err1) : resolve())
-				}
-			})
+				// eslint-disable-next-line sonarjs/no-identical-functions
+				this._port.write(data, err => {
+					if (err) {
+						reject(err)
+					} else {
+						this._port.drain(err1 => err1 ? reject(err1) : resolve())
+					}
+				})
+			}
 		})
 	}
 

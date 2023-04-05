@@ -1,4 +1,4 @@
-import { Disposable, EventEmitter, Event as VsEvent } from 'vscode'
+import { Disposable, EventEmitter, Event as VsEvent, window } from 'vscode'
 
 import INodeMcu from './INodeMcu'
 import IToTerminalData from './IToTerminalData'
@@ -114,10 +114,18 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		if (!text.endsWith('\n')) {
 			text += (this._espArch === 'esp8266') ? NodeMcuSerial.lineEnd : '\n'
 		}
-		console.log('T: ' + text) // eslint-disable-line no-console
 
 		this._lastInput = text
-		await this.write(text)
+
+		try {
+			await this.write(text)
+			console.log('T: ' + text) // eslint-disable-line no-console
+
+		} catch (err) {
+			if (err instanceof Error) {
+				await window.showWarningMessage(err.message)
+			}
+		}
 	}
 
 	public async executeSingleLineCommand(command: string, restoreNodeOutputAndClearBusy = true): Promise<string> {
