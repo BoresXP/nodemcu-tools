@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.2] - 2023-04-06
+### Added
+- Option to enable Lua code minifying. Minifying the code is disabled by default.
+
+### Changed
+- VS Code version requirement was relaxed to 1.74.0
+- Fix a too long string could have been sent to the device.
+- The annotation in the changelog for version 3.5.1 has been translated:
+    [v3.5.1]
+  - added support for working with the esp32 chip;
+  - added the **sendLine** command to send a line of code from the editor window to the device. The string length must be less or equal 254 bytes;
+  - added the **sendBlock** command to send the selected code snippet from the editor window to the device. The fragment size can exceed 254 bytes;
+  - completely removed the built-in implementation of auto-completion of NodeMCU functions. Instead, it is suggested to use sumneko's [LuaLS](https://github.com/Lua/lua-language-server ) with connected [addons](https://github.com/LuaLS/lua-language-server/wiki/Addons ) nodemcu-esp32 and nodemcu-esp8266;
+  - removed default snippets related to the chip architecture;
+  - added the _Globals_ snippet, common to both architectures;
+  - the minimum VS Code version should be 1.75.0
+
 ## [3.5.1] - 2023-03-31
 - добавлена поддержка работы с чипом esp32;
 - добавлена команда **sendLine** для отправки строки кода из окна редактора в устройство. Длина строки должна быть менее 254 байт;
