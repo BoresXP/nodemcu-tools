@@ -187,7 +187,7 @@ export default class NodemcuTools {
 				}
 			}
 		} else {
-			await device.fromTerminal(line)
+			await device.fromTerminal(line.trim())
 		}
 	}
 
@@ -213,7 +213,8 @@ export default class NodemcuTools {
 				}
 			}
 		} else {
-			await device.commands.sendChunk(block)
+			const trimmedBlock = block.replace(/^[\t ]+/gm, '')
+			await device.commands.sendChunk(trimmedBlock)
 		}
 	}
 }

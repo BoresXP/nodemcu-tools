@@ -292,7 +292,9 @@ export default class NodeMcuCommands {
 		await this.checkReady()
 
 		let firstCall = true
-		minifiedBlock += (this._device.espArch === 'esp8266' ? '\r\n' : '\n')
+		if (!minifiedBlock.endsWith('\n')) {
+			minifiedBlock += (this._device.espArch === 'esp8266' ? '\r\n' : '\n')
+		}
 		const data = Buffer.from(minifiedBlock)
 		const tailSize = data.length % NodeMcuSerial.maxLineLength
 
