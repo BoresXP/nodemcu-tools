@@ -34,6 +34,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	private _commands: NodeMcuCommands | undefined
 
 	private _espArch = ''
+	private _espID = ''
 
 	constructor(path: string) {
 		super(path)
@@ -44,6 +45,10 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 	public get espArch(): string {
 		return this._espArch
+	}
+
+	public get espID(): string {
+		return this._espID
 	}
 
 	public get isBusy(): boolean {
@@ -84,12 +89,12 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		return reply ?? ''
 	}
 
-	public async detectArch(): Promise<void> {
+	public async detectEspType(): Promise<void> {
 		await this.waitToBeReady()
-		const chipID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
+		this._espID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
 
 		// esp32 chipid (hex with '0x' prefix)?
-		this._espArch = chipID.match(/^0x[\dA-Fa-f]+\r?$/) ? 'esp32' : 'esp8266'
+		this._espArch = this._espID.match(/^0x[\dA-Fa-f]+\r?$/) ? 'esp32' : 'esp8266'
 
 		await this.toggleNodeOutput(true)
 		this.setBusy(false)

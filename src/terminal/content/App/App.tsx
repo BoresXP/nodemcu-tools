@@ -10,7 +10,14 @@ const App: React.FC = () => (
 		<TerminalContainer />
 		<SnippetsContainer />
 		<StatusBar />
-		<ReactTooltip id="main-tooltip" effect="solid" delayShow={500} />
+		<ReactTooltip
+			id="main-tooltip"
+			effect="solid"
+			delayShow={500}
+			padding='10px 4px 12px 4px'
+			backgroundColor='var(--vscode-badge-background)'
+			textColor='var(--vscode-badge-foreground)'
+		/>
 
 		<svg display="none">
 			<symbol viewBox="0 0 489.7 489.7" id="svg-garbage">

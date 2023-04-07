@@ -13,7 +13,8 @@ export function deviceInfo(
 	modules: string,
 	fsTotal: number,
 	fsUsed: number,
-	deviceArch: string,
+	chipArch: string,
+	chipID: string
 ): IDeviceInfo {
 	return {
 		type: 'deviceInfo',
@@ -24,7 +25,8 @@ export function deviceInfo(
 			modules,
 			fsTotal,
 			fsUsed,
-			deviceArch,
+			chipArch,
+			chipID,
 		},
 	}
 }

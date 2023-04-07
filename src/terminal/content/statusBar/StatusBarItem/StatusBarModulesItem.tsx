@@ -3,11 +3,15 @@ import React, { useMemo } from 'react'
 
 export interface IStatusBarModulesItemProps {
 	modules: string
+	chipArch: string
 }
 
-const docLinkRoot = 'https://nodemcu.readthedocs.io/en/release/modules'
+let docLinkRoot: string
 
-const StatusBarModulesItem: React.FC<IStatusBarModulesItemProps> = ({ modules }) => {
+const StatusBarModulesItem: React.FC<IStatusBarModulesItemProps> = ({ modules, chipArch }) => {
+	docLinkRoot = (chipArch === 'esp32') ?
+		'https://nodemcu.readthedocs.io/en/dev-esp32/modules' :
+		'https://nodemcu.readthedocs.io/en/dev/modules'
 	const modulesWithLinks = useMemo(
 		() =>
 			modules
@@ -24,6 +28,7 @@ const StatusBarModulesItem: React.FC<IStatusBarModulesItemProps> = ({ modules })
 				data-for="main-tooltip"
 				data-tip={modulesWithLinks}
 				data-html={true}
+				data-delay-hide={500}
 				data-class="nodemcu-tools-hover-tooltip"
 			>
 				{'modules'}

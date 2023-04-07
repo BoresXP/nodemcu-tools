@@ -12,6 +12,9 @@ export const StatusBarItemStyled = styled.div`
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const HoverTooltipGLobalClass = createGlobalStyle`
 .nodemcu-tools-hover-tooltip {
+	text-align: center !important;
+	width: 500px !important;
+	font-size: 14px !important;
 	pointer-events: auto !important;
 	&:hover {
    		visibility: visible !important;

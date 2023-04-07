@@ -19,7 +19,8 @@ export interface IDeviceInfo {
 	modules?: string
 	fsTotal?: number
 	fsUsed?: number
-	deviceArch?: string
+	chipArch?: string
+	chipID?: string
 }
 
 export interface IState {

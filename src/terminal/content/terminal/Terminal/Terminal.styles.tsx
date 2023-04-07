@@ -1,7 +1,8 @@
-import { TerminalLineType } from '../../state/state'
+import { TerminalLineType } from '../../../messages/TerminalLine'
 import styled from 'styled-components'
 
 export const TerminalStyled = styled.div`
+	white-space: pre;
 	overflow-y: scroll;
 	flex-grow: 1;
 	background-color: var(--vscode-panel-background);

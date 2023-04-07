@@ -24,9 +24,8 @@ const StatusBar: React.FC = () => {
 			{typeof info.heapFree !== 'undefined' ? (
 				<StatusBarItem text={info.heapFree.toLocaleString()} tooltip="Free heap (bytes)" onClick={onItemClick} />
 			) : null}
-			{info.numberType ? <StatusBarItem text={info.numberType} tooltip="Number type" onClick={onItemClick} /> : null}
-			{info.ssl ? <StatusBarItem text="ssl" onClick={onItemClick} /> : null}
-			{info.modules ? <StatusBarModulesItem modules={info.modules} /> : null}
+			{info.numberType ? <StatusBarItem text={info.numberType} tooltip="Number type" /> : null}
+			{info.ssl ? <StatusBarItem text="ssl" /> : null}
 			{info.fsTotal ? (
 				<StatusBarItem
 					text={`${info.fsUsed?.toLocaleString()} / ${info.fsTotal.toLocaleString()} (${Math.round(
@@ -36,7 +35,8 @@ const StatusBar: React.FC = () => {
 					onClick={onItemClick}
 				/>
 			) : null}
-			{info.deviceArch ? <StatusBarItem text={info.deviceArch} /> : null}
+			{(info.modules && info.chipArch) ? <StatusBarModulesItem modules={info.modules} chipArch={info.chipArch} /> : null}
+			{info.chipArch ? <StatusBarItem text={info.chipArch} tooltip={`chipID: ${info.chipID}`} /> : null}
 		</StatusBarStyled>
 	)
 }

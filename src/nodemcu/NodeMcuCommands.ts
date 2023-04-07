@@ -13,7 +13,8 @@ export interface IDeviceInfo {
 	modules: string
 	fsTotal: number
 	fsUsed: number
-	deviceArch: string
+	chipArch: string
+	chipID: string
 }
 
 export default class NodeMcuCommands {
@@ -77,7 +78,7 @@ export default class NodeMcuCommands {
 		getFreeHeap: 'uart.write(0,tostring(node.heap()).."\\n")',
 
 		getDeviceInfo:
-		'local m={}for k in pairs(getmetatable(_G)["__index"])do m[#m+1]=k end;local t={ssl=false,number_type="unknown",lfs_size=65536,modules=table.concat(m,",")}local s=""for k,v in pairs(t)do s=s..k..":"..tostring(v)..";"end;uart.write(0,s.."\\n")',
+			'local m={}for k,v in pairs(getmetatable(_G)["__index"])do if type(v)=="table"then m[#m+1]=k end end;local d={modules=table.concat(m,",")}local s=""for k,v in pairs(d)do s=s..k..":"..tostring(v)..";"end;uart.write(0,s.."\\n")',
 
 		getFsInfo: 'local remaining,used,total=file.fsinfo()uart.write(0,remaining..";"..used..";"..total.."\\n")',
 
@@ -275,16 +276,30 @@ export default class NodeMcuCommands {
 				infoParams[name] = value
 			})
 
+		if (this._device.espArch === 'esp32') {
+			const systemTables = ['string', 'table', 'coroutine', 'debug', 'math', 'utf8', 'ROM']
+			infoParams['modules'] = infoParams['modules']
+				.split(',')
+				.reduce((actualModules: string[], item: string) => {
+					if (!systemTables.includes(item)) {
+						actualModules.push(item)
+					}
+					return actualModules
+				}, [])
+				.join(',')
+		}
+
 		const fsInfoArray = fsInfo.split(';', 3).map(fsInfoStr => parseInt(fsInfoStr, 10))
 
 		return {
 			freeHeap: parseInt(freeHeap, 10),
-			numberType: infoParams['number_type'],
+			numberType: infoParams['number_type'] || 'unknown',
 			ssl: infoParams['ssl'] === 'true',
 			modules: infoParams['modules'],
 			fsTotal: fsInfoArray[2],
 			fsUsed: fsInfoArray[1],
-			deviceArch: this._device.espArch,
+			chipArch: this._device.espArch,
+			chipID: this._device.espID,
 		}
 	}
 
