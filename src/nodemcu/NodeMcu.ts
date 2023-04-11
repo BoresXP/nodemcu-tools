@@ -15,8 +15,6 @@ interface INodeMcuCommandState {
 
 export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	private static readonly _luaCommands = {
-		nodeDisableOutput: 'node.output(function(p)return false end,0)uart.write(0,"-\\r\\n")',
-		nodeEnableOutput: 'node.output()uart.write(0,"+\\r\\n")',
 		getChipID: 'uart.write(0,tostring(node.chipid()).."\\r\\n")',
 	}
 	private static readonly _commandTimeout = 15000 // msec
@@ -95,9 +93,6 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 		// esp32 chipid (hex with '0x' prefix)?
 		this._espArch = this._espID.match(/^0x[\dA-Fa-f]+\r?$/) ? 'esp32' : 'esp8266'
-
-		await this.toggleNodeOutput(true)
-		this.setBusy(false)
 	}
 
 	public waitToBeReady(): Promise<void> {
@@ -136,7 +131,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		}
 	}
 
-	public async executeSingleLineCommand(command: string, restoreNodeOutputAndClearBusy = true): Promise<string> {
+	public async executeSingleLineCommand(command: string, clearBusy = true): Promise<string> {
 		const wasBusy = this._isBusy
 		this.setBusy(true)
 
@@ -149,24 +144,13 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			return false
 		}
 
-		if (!wasBusy) {
-			await this.toggleNodeOutput(true)
-		}
-
 		const reply = await this.executeCommand(command, replyHandler)
 
-		if (!wasBusy && restoreNodeOutputAndClearBusy) {
-			await this.toggleNodeOutput(true)
+		if (!wasBusy && clearBusy) {
 			this.setBusy(false)
 		}
 
 		return NodeMcu.clearReply(reply)
-	}
-
-	public async toggleNodeOutput(enable: boolean): Promise<void> {
-		await this.executeSingleLineCommand(
-			enable ? NodeMcu._luaCommands.nodeEnableOutput : NodeMcu._luaCommands.nodeDisableOutput,
-		)
 	}
 
 	public setBusy(isBusy: boolean): void {
