@@ -35,6 +35,9 @@ export default class NodeMcuCommands {
 		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
 			`file.open("${name}","${mode}")local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};file.write(d)uart.write(0,"kxyJ\\r\\n")if bw>=${fileSize} then uart.on("data")file.close()uart.write(0,"QKiw\\r\\n")end end,0)uart.write(0,"Ready\\r\\n")`,
 
+		createEmptyFile: (name: string) =>
+			`file.open("${name}","w")file.close()uart.write(0,"Ready\\r\\n")`,
+
 		readFileHelper: (name: string) =>
 			`file.open("${name}","r")uart.on("data",0,function(d)while true do local b=file.read(${NodeMcuSerial.maxLineLength})if b==nil then uart.on("data")file.close()break end uart.write(0,b)end end,0)uart.write(0,"Ready\\r\\n")`,
 
@@ -70,6 +73,9 @@ export default class NodeMcuCommands {
 		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
 			`__f=io.open("${name}","${mode}")local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};__f:write(d)uart.write(0,"kxyJ\\n")if bw>=${fileSize} then uart.on("data")__f:close()__f=nil;uart.write(0,"QKiw\\n")end end,0)uart.write(0,"Ready\\n")`,
 
+		createEmptyFile: (name: string) =>
+			`io.open("${name}","w")io.close()uart.write(0,"Ready\\n")`,
+
 		readFileHelper: (name: string) =>
 			`local fh=io.input("${name}")uart.on("data",0,function(d)while true do local b=fh:read(${NodeMcuSerial.maxLineLength})if b==nil then uart.on("data")fh:close()break end;uart.write(0,b)tmr.wdclr()end end,0)uart.write(0,"Ready\\n")`,
 
@@ -97,6 +103,7 @@ export default class NodeMcuCommands {
 		fileRunAndDelete: (name: string) => string
 		fileSetLfs: (name: string) => string
 		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) => string
+		createEmptyFile: (name: string) => string
 		readFileHelper: (name: string) => string
 		getFileSize: (name: string) => string
 		getFreeHeap: string
@@ -140,43 +147,50 @@ export default class NodeMcuCommands {
 
 		progressCb?.(0)
 
-		let tailWriteMode = 'w'
-		const tailSize = data.length % NodeMcuSerial.maxLineLength
+		if (data.length === 0) {
+			await this._device.executeSingleLineCommand(
+				this._luaCommands.createEmptyFile(remoteName)
+			)
+		} else {
 
-		if (data.length > NodeMcuSerial.maxLineLength) {
+			let tailWriteMode = 'w'
+			const tailSize = data.length % NodeMcuSerial.maxLineLength
+
+			if (data.length > NodeMcuSerial.maxLineLength) {
+				await this.waitDone('QKiw', async () => {
+					await this._device.executeSingleLineCommand(
+						this._luaCommands.writeFileHelper(
+							remoteName,
+							data.length - tailSize,
+							NodeMcuSerial.maxLineLength,
+							'w'
+						),
+						false
+					)
+
+					let offset = 0
+					while (data.length - offset > NodeMcuSerial.maxLineLength) {
+						const block = data.slice(offset, offset + NodeMcuSerial.maxLineLength)
+						await this.waitDone('kxyJ', async () => {
+							await this._device.writeRaw(block)
+						})
+
+						offset += NodeMcuSerial.maxLineLength
+						progressCb?.((offset * 100) / data.length)
+					}
+				})
+
+				tailWriteMode = 'a'
+			}
+
 			await this.waitDone('QKiw', async () => {
 				await this._device.executeSingleLineCommand(
-					this._luaCommands.writeFileHelper(
-						remoteName,
-						data.length - tailSize,
-						NodeMcuSerial.maxLineLength,
-						'w'
-					),
+					this._luaCommands.writeFileHelper(remoteName, tailSize, tailSize, tailWriteMode),
 					false
 				)
-
-				let offset = 0
-				while (data.length - offset > NodeMcuSerial.maxLineLength) {
-					const block = data.slice(offset, offset + NodeMcuSerial.maxLineLength)
-					await this.waitDone('kxyJ', async () => {
-						await this._device.writeRaw(block)
-					})
-
-					offset += NodeMcuSerial.maxLineLength
-					progressCb?.((offset * 100) / data.length)
-				}
+				await this._device.writeRaw(data.length > 254 ? data.slice(data.length - tailSize) : data)
 			})
-
-			tailWriteMode = 'a'
 		}
-
-		await this.waitDone('QKiw', async () => {
-			await this._device.executeSingleLineCommand(
-				this._luaCommands.writeFileHelper(remoteName, tailSize, tailSize, tailWriteMode),
-				false
-			)
-			await this._device.writeRaw(data.length > 254 ? data.slice(data.length - tailSize) : data)
-		})
 
 		progressCb?.(100)
 		this._device.setBusy(false)
@@ -201,6 +215,7 @@ export default class NodeMcuCommands {
 		)
 	}
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	public async download(fileName: string, progressCb?: (percent: number) => void): Promise<Buffer> {
 		await this.checkReady()
 
@@ -213,6 +228,15 @@ export default class NodeMcuCommands {
 		const fileSize = parseInt(fileSizeStr, 10)
 		let receivedFileSize = fileSize
 		let retVal: Buffer | undefined = void 0
+
+		if (fileSize === 0) {
+			return new Promise(resolve => {
+				retVal = Buffer.alloc(0)
+				progressCb?.(100)
+				this._device.setBusy(false)
+				resolve(retVal)
+			})
+		}
 
 		await this._device.executeSingleLineCommand(this._luaCommands.readFileHelper(fileName), false)
 
