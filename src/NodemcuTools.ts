@@ -75,6 +75,29 @@ export default class NodemcuTools {
 		return NodemcuTools.uploadFileInternal(devicePath, file, deviceFileName)
 	}
 
+	public async uploadBundle(files: Uri[]): Promise<string | undefined> {
+		const devicePath = await NodemcuTools.selectConnectedDevice()
+
+		if (!devicePath) {
+			return void 0
+		}
+
+		for (const file of files) {
+			const [pathEnd] = file.path.split('/').slice(-1)
+			const [fileExtension] = pathEnd.split('.').slice(-1)
+			if (!pathEnd.includes('.') || fileExtension !== 'lua') {
+				continue
+			}
+
+			const fileName = await NodemcuTools.uploadFileInternal(devicePath, file)
+			if (!fileName) {
+				throw new Error(`Error uploading ${pathEnd}`)
+			}
+		}
+
+		return 'ok_bundle'
+	}
+
 	public async uploadFileAndCompile(file: Uri): Promise<string | undefined> {
 		const devicePath = await NodemcuTools.selectConnectedDevice()
 		if (!devicePath) {

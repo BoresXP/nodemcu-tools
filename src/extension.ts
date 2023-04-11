@@ -44,8 +44,12 @@ export function activate(context: ExtensionContext): void {
 		context.subscriptions.push(commands.registerCommand('nodemcu-tools.refreshTreeView', () => treeProvider.refresh()))
 
 		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.uploadFile', async (file: Uri) => {
-				const deviceFileName = await tools.uploadFile(file)
+			commands.registerCommand('nodemcu-tools.uploadFile', async (file: Uri, files: Uri[]) => {
+
+				const deviceFileName = (files.length > 1) ?
+					await tools.uploadBundle(files) :
+					await tools.uploadFile(file)
+
 				if (deviceFileName) {
 					treeProvider.refresh()
 				}
