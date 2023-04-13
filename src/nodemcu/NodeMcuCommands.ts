@@ -19,8 +19,7 @@ export interface IDeviceInfo {
 
 export default class NodeMcuCommands {
 	private readonly _luaCommands8266 = {
-		listFiles:
-			'local l=file.list()local s=";"for k,v in pairs(l)do s=s..k..":"..v..";"end;uart.write(0,s.."\\r\\n")',
+		listFiles: 'local l=file.list()local s=";"for k,v in pairs(l)do s=s..k..":"..v..";"end;uart.write(0,s.."\\r\\n")',
 
 		delete: (name: string) => `file.remove("${name}")uart.write(0,"Done\\r\\n")`,
 
@@ -35,8 +34,7 @@ export default class NodeMcuCommands {
 		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
 			`file.open("${name}","${mode}")local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};file.write(d)uart.write(0,"kxyJ\\r\\n")if bw>=${fileSize} then uart.on("data")file.close()uart.write(0,"QKiw\\r\\n")end end,0)uart.write(0,"Ready\\r\\n")`,
 
-		createEmptyFile: (name: string) =>
-			`file.open("${name}","w")file.close()uart.write(0,"Ready\\r\\n")`,
+		createEmptyFile: (name: string) => `file.open("${name}","w")file.close()uart.write(0,"Ready\\r\\n")`,
 
 		readFileHelper: (name: string) =>
 			`file.open("${name}","r")uart.on("data",0,function(d)while true do local b=file.read(${NodeMcuSerial.maxLineLength})if b==nil then uart.on("data")file.close()break end uart.write(0,b)end end,0)uart.write(0,"Ready\\r\\n")`,
@@ -55,6 +53,8 @@ export default class NodeMcuCommands {
 
 		runChunk: () =>
 			'uart.write(0,".\\r\\n")local f,ce=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then local ok,e=pcall(f)if not ok then uart.write(0,"Execution error:\\r\\n",e.."\\r\\n")end else uart.write(0,"Compilation error:\\r\\n",ce.."\\r\\n")end;_r_B=nil',
+
+		formatEsp: 'file.format()',
 	}
 
 	private readonly _luaCommands32 = {
@@ -73,13 +73,13 @@ export default class NodeMcuCommands {
 		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
 			`__f=io.open("${name}","${mode}")local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};__f:write(d)uart.write(0,"kxyJ\\n")if bw>=${fileSize} then uart.on("data")__f:close()__f=nil;uart.write(0,"QKiw\\n")end end,0)uart.write(0,"Ready\\n")`,
 
-		createEmptyFile: (name: string) =>
-			`io.open("${name}","w")io.close()uart.write(0,"Ready\\n")`,
+		createEmptyFile: (name: string) => `io.open("${name}","w")io.close()uart.write(0,"Ready\\n")`,
 
 		readFileHelper: (name: string) =>
 			`local fh=io.input("${name}")uart.on("data",0,function(d)while true do local b=fh:read(${NodeMcuSerial.maxLineLength})if b==nil then uart.on("data")fh:close()break end;uart.write(0,b)tmr.wdclr()end end,0)uart.write(0,"Ready\\n")`,
 
-		getFileSize: (name: string) => `local fh=io.open("${name}","r")local s=fh:seek("end")fh:close()uart.write(0,s.."\\n")`,
+		getFileSize: (name: string) =>
+			`local fh=io.open("${name}","r")local s=fh:seek("end")fh:close()uart.write(0,s.."\\n")`,
 
 		getFreeHeap: 'uart.write(0,tostring(node.heap()).."\\n")',
 
@@ -93,6 +93,8 @@ export default class NodeMcuCommands {
 
 		runChunk: () =>
 			'uart.write(0,".\\n")local f,ce=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then local ok,e=pcall(f)if not ok then uart.write(0,"Execution error:\\n",e.."\\n")end else uart.write(0,"Compilation error:\\n",ce.."\\n")end;_r_B=nil',
+
+		formatEsp: 'file.format()',
 	}
 
 	private readonly _luaCommands: {
@@ -111,13 +113,14 @@ export default class NodeMcuCommands {
 		getFsInfo: string
 		sendChunkHelper: (chunkSize: number, blockSize: number, firstCall: boolean) => string
 		runChunk: () => string
+		formatEsp: string
 	}
 
 	private readonly _device: NodeMcu
 
 	constructor(device: NodeMcu) {
 		this._device = device
-		this._luaCommands = (device.espArch === 'esp32') ? this._luaCommands32 : this._luaCommands8266
+		this._luaCommands = device.espArch === 'esp32' ? this._luaCommands32 : this._luaCommands8266
 	}
 
 	public async files(): Promise<IDeviceFileInfo[]> {
@@ -148,24 +151,16 @@ export default class NodeMcuCommands {
 		progressCb?.(0)
 
 		if (data.length === 0) {
-			await this._device.executeSingleLineCommand(
-				this._luaCommands.createEmptyFile(remoteName)
-			)
+			await this._device.executeSingleLineCommand(this._luaCommands.createEmptyFile(remoteName))
 		} else {
-
 			let tailWriteMode = 'w'
 			const tailSize = data.length % NodeMcuSerial.maxLineLength
 
 			if (data.length > NodeMcuSerial.maxLineLength) {
 				await this.waitDone('QKiw', async () => {
 					await this._device.executeSingleLineCommand(
-						this._luaCommands.writeFileHelper(
-							remoteName,
-							data.length - tailSize,
-							NodeMcuSerial.maxLineLength,
-							'w'
-						),
-						false
+						this._luaCommands.writeFileHelper(remoteName, data.length - tailSize, NodeMcuSerial.maxLineLength, 'w'),
+						false,
 					)
 
 					let offset = 0
@@ -186,7 +181,7 @@ export default class NodeMcuCommands {
 			await this.waitDone('QKiw', async () => {
 				await this._device.executeSingleLineCommand(
 					this._luaCommands.writeFileHelper(remoteName, tailSize, tailSize, tailWriteMode),
-					false
+					false,
 				)
 				await this._device.writeRaw(data.length > 254 ? data.slice(data.length - tailSize) : data)
 			})
@@ -209,9 +204,7 @@ export default class NodeMcuCommands {
 	public async run(fileName: string, deleteAfter?: boolean): Promise<void> {
 		await this.checkReady()
 		await this._device.fromTerminal(
-			deleteAfter
-				? this._luaCommands.fileRunAndDelete(fileName)
-				: this._luaCommands.fileRun(fileName)
+			deleteAfter ? this._luaCommands.fileRunAndDelete(fileName) : this._luaCommands.fileRun(fileName),
 		)
 	}
 
@@ -221,10 +214,7 @@ export default class NodeMcuCommands {
 
 		progressCb?.(0)
 
-		const fileSizeStr = await this._device.executeSingleLineCommand(
-			this._luaCommands.getFileSize(fileName),
-			false
-		)
+		const fileSizeStr = await this._device.executeSingleLineCommand(this._luaCommands.getFileSize(fileName), false)
 		const fileSize = parseInt(fileSizeStr, 10)
 		let receivedFileSize = fileSize
 		let retVal: Buffer | undefined = void 0
@@ -255,13 +245,17 @@ export default class NodeMcuCommands {
 					progressCb?.(100)
 					this._device.setBusy(false)
 
-					if ((this._device.espArch === 'esp32') && (receivedFileSize !== fileSize)) {
+					if (this._device.espArch === 'esp32' && receivedFileSize !== fileSize) {
 						let retValnoCR = new Uint8Array()
 						let startLFindex = 0
 
 						retVal.forEach((char, indexLF, arr) => {
 							if (char === 10) {
-								retValnoCR = Buffer.concat([retValnoCR, arr.slice(startLFindex, indexLF - 1), arr.slice(indexLF, indexLF + 1)])
+								retValnoCR = Buffer.concat([
+									retValnoCR,
+									arr.slice(startLFindex, indexLF - 1),
+									arr.slice(indexLF, indexLF + 1),
+								])
 								startLFindex = indexLF + 1
 							}
 						})
@@ -328,7 +322,7 @@ export default class NodeMcuCommands {
 
 		let firstCall = true
 		if (!minifiedBlock.endsWith('\n')) {
-			minifiedBlock += (this._device.espArch === 'esp8266' ? '\r\n' : '\n')
+			minifiedBlock += this._device.espArch === 'esp8266' ? '\r\n' : '\n'
 		}
 		const data = Buffer.from(minifiedBlock)
 		const tailSize = data.length % NodeMcuSerial.maxLineLength
@@ -336,12 +330,8 @@ export default class NodeMcuCommands {
 		if (data.length > NodeMcuSerial.maxLineLength) {
 			await this.waitDone('QKiw', async () => {
 				await this._device.executeSingleLineCommand(
-					this._luaCommands.sendChunkHelper(
-						data.length - tailSize,
-						NodeMcuSerial.maxLineLength,
-						true
-					),
-					false
+					this._luaCommands.sendChunkHelper(data.length - tailSize, NodeMcuSerial.maxLineLength, true),
+					false,
 				)
 
 				let offset = 0
@@ -361,12 +351,22 @@ export default class NodeMcuCommands {
 		await this.waitDone('QKiw', async () => {
 			await this._device.executeSingleLineCommand(
 				this._luaCommands.sendChunkHelper(tailSize, tailSize, firstCall),
-				false
+				false,
 			)
 			await this._device.writeRaw(data.length > 254 ? data.slice(data.length - tailSize) : data)
 		})
 
 		await this._device.executeSingleLineCommand(this._luaCommands.runChunk(), false)
+		this._device.setBusy(false)
+	}
+
+	public async formatEsp(): Promise<void> {
+		await this.checkReady()
+
+		await this.waitDone('format done.', async () => {
+			await this._device.executeSingleLineCommand(this._luaCommands.formatEsp, false)
+		})
+
 		this._device.setBusy(false)
 	}
 

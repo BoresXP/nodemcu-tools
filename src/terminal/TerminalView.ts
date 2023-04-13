@@ -1,4 +1,4 @@
-import { ExtensionContext, Uri, ViewColumn, WebviewPanel, window, workspace } from 'vscode'
+import { ExtensionContext, Uri, ViewColumn, WebviewPanel, commands, window, workspace } from 'vscode'
 
 import IMessage from './messages/IMessage'
 import { INodeMcu } from '../nodemcu'
@@ -6,6 +6,7 @@ import { deviceInfo } from './messages/DeviceInfo'
 import { deviceState } from './messages/DeviceState'
 import { initialSettings } from './content/state/state'
 import { isDeviceInfoRequest } from './messages/DeviceInfoRequest'
+import { isFormatRequest } from './messages/FormatRequest'
 import { isTerminalCommand } from './messages/TerminalCommand'
 import { setConfiguration } from './messages/SetConfiguration'
 import { terminalLine } from './messages/TerminalLine'
@@ -56,7 +57,16 @@ export default class TerminalView {
 	private async updateDeviceInfo(): Promise<void> {
 		const info = await this._device.commands.getDeviceInfo()
 		await this._webViewPanel.webview.postMessage(
-			deviceInfo(info.numberType, info.freeHeap, info.ssl, info.modules, info.fsTotal, info.fsUsed, info.chipArch, info.chipID),
+			deviceInfo(
+				info.numberType,
+				info.freeHeap,
+				info.ssl,
+				info.modules,
+				info.fsTotal,
+				info.fsUsed,
+				info.chipArch,
+				info.chipID,
+			),
 		)
 	}
 
@@ -92,11 +102,31 @@ export default class TerminalView {
 		)
 	}
 
+	private async handleFormatRequest(): Promise<void> {
+		const answer = await window.showWarningMessage(
+			'Do you really want to format the filesystem and delete all files?',
+			{ modal: true, detail: 'Formatting the file system will take around ~30s' },
+			'Abort',
+			'Format ESP',
+		)
+
+		if (answer === 'Format ESP') {
+			this._device.commandTimeout = 30000
+			await this._webViewPanel.webview.postMessage(terminalLine('output', 'Formatting...'))
+			await this._device.commands.formatEsp()
+			await this._webViewPanel.webview.postMessage(terminalLine('output', 'Format done.'))
+			await commands.executeCommand('nodemcu-tools.refreshTreeView')
+			this._device.commandTimeout = 15000
+		}
+	}
+
 	private async onMessage(msg: IMessage): Promise<void> {
 		if (isTerminalCommand(msg)) {
 			await this._device.fromTerminal(msg.text + '\n')
 		} else if (isDeviceInfoRequest(msg)) {
 			await this.updateDeviceInfo()
+		} else if (isFormatRequest(msg)) {
+			await this.handleFormatRequest()
 		}
 	}
 }

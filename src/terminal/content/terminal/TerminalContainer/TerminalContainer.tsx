@@ -3,6 +3,7 @@ import * as Events from '../../state/events'
 import {
 	BottomContainer,
 	CmdLineInput,
+	FormatContainer,
 	MiddleContainer,
 	TerminalContainerStyled,
 	TerminalControls,
@@ -55,6 +56,11 @@ const TerminalContainer: React.FC = () => {
 	const onEnableAutoscroll = useCallback(() => {
 		Events.terminalAutoscrollSet(true)
 	}, [])
+	const onFormat = useCallback(() => {
+		if (!isDeviceBusy) {
+			Events.formatEspRequest()
+		}
+	}, [isDeviceBusy])
 
 	return (
 		<TerminalContainerStyled>
@@ -67,6 +73,9 @@ const TerminalContainer: React.FC = () => {
 				<MiddleContainer>
 					<SvgButton svgName="#svg-download" disabled={autoscrollEnabled} onClick={onEnableAutoscroll} />
 				</MiddleContainer>
+				<FormatContainer>
+					<SvgButton svgName="#svg-folder-delete" disabled={isDeviceBusy} onClick={onFormat} />
+				</FormatContainer>
 				<BottomContainer>
 					<SvgButton svgName="#svg-play-button" disabled={isDeviceBusy || !cmdText} onClick={onRun} />
 				</BottomContainer>

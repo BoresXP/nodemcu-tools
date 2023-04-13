@@ -41,4 +41,7 @@ export const BottomContainer = styled.div`
 export const MiddleContainer = styled.div`
 	margin-top: 4px;
 `
-
+export const FormatContainer = styled.div`
+	margin-top: 40px;
+	margin-bottom: 4px;
+`
