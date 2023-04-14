@@ -9,7 +9,7 @@ export interface ISettings {
 	scrollbackMaxLines: number
 	historyMaxLines: number
 	snippets: Record<string, string>
-	minifyEnabled: boolean
+	minifyEnabled?: boolean
 }
 
 export interface IDeviceInfo {
@@ -38,7 +38,7 @@ export const initialSettings: ISettings = {
 	scrollbackMaxLines: 300,
 	historyMaxLines: 30,
 	snippets: {},
-	minifyEnabled: true,
+	minifyEnabled: false,
 }
 
 export const initialState: IState = {

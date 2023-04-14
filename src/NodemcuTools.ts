@@ -196,8 +196,7 @@ export default class NodemcuTools {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
 		const minifyEnabled = workspace.getConfiguration().get(
-			'nodemcu-tools.minify.enabled',
-			initialSettings.minifyEnabled
+			'nodemcu-tools.minify.enabled', initialSettings.minifyEnabled
 		)
 
 		if (minifyEnabled) {
@@ -222,8 +221,7 @@ export default class NodemcuTools {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
 		const minifyEnabled = workspace.getConfiguration().get(
-			'nodemcu-tools.minify.enabled',
-			initialSettings.minifyEnabled
+			'nodemcu-tools.minify.enabled', initialSettings.minifyEnabled
 		)
 
 		if (minifyEnabled) {

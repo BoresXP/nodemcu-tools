@@ -10,7 +10,6 @@ export function setConfiguration(
 	scrollbackMaxLines: number,
 	historyMaxLines: number,
 	snippets: Record<string, string>,
-	minifyEnabled: boolean
 ): ISetConfiguration {
 	return {
 		type: 'setConfiguration',
@@ -18,7 +17,6 @@ export function setConfiguration(
 			scrollbackMaxLines,
 			historyMaxLines,
 			snippets,
-			minifyEnabled,
 		},
 	}
 }

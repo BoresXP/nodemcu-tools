@@ -97,7 +97,6 @@ export default class TerminalView {
 				configuration.get('terminal.scrollbackSize', initialSettings.scrollbackMaxLines),
 				configuration.get('terminal.commandHistorySize', initialSettings.historyMaxLines),
 				snippetsInWorkspace ?? configuration.get('snippets', initialSettings.snippets),
-				configuration.get('minify.enabled', initialSettings.minifyEnabled),
 			),
 		)
 	}
