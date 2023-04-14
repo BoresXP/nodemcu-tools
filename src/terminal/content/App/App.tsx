@@ -1,22 +1,32 @@
+import 'react-tooltip/dist/react-tooltip.css'
 import { Page } from './App.styles'
 import React from 'react'
-import ReactTooltip from 'react-tooltip'
 import SnippetsContainer from '../snippets/SnippetsContainer/SnippetsContainer'
 import StatusBar from '../statusBar/StatusBar/StatusBar'
 import TerminalContainer from '../terminal/TerminalContainer/TerminalContainer'
+import { Tooltip } from 'react-tooltip'
 
 const App: React.FC = () => (
-	<Page data-tip data-for="main-tooltip">
+	<Page>
 		<TerminalContainer />
 		<SnippetsContainer />
 		<StatusBar />
-		<ReactTooltip
+		<Tooltip
 			id="main-tooltip"
-			effect="solid"
 			delayShow={500}
-			padding='10px 4px 12px 4px'
-			backgroundColor='var(--vscode-badge-background)'
-			textColor='var(--vscode-badge-foreground)'
+			className='nodemcu-tools-tooltip'
+		/>
+		<Tooltip
+			id='snippet-tooltip'
+			delayShow={2000}
+			className='nodemcu-tools-tooltip'
+		/>
+		<Tooltip
+			id="modules-tooltip"
+			delayShow={500}
+			delayHide={500}
+			clickable={true}
+			className='nodemcu-tools-modules-tooltip'
 		/>
 
 		<svg display="none">

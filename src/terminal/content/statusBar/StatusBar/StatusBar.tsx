@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import { getDeviceInfo, useRootStore } from '../../state/selectors'
 
-import ReactTooltip from 'react-tooltip'
 import StatusBarItem from '../StatusBarItem/StatusBarItem'
 import StatusBarModulesItem from '../StatusBarItem/StatusBarModulesItem'
 import { StatusBarStyled } from './StatusBar.styles'
@@ -10,10 +9,6 @@ import vscode from '../../state/vscode'
 
 const StatusBar: React.FC = () => {
 	const info = useRootStore(getDeviceInfo)
-
-	useEffect(() => {
-		ReactTooltip.rebuild()
-	}, [info])
 
 	const onItemClick = useCallback(() => {
 		vscode.postMessage(deviceInfoRequest())

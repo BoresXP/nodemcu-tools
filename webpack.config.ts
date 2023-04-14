@@ -24,6 +24,10 @@ const commonConfig: webpack.Configuration = {
 					transpileOnly: true,
 				},
 			},
+			{
+				test: /\.css$/i,
+				use: ['style-loader', 'css-loader'],
+			},
 		],
 	},
 	plugins: [

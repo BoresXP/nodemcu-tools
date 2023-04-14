@@ -69,15 +69,15 @@ const TerminalContainer: React.FC = () => {
 				<CmdLineInput onKeyUp={onKeyUp} onChange={onChange} value={cmdText} />
 			</TerminalInnerContainer>
 			<TerminalControls>
-				<SvgButton svgName="#svg-garbage" onClick={onClear} />
+				<SvgButton tooltip="Clear terminal" svgName="#svg-garbage" onClick={onClear} />
 				<MiddleContainer>
-					<SvgButton svgName="#svg-download" disabled={autoscrollEnabled} onClick={onEnableAutoscroll} />
+					<SvgButton tooltip="Autoscroll" svgName="#svg-download" disabled={autoscrollEnabled} onClick={onEnableAutoscroll} />
 				</MiddleContainer>
 				<FormatContainer>
-					<SvgButton svgName="#svg-folder-delete" disabled={isDeviceBusy} onClick={onFormat} />
+					<SvgButton tooltip="Format ESP" svgName="#svg-folder-delete" disabled={isDeviceBusy} onClick={onFormat} />
 				</FormatContainer>
 				<BottomContainer>
-					<SvgButton svgName="#svg-play-button" disabled={isDeviceBusy || !cmdText} onClick={onRun} />
+					<SvgButton tooltip="Send to device" svgName="#svg-play-button" disabled={isDeviceBusy || !cmdText} onClick={onRun} />
 				</BottomContainer>
 			</TerminalControls>
 		</TerminalContainerStyled>

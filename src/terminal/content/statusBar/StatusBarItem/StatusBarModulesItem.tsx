@@ -9,9 +9,10 @@ export interface IStatusBarModulesItemProps {
 let docLinkRoot: string
 
 const StatusBarModulesItem: React.FC<IStatusBarModulesItemProps> = ({ modules, chipArch }) => {
-	docLinkRoot = (chipArch === 'esp32') ?
-		'https://nodemcu.readthedocs.io/en/dev-esp32/modules' :
-		'https://nodemcu.readthedocs.io/en/dev/modules'
+	docLinkRoot =
+		chipArch === 'esp32'
+			? 'https://nodemcu.readthedocs.io/en/dev-esp32/modules'
+			: 'https://nodemcu.readthedocs.io/en/dev/modules'
 	const modulesWithLinks = useMemo(
 		() =>
 			modules
@@ -25,11 +26,8 @@ const StatusBarModulesItem: React.FC<IStatusBarModulesItemProps> = ({ modules, c
 		<>
 			<HoverTooltipGLobalClass />
 			<StatusBarItemStyled
-				data-for="main-tooltip"
-				data-tip={modulesWithLinks}
-				data-html={true}
-				data-delay-hide={500}
-				data-class="nodemcu-tools-hover-tooltip"
+				data-tooltip-id="modules-tooltip"
+				data-tooltip-html={modulesWithLinks}
 			>
 				{'modules'}
 			</StatusBarItemStyled>
