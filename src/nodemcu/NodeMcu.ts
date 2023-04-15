@@ -118,7 +118,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			return
 		}
 		if (!text.endsWith('\n')) {
-			text += (this._espArch === 'esp8266') ? NodeMcuSerial.lineEnd : '\n'
+			text += this._espArch === 'esp8266' ? NodeMcuSerial.lineEnd : '\n'
 		}
 
 		this._lastInput = text
@@ -126,7 +126,6 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		try {
 			await this.write(text)
 			console.log('T: ' + text) // eslint-disable-line no-console
-
 		} catch (err) {
 			if (err instanceof Error) {
 				await window.showWarningMessage(err.message)
@@ -147,7 +146,14 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			return false
 		}
 
-		const reply = await this.executeCommand(command, replyHandler)
+		let reply
+		try {
+			reply = await this.executeCommand(command, replyHandler)
+		} catch (err) {
+			if (err instanceof Error) {
+				await window.showErrorMessage(`${err.message}`)
+			}
+		}
 
 		if (!wasBusy && clearBusy) {
 			this.setBusy(false)
