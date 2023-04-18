@@ -4,8 +4,10 @@ src/**
 tsconfig.json
 webpack.config.ts
 .eslintrc.json
+.eslintignore
 out/*.map
 **/*.ts
 node_modules
 .travis.yml
+bitbucket-pipelines.yml
 package-lock.json

@@ -1,8 +1,9 @@
-import { ExtensionContext, Uri, commands, window } from 'vscode'
+import { ExtensionContext, Uri, commands, tasks, window } from 'vscode'
 
 import DeviceTreeItem from './tree/DeviceTreeItem'
 import DeviceTreeProvider from './tree/DeviceTreeProvider'
 import FileTreeItem from './tree/FileTreeItem'
+import NodemcuTaskProvider from './task/nodemcuTaskProvider'
 import NodemcuTools from './NodemcuTools'
 import TerminalView from './terminal/TerminalView'
 
@@ -13,7 +14,9 @@ export function activate(context: ExtensionContext): void {
 	try {
 		const treeProvider = new DeviceTreeProvider()
 		const treeView = window.createTreeView('nodemcu-tools.devices', { treeDataProvider: treeProvider })
-		context.subscriptions.push(treeView)
+		const taskProvider = tasks.registerTaskProvider(NodemcuTaskProvider.taskType, new NodemcuTaskProvider())
+
+		context.subscriptions.push(treeView, taskProvider)
 
 		const tools = new NodemcuTools()
 
@@ -45,10 +48,7 @@ export function activate(context: ExtensionContext): void {
 
 		context.subscriptions.push(
 			commands.registerCommand('nodemcu-tools.uploadFile', async (file: Uri, files: Uri[]) => {
-
-				const deviceFileName = (files.length > 1) ?
-					await tools.uploadBundle(files) :
-					await tools.uploadFile(file)
+				const deviceFileName = files.length > 1 ? await tools.uploadBundle(files) : await tools.uploadFile(file)
 
 				if (deviceFileName) {
 					treeProvider.refresh()
@@ -79,12 +79,12 @@ export function activate(context: ExtensionContext): void {
 		context.subscriptions.push(
 			commands.registerCommand('nodemcu-tools.uploadFileRun', async (file: Uri) => {
 				await tools.uploadFileAndRun(file)
-			})
+			}),
 		)
 		context.subscriptions.push(
 			commands.registerCommand('nodemcu-tools.uploadFileSetLfs', async (file: Uri) => {
 				await tools.uploadFileAndSetLfs(file)
-			})
+			}),
 		)
 		context.subscriptions.push(
 			commands.registerCommand('nodemcu-tools.uploadFileSetLfsAs', async (file: Uri) => {
@@ -94,7 +94,7 @@ export function activate(context: ExtensionContext): void {
 				}
 
 				await tools.uploadFileAndSetLfs(file, newName)
-			})
+			}),
 		)
 
 		context.subscriptions.push(
@@ -156,7 +156,6 @@ export function activate(context: ExtensionContext): void {
 				}
 			}),
 		)
-
 	} catch (ex) {
 		console.error(ex) // eslint-disable-line no-console
 		void window.showErrorMessage(`Error in nodemcu-tools: ${ex}`)

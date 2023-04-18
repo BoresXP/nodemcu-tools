@@ -1,3 +1,4 @@
+import CopyPlugin from 'copy-webpack-plugin'
 import ESLintWebpackPlugin from 'eslint-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import path from 'path'
@@ -36,6 +37,9 @@ const commonConfig: webpack.Configuration = {
 		}),
 		new ESLintWebpackPlugin({
 			files: './src/**/*.{ts,tsx}',
+		}),
+		new CopyPlugin({
+			patterns: [{ from: 'src/task/nodemcutools-schema.json', to: './' }],
 		}),
 	],
 }

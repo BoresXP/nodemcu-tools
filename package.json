@@ -31,7 +31,7 @@
 		"esp32"
 	],
 	"activationEvents": [
-		"workspaceContains:.nodemcutool"
+		"workspaceContains: .nodemcutools"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -263,9 +263,53 @@
 					"type": "boolean",
 					"default": false,
 					"description": "Controls whether the Lua code should be minified before upload with 'sendLine' and 'sendBlock' commands."
+				},
+				"nodemcu-tools.pathToCompiler": {
+					"type": "string",
+					"default": "",
+					"description": "Absolute path to the luac.cross (e.g. /opt/lua/esp8266/5.3)"
 				}
 			}
-		}
+		},
+		"jsonValidation": [
+			{
+				"fileMatch": [
+					".nodemcutools"
+				],
+				"url": "./out/nodemcutools-schema.json"
+			}
+		],
+		"taskDefinitions": [
+			{
+				"type": "NodeMCU",
+				"required": [
+					"compilerExecutable"
+				],
+				"properties": {
+					"compilerExecutable": {
+						"description": "The executable path to the luac.cross compiler (i.e. \"/opt/lua/esp8266/5.3/luac.cross\"\nor \"C:\\Temp\\luac.cross.exe\")",
+						"type": "string"
+					},
+					"include": {
+						"description": "Specifies a list of glob patterns that match files to be included in LFS image. If no 'include' property is present in a NodeMCU task definition, the compiler defaults to including all .lua files under the './lfs' directory.",
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"minItems": 1,
+						"uniqueItems": true
+					},
+					"outDir": {
+						"description": "Specify an output folder for all emitted files. Default is './out'",
+						"type": "string"
+					},
+					"outFile": {
+						"description": "Specify an output a flash image file. Default is 'lfs.img'",
+						"type": "string"
+					}
+				}
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "webpack --mode production",
@@ -283,6 +327,7 @@
 		"@types/webpack": "^5.28.1",
 		"@typescript-eslint/eslint-plugin": "^5.58.0",
 		"@typescript-eslint/parser": "^5.58.0",
+		"copy-webpack-plugin": "^11.0.0",
 		"css-loader": "^6.7.3",
 		"eslint": "^8.38.0",
 		"eslint-plugin-optimize-regex": "^1.2.1",
