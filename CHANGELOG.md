@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.4] - 2023-04-26
+### Added
+- Building *lfs.img* file and uploading it to the device
+- 'Format' button was added to the TerminalContainer
+
+### Changed
+- Improve UI
+
 ## [3.5.3] - 2023-04-12
 ### Added
 - Uploading multiple selected files to device with 'Upload to device' command
