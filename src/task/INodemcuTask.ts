@@ -1,7 +1,7 @@
 import { TaskDefinition } from 'vscode'
 
 export interface INodemcuTaskDefinition extends TaskDefinition {
-	task: string
+	nodemcuTaskName: string
 	compilerExecutable: string
 	include?: string[]
 	outDir?: string

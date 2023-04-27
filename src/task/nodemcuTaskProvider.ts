@@ -1,5 +1,17 @@
 import { IConfiguration, INodemcuTaskDefinition } from './INodemcuTask'
-import { ShellExecution, Task, TaskEndEvent, TaskProvider, TaskScope, Uri, commands, tasks, workspace } from 'vscode'
+import {
+	ShellExecution,
+	Task,
+	TaskEndEvent,
+	TaskGroup,
+	TaskProvider,
+	TaskRevealKind,
+	TaskScope,
+	Uri,
+	commands,
+	tasks,
+	workspace,
+} from 'vscode'
 import { NodeMcuRepository } from '../nodemcu'
 import { getConfig } from './ConfigFile'
 import path from 'path'
@@ -46,27 +58,29 @@ export default class NodemcuTaskProvider implements TaskProvider {
 			return nodemcuTasks
 		}
 
-		const definition: INodemcuTaskDefinition = {
+		const nodemcuTaskDefinition: INodemcuTaskDefinition = {
 			type: NodemcuTaskProvider.taskType,
-			task: 'buildLfs',
+			nodemcuTaskName: 'buildLfs',
 			compilerExecutable: config.compilerExecutable,
 			include: config.include,
 			outDir: config.outDir,
 			outFile: config.outFile,
 		}
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const filesLFS = this.getFilesLFS(definition.include!)
-		const commandLine = `${definition.compilerExecutable} -o ${definition.outDir}/${definition.outFile} -f -l ${filesLFS} > ${definition.outDir}/luaccross.log`
+		const filesLFS = this.getFilesLFS(nodemcuTaskDefinition.include!)
+		const commandLine = `${nodemcuTaskDefinition.compilerExecutable} -o ${nodemcuTaskDefinition.outDir}/${nodemcuTaskDefinition.outFile} -f -l ${filesLFS} > ${nodemcuTaskDefinition.outDir}/luaccross.log`
 
-		const task = new Task(
-			definition,
+		const nodemcuTask = new Task(
+			nodemcuTaskDefinition,
 			TaskScope.Workspace,
-			'Builds LFS and upload to device',
-			definition.type,
+			'Build LFS and upload to device via serial port',
+			nodemcuTaskDefinition.type,
 			new ShellExecution(commandLine),
 		)
+		nodemcuTask.group = TaskGroup.Build
+		nodemcuTask.presentationOptions.reveal = TaskRevealKind.Silent
 
-		nodemcuTasks.push(task)
+		nodemcuTasks.push(nodemcuTask)
 		return nodemcuTasks
 	}
 
