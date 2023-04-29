@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.5] - 2023-04-29
+### Added
+- Add command 'Compile file and upload'
+
+### Changed
+- Fixed, if compilation fails, the previous compiled file will still be loaded.
+
 ## [3.5.4] - 2023-04-26
 ### Added
 - Building *lfs.img* file and uploading it to the device
