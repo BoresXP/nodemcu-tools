@@ -292,10 +292,10 @@
 					"compilerExecutable"
 				],
 				"properties": {
-					"nodemcuTaskName":{
-            "description": "Unique task name",
-            "type": "string"
-          },
+					"nodemcuTaskName": {
+						"description": "Unique task name",
+						"type": "string"
+					},
 					"compilerExecutable": {
 						"markdownDescription": "The executable path to the luac.cross compiler (e.g. *\"/opt/lua/esp8266/5.3/luac.cross\"* or *\"C:\\Temp\\luac.cross.exe\"*)",
 						"type": "string"
@@ -313,7 +313,7 @@
 						"markdownDescription": "Specify an output folder for all emitted files. Default is **./out**",
 						"type": "string"
 					},
-						"outFile": {
+					"outFile": {
 						"markdownDescription": "Specify an output a flash image file. Default is **lfs.img**",
 						"type": "string"
 					}
@@ -355,7 +355,7 @@
 		"webpack-cli": "^5.0.2"
 	},
 	"dependencies": {
-		"effector": "^22.8.1",
+		"effector": "^22.8.2",
 		"effector-react": "^22.5.1",
 		"luamin": "github:FATH-Mechatronics/luamin#d735925",
 		"react": "^18.2.0",
