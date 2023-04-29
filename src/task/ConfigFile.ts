@@ -1,17 +1,22 @@
 import { IConfiguration, INodemcuTaskDefinition } from './INodemcuTask'
 import { OutputChannel, Uri, window, workspace } from 'vscode'
+import { getOutputChannel } from './getOutputChannel'
 import path = require('path')
 
 let outChannel: OutputChannel
 
-export async function getConfig(rootFolder: string, configFile: string): Promise<IConfiguration | undefined> {
+export async function getConfig(
+	rootFolder: string,
+	configFile: string,
+	revealMessage = true,
+): Promise<IConfiguration | undefined> {
 	outChannel = getOutputChannel()
 
-	if (!(await isExists(configFile))) {
+	if (!(await isExists(configFile, revealMessage))) {
 		return void 0
 	}
 
-	const definition: IConfiguration = {
+	const config: IConfiguration = {
 		compilerExecutable: '',
 		include: ['./lfs/*.lua'],
 		outDir: 'out',
@@ -27,51 +32,53 @@ export async function getConfig(rootFolder: string, configFile: string): Promise
 		userConfig = <INodemcuTaskDefinition>JSON.parse(readStr)
 
 		if (!('compilerExecutable' in userConfig)) {
-			await displayError(new Error('.nodemcutools: No path to the luac.cross'))
+			await displayError(new Error('No path to the luac.cross'))
 			return void 0
 		}
-		definition.compilerExecutable = userConfig.compilerExecutable
+		config.compilerExecutable = userConfig.compilerExecutable
 
 		if ('outDir' in userConfig) {
-			definition.outDir = userConfig.outDir as string
+			config.outDir = userConfig.outDir as string
 		}
 		if (
-			!(await isExists(path.join(rootFolder, definition.outDir))) &&
-			!(await createDirectory(path.join(rootFolder, definition.outDir)))
+			!(await isExists(path.join(rootFolder, config.outDir))) &&
+			!(await createDirectory(path.join(rootFolder, config.outDir)))
 		) {
 			return void 0
 		}
 
 		if ('include' in userConfig) {
-			definition.include = userConfig.include as string[]
+			config.include = userConfig.include as string[]
 		}
-		for (const pattern of definition.include) {
+		for (const pattern of config.include) {
 			const pathToCheck = path.dirname(path.resolve(rootFolder, pattern))
 			if (!(await isExists(pathToCheck))) {
-				await displayError(new Error(`.nodemcutools: Include path "${pathToCheck}" is not found.`))
+				await displayError(new Error(`Include path '${pathToCheck}' is not found.`))
 				return void 0
 			}
 		}
 
 		if ('outFile' in userConfig) {
-			definition.outFile = userConfig.outFile as string
+			config.outFile = userConfig.outFile as string
 		}
 	} catch (error) {
-		await displayError(new Error('.nodemcutools: Error in config file'))
+		await displayError(new Error('Error in config file'))
 
 		return void 0
 	}
 
-	return definition
+	return config
 }
 
-async function isExists(f: string): Promise<boolean> {
+async function isExists(f: string, revealMessage = true): Promise<boolean> {
 	try {
 		await workspace.fs.stat(Uri.file(f))
 		return true
 	} catch (err) {
-		outChannel.appendLine(`.nodemcutools: The "${f}" does not exists.`)
-		outChannel.show(true)
+		if (revealMessage) {
+			outChannel.appendLine(`Error: no such file or directory '${f}'`)
+			outChannel.show(true)
+		}
 		return false
 	}
 }
@@ -79,21 +86,13 @@ async function isExists(f: string): Promise<boolean> {
 async function createDirectory(folder: string): Promise<boolean> {
 	try {
 		await workspace.fs.createDirectory(Uri.file(folder))
-		outChannel.appendLine(`The "${folder}" directory was created successfully.`)
+		outChannel.appendLine(`The '${folder}' directory was created successfully.`)
 		outChannel.show(true)
 		return true
 	} catch (err) {
-		await displayError(new Error(`Can not create the directory "${folder}"`))
+		await displayError(new Error(`Can not create the directory '${folder}'`))
 		return false
 	}
-}
-
-function getOutputChannel(): OutputChannel {
-	if (!outChannel) {
-		outChannel = window.createOutputChannel('nodemcu-tools')
-	}
-
-	return outChannel
 }
 
 async function showGenericErrorNotification(): Promise<void> {

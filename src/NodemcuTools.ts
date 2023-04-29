@@ -1,5 +1,18 @@
 import { INodeMcu, NodeMcuRepository } from './nodemcu'
-import { ProgressLocation, Uri, commands, window, workspace } from 'vscode'
+import {
+	ProgressLocation,
+	ShellExecution,
+	Task,
+	TaskRevealKind,
+	TaskScope,
+	Uri,
+	commands,
+	tasks,
+	window,
+	workspace,
+} from 'vscode'
+import { INodemcuTaskDefinition } from './task/INodemcuTask'
+import NodemcuTaskProvider from './task/nodemcuTaskProvider'
 import { initialSettings } from './terminal/content/state/state'
 import luamin from 'luamin'
 
@@ -77,7 +90,6 @@ export default class NodemcuTools {
 
 	public async uploadBundle(files: Uri[]): Promise<string | undefined> {
 		const devicePath = await NodemcuTools.selectConnectedDevice()
-
 		if (!devicePath) {
 			return void 0
 		}
@@ -110,6 +122,45 @@ export default class NodemcuTools {
 		}
 
 		return deviceFileName
+	}
+
+	public async compileFileAndUpload(file: Uri, taskProvider: NodemcuTaskProvider): Promise<string | undefined> {
+		const devicePath = await NodemcuTools.selectConnectedDevice()
+		if (!devicePath) {
+			return void 0
+		}
+		const config = taskProvider.actualConfig
+		if (!config) {
+			taskProvider.outChannel.appendLine('Error: no config file.')
+			taskProvider.outChannel.show(true)
+			return void 0
+		}
+
+		const [fileBasename] = file.path.split('/').slice(-1)
+		const [fileBasenameNoExtension] = fileBasename.split('.').slice(-2)
+
+		const nodemcuTaskDefinition: INodemcuTaskDefinition = {
+			type: NodemcuTaskProvider.taskType,
+			nodemcuTaskName: 'compileFile',
+			compilerExecutable: config.compilerExecutable,
+			include: config.include,
+			outDir: config.outDir,
+			outFile: `${fileBasenameNoExtension}.lc`,
+		}
+
+		const commandLine = `${nodemcuTaskDefinition.compilerExecutable} -o ${nodemcuTaskDefinition.outDir}/${fileBasenameNoExtension}.lc -l ${file.path} > ${nodemcuTaskDefinition.outDir}/luaccross.log`
+
+		const nodemcuTask = new Task(
+			nodemcuTaskDefinition,
+			TaskScope.Workspace,
+			'Compile a file and upload to device',
+			nodemcuTaskDefinition.type,
+			new ShellExecution(commandLine),
+		)
+		nodemcuTask.presentationOptions.reveal = TaskRevealKind.Silent
+		await tasks.executeTask(nodemcuTask)
+
+		return void 0
 	}
 
 	public async uploadFileAndRun(file: Uri): Promise<string | undefined> {
@@ -195,9 +246,9 @@ export default class NodemcuTools {
 		}
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
-		const minifyEnabled = workspace.getConfiguration().get(
-			'nodemcu-tools.minify.enabled', initialSettings.minifyEnabled
-		)
+		const minifyEnabled = workspace
+			.getConfiguration()
+			.get('nodemcu-tools.minify.enabled', initialSettings.minifyEnabled)
 
 		if (minifyEnabled) {
 			try {
@@ -220,9 +271,9 @@ export default class NodemcuTools {
 		}
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
-		const minifyEnabled = workspace.getConfiguration().get(
-			'nodemcu-tools.minify.enabled', initialSettings.minifyEnabled
-		)
+		const minifyEnabled = workspace
+			.getConfiguration()
+			.get('nodemcu-tools.minify.enabled', initialSettings.minifyEnabled)
 
 		if (minifyEnabled) {
 			try {

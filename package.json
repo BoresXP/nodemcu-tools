@@ -31,7 +31,7 @@
 		"esp32"
 	],
 	"activationEvents": [
-		"workspaceContains: .nodemcutools"
+		"workspaceContains:.nodemcutools"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -87,6 +87,12 @@
 			{
 				"command": "nodemcu-tools.uploadFileCompile",
 				"title": "Upload to device and compile",
+				"category": "NodeMCU",
+				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .lua"
+			},
+			{
+				"command": "nodemcu-tools.compileFileUpload",
+				"title": "Compile and upload to device",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .lua"
 			},
@@ -182,6 +188,11 @@
 					"alt": "nodemcu-tools.uploadFileRun",
 					"group": "nodemcu-tools@20",
 					"when": "nodemcu-tools:isConnected"
+				},
+				{
+					"command": "nodemcu-tools.compileFileUpload",
+					"group": "nodemcu-tools@30",
+					"when": "nodemcu-tools:isConnected"
 				}
 			],
 			"view/title": [
@@ -263,11 +274,6 @@
 					"type": "boolean",
 					"default": false,
 					"description": "Controls whether the Lua code should be minified before upload with 'sendLine' and 'sendBlock' commands."
-				},
-				"nodemcu-tools.pathToCompiler": {
-					"type": "string",
-					"default": "",
-					"description": "Absolute path to the luac.cross (e.g. /opt/lua/esp8266/5.3)"
 				}
 			}
 		},
@@ -286,12 +292,16 @@
 					"compilerExecutable"
 				],
 				"properties": {
+					"nodemcuTaskName":{
+            "description": "Unique task name",
+            "type": "string"
+          },
 					"compilerExecutable": {
-						"description": "The executable path to the luac.cross compiler (i.e. \"/opt/lua/esp8266/5.3/luac.cross\"\nor \"C:\\Temp\\luac.cross.exe\")",
+						"markdownDescription": "The executable path to the luac.cross compiler (e.g. *\"/opt/lua/esp8266/5.3/luac.cross\"* or *\"C:\\Temp\\luac.cross.exe\"*)",
 						"type": "string"
 					},
 					"include": {
-						"description": "Specifies a list of glob patterns that match files to be included in LFS image. If no 'include' property is present in a NodeMCU task definition, the compiler defaults to including all .lua files under the './lfs' directory.",
+						"markdownDescription": "Specifies a list of glob patterns that match files to be included in LFS image. If no **include** property is present in a NodeMCU task definition, the compiler defaults to including all *.lua* files under the **./lfs** folder.",
 						"type": "array",
 						"items": {
 							"type": "string"
@@ -300,11 +310,11 @@
 						"uniqueItems": true
 					},
 					"outDir": {
-						"description": "Specify an output folder for all emitted files. Default is './out'",
+						"markdownDescription": "Specify an output folder for all emitted files. Default is **./out**",
 						"type": "string"
 					},
-					"outFile": {
-						"description": "Specify an output a flash image file. Default is 'lfs.img'",
+						"outFile": {
+						"markdownDescription": "Specify an output a flash image file. Default is **lfs.img**",
 						"type": "string"
 					}
 				}

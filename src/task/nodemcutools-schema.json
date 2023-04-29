@@ -5,11 +5,11 @@
   ],
   "properties": {
     "compilerExecutable": {
-      "description": "The executable path to the luac.cross compiler (i.e. \"/opt/lua/esp8266/5.3/luac.cross\"\nor \"C:\\Temp\\luac.cross.exe\")",
+      "markdownDescription": "The executable path to the luac.cross compiler (e.g. *\"/opt/lua/esp8266/5.3/luac.cross\"* or *\"C:\\Temp\\luac.cross.exe\"*)",
       "type": "string"
     },
     "include": {
-      "description": "Specifies a list of glob patterns that match files to be included in LFS image. If no 'include' property is present in a NodeMCU task definition, the compiler defaults to including all .lua files under the './lfs' directory.",
+      "markdownDescription": "Specifies a list of glob patterns that match files to be included in LFS image. If no **include** property is present in a NodeMCU task definition, the compiler defaults to including all *.lua* files under the **./lfs** folder.",
       "type": "array",
       "items": {
         "type": "string"
@@ -18,11 +18,11 @@
       "uniqueItems": true
     },
     "outDir": {
-      "description": "Specify an output folder for all emitted files. Default is './out'",
+      "markdownDescription": "Specify an output folder for all emitted files. Default is **./out**",
       "type": "string"
     },
       "outFile": {
-      "description": "Specify an output a flash image file. Default is 'lfs.img'",
+      "markdownDescription": "Specify an output a flash image file. Default is **lfs.img**",
       "type": "string"
     }
   }

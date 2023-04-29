@@ -14,7 +14,12 @@ export function activate(context: ExtensionContext): void {
 	try {
 		const treeProvider = new DeviceTreeProvider()
 		const treeView = window.createTreeView('nodemcu-tools.devices', { treeDataProvider: treeProvider })
-		const taskProvider = tasks.registerTaskProvider(NodemcuTaskProvider.taskType, new NodemcuTaskProvider())
+
+		const nodemcuTaskProvider = new NodemcuTaskProvider()
+		const taskProvider = tasks.registerTaskProvider(NodemcuTaskProvider.taskType, nodemcuTaskProvider)
+		void (async () => {
+			await nodemcuTaskProvider.init()
+		})()
 
 		context.subscriptions.push(treeView, taskProvider)
 
@@ -71,6 +76,14 @@ export function activate(context: ExtensionContext): void {
 		context.subscriptions.push(
 			commands.registerCommand('nodemcu-tools.uploadFileCompile', async (file: Uri) => {
 				const deviceFileName = await tools.uploadFileAndCompile(file)
+				if (deviceFileName) {
+					treeProvider.refresh()
+				}
+			}),
+		)
+		context.subscriptions.push(
+			commands.registerCommand('nodemcu-tools.compileFileUpload', async (file: Uri) => {
+				const deviceFileName = await tools.compileFileAndUpload(file, nodemcuTaskProvider)
 				if (deviceFileName) {
 					treeProvider.refresh()
 				}
