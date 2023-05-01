@@ -103,7 +103,7 @@ async function showGenericErrorNotification(): Promise<void> {
 		'Go to output',
 	)
 
-	getOutputChannel().show(true)
+	outChannel.show(true)
 }
 
 async function displayError(errorThrown: Error): Promise<void> {

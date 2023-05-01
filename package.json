@@ -3,7 +3,7 @@
 	"publisher": "boressoft",
 	"displayName": "NodeMCU-Tools",
 	"description": "NodeMCU development tools for Visual Studio Code",
-	"version": "3.5.5",
+	"version": "3.5.6",
 	"author": {
 		"name": "Boris Gulay",
 		"email": "boris@gulay.name"
@@ -93,6 +93,12 @@
 			{
 				"command": "nodemcu-tools.compileFileUpload",
 				"title": "Compile and upload to device",
+				"category": "NodeMCU",
+				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .lua"
+			},
+			{
+				"command": "nodemcu-tools.crossCompile",
+				"title": "Compile",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .lua"
 			},
@@ -191,6 +197,7 @@
 				},
 				{
 					"command": "nodemcu-tools.compileFileUpload",
+					"alt": "nodemcu-tools.crossCompile",
 					"group": "nodemcu-tools@30",
 					"when": "nodemcu-tools:isConnected && nodemcu-tools:isConfig"
 				}

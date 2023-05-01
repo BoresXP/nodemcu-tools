@@ -66,34 +66,41 @@ export default class NodemcuTaskProvider implements TaskProvider {
 
 		const nodemcuTasks: Task[] = []
 		this._config = await getConfig(this._rootFolder, this._configFile)
-		if (!this._config) {
-			return nodemcuTasks
-		}
+		const listTasks = [
+			['buildLfsAndUploadSerial', 'Build LFS and upload to device via serial port'],
+			['buildLfs', 'Build LFS on host machine'],
+		]
 
-		const nodemcuTaskDefinition: INodemcuTaskDefinition = {
-			type: NodemcuTaskProvider.taskType,
-			nodemcuTaskName: 'buildLfs',
-			compilerExecutable: this._config.compilerExecutable,
-			include: this._config.include,
-			outDir: this._config.outDir,
-			outFile: this._config.outFile,
-		}
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const filesLFS = this.getFilesLFS(nodemcuTaskDefinition.include!)
+		listTasks.forEach(nextTask => {
+			if (!this._config) {
+				return nodemcuTasks
+			}
+			const nodemcuTaskDefinition: INodemcuTaskDefinition = {
+				type: NodemcuTaskProvider.taskType,
+				nodemcuTaskName: nextTask[0],
+				compilerExecutable: this._config.compilerExecutable,
+				include: this._config.include,
+				outDir: this._config.outDir,
+				outFile: this._config.outFile,
+			}
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			const filesLFS = this.getFilesLFS(nodemcuTaskDefinition.include!)
 
-		const commandLine = `${nodemcuTaskDefinition.compilerExecutable} -o ${nodemcuTaskDefinition.outDir}/${nodemcuTaskDefinition.outFile} -f -l ${filesLFS} > ${nodemcuTaskDefinition.outDir}/luaccross.log`
+			const commandLine = `${nodemcuTaskDefinition.compilerExecutable} -o ${nodemcuTaskDefinition.outDir}/${nodemcuTaskDefinition.outFile} -f -l ${filesLFS} > ${nodemcuTaskDefinition.outDir}/luaccross.log`
 
-		const nodemcuTask = new Task(
-			nodemcuTaskDefinition,
-			TaskScope.Workspace,
-			'Build LFS and upload to device via serial port',
-			nodemcuTaskDefinition.type,
-			new ShellExecution(commandLine),
-		)
-		nodemcuTask.group = TaskGroup.Build
-		nodemcuTask.presentationOptions.reveal = TaskRevealKind.Silent
+			const nodemcuTask = new Task(
+				nodemcuTaskDefinition,
+				TaskScope.Workspace,
+				nextTask[1],
+				nodemcuTaskDefinition.type,
+				new ShellExecution(commandLine),
+			)
+			nodemcuTask.group = TaskGroup.Build
+			nodemcuTask.presentationOptions.reveal = TaskRevealKind.Silent
 
-		nodemcuTasks.push(nodemcuTask)
+			nodemcuTasks.push(nodemcuTask)
+		})
+
 		return nodemcuTasks
 	}
 
@@ -123,11 +130,11 @@ export default class NodemcuTaskProvider implements TaskProvider {
 		)
 
 		switch (taskDefinition.nodemcuTaskName) {
-			case 'buildLfs':
+			case 'buildLfsAndUploadSerial':
 				await commands.executeCommand('nodemcu-tools.uploadFileSetLfs', fileToUpload)
 				break
 
-			case 'compileFile':
+			case 'compileFileAndUpload':
 				await commands.executeCommand('nodemcu-tools.uploadFile', fileToUpload, [fileToUpload])
 				break
 		}

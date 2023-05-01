@@ -125,7 +125,7 @@ export default class NodemcuTools {
 		return deviceFileName
 	}
 
-	public async compileFileAndUpload(file: Uri, taskProvider: NodemcuTaskProvider): Promise<string | undefined> {
+	public async compileFileAndUpload(file: Uri, taskProvider: NodemcuTaskProvider, upload: boolean): Promise<string | undefined> {
 		const devicePath = await NodemcuTools.selectConnectedDevice()
 		const config = taskProvider.actualConfig
 		if (!devicePath || !config) {
@@ -137,19 +137,19 @@ export default class NodemcuTools {
 
 		const nodemcuTaskDefinition: INodemcuTaskDefinition = {
 			type: NodemcuTaskProvider.taskType,
-			nodemcuTaskName: 'compileFile',
+			nodemcuTaskName: upload ? 'compileFileAndUpload' : 'crossCompile',
 			compilerExecutable: config.compilerExecutable,
 			include: config.include,
 			outDir: config.outDir,
 			outFile: `${fileBasenameNoExtension}.lc`,
 		}
 
-		const commandLine = `${nodemcuTaskDefinition.compilerExecutable} -o ${nodemcuTaskDefinition.outDir}/${fileBasenameNoExtension}.lc -l ${file.path} > ${nodemcuTaskDefinition.outDir}/luaccross.log`
+		const commandLine = `${nodemcuTaskDefinition.compilerExecutable} -o ${nodemcuTaskDefinition.outDir}/${nodemcuTaskDefinition.outFile} -l ${file.path} > ${nodemcuTaskDefinition.outDir}/luaccross.log`
 
 		const nodemcuTask = new Task(
 			nodemcuTaskDefinition,
 			TaskScope.Workspace,
-			'Compile a file and upload to device',
+			upload ? 'Compile and upload to device' : 'Compile on host machine',
 			nodemcuTaskDefinition.type,
 			new ShellExecution(commandLine),
 		)
