@@ -128,7 +128,7 @@
 				"command": "nodemcu-tools.sendLine",
 				"title": "Send current line to device",
 				"category": "NodeMCU",
-				"enablement": "editorTextFocus && nodemcu-tools:isConnected",
+				"enablement": "editorTextFocus",
 				"icon": {
 					"light": "resources/light/sendLine.svg",
 					"dark": "resources/dark/sendLine.svg"
@@ -138,7 +138,7 @@
 				"command": "nodemcu-tools.sendBlock",
 				"title": "Send selected block to device",
 				"category": "NodeMCU",
-				"enablement": "editorTextFocus && editorHasSelection == true && nodemcu-tools:isConnected",
+				"enablement": "editorTextFocus && editorHasSelection == true",
 				"icon": {
 					"light": "resources/light/sendBlock.svg",
 					"dark": "resources/dark/sendBlock.svg"
@@ -192,7 +192,7 @@
 				{
 					"command": "nodemcu-tools.compileFileUpload",
 					"group": "nodemcu-tools@30",
-					"when": "nodemcu-tools:isConnected"
+					"when": "nodemcu-tools:isConnected && nodemcu-tools:isConfig"
 				}
 			],
 			"view/title": [

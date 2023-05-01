@@ -1,6 +1,5 @@
+import { IConfiguration, INodemcuTaskDefinition } from './INodemcuTask'
 import {
-	FileSystemError,
-	OutputChannel,
 	ShellExecution,
 	Task,
 	TaskEndEvent,
@@ -13,17 +12,16 @@ import {
 	tasks,
 	workspace,
 } from 'vscode'
-import { IConfiguration, INodemcuTaskDefinition } from './INodemcuTask'
+
 import { NodeMcuRepository } from '../nodemcu'
 import { getConfig } from './ConfigFile'
-import { getOutputChannel } from './getOutputChannel'
 import path from 'path'
 
 export default class NodemcuTaskProvider implements TaskProvider {
 	static taskType = 'NodeMCU'
-	outChannel: OutputChannel
 	private _config: IConfiguration | undefined
 	private _tasks: Task[] | undefined = void 0
+	private _processExitCode: number | undefined
 	private readonly _configFile: string
 	private readonly _rootFolder: string
 
@@ -33,12 +31,12 @@ export default class NodemcuTaskProvider implements TaskProvider {
 		this._configFile = path.join(this._rootFolder, '.nodemcutools')
 
 		const fileWatcher = workspace.createFileSystemWatcher(this._configFile)
-		fileWatcher.onDidChange(() => (this._tasks = void 0))
-		fileWatcher.onDidCreate(() => (this._tasks = void 0))
-		fileWatcher.onDidDelete(() => (this._tasks = void 0))
+		fileWatcher.onDidChange(() => this.rebuildConfig())
+		fileWatcher.onDidCreate(() => this.rebuildConfig())
+		fileWatcher.onDidDelete(() => this.rebuildConfig())
 
+		tasks.onDidEndTaskProcess(event => (this._processExitCode = event.exitCode))
 		tasks.onDidEndTask(event => this.endTaskHandler(event))
-		this.outChannel = getOutputChannel()
 	}
 
 	public get actualConfig(): IConfiguration | undefined {
@@ -103,9 +101,18 @@ export default class NodemcuTaskProvider implements TaskProvider {
 		return include.join(' ')
 	}
 
+	private async rebuildConfig(): Promise<void> {
+		this._tasks = void 0
+		this._config = await getConfig(this._rootFolder, this._configFile)
+	}
+
 	private async endTaskHandler(event: TaskEndEvent): Promise<void> {
 		const taskDefinition = event.execution.task.definition
-		if (taskDefinition.type !== NodemcuTaskProvider.taskType || !(NodeMcuRepository.allConnected.length > 0)) {
+		if (
+			taskDefinition.type !== NodemcuTaskProvider.taskType ||
+			!(NodeMcuRepository.allConnected.length > 0) ||
+			this._processExitCode !== 0
+		) {
 			return
 		}
 
@@ -114,15 +121,6 @@ export default class NodemcuTaskProvider implements TaskProvider {
 			taskDefinition.outDir as string,
 			taskDefinition.outFile as string,
 		)
-		try {
-			await workspace.fs.stat(fileToUpload)
-		} catch (err) {
-			if (err instanceof FileSystemError) {
-				this.outChannel.appendLine(`Uploading ${err.message}`)
-				this.outChannel.show(true)
-			}
-			return
-		}
 
 		switch (taskDefinition.nodemcuTaskName) {
 			case 'buildLfs':
@@ -132,25 +130,6 @@ export default class NodemcuTaskProvider implements TaskProvider {
 			case 'compileFile':
 				await commands.executeCommand('nodemcu-tools.uploadFile', fileToUpload, [fileToUpload])
 				break
-
-			default:
-				this.outChannel.appendLine('Unknown nodemcu task name')
-				this.outChannel.show(true)
-		}
-
-		const fileNewName = Uri.joinPath(
-			Uri.file(this._rootFolder),
-			taskDefinition.outDir as string,
-			`${taskDefinition.outFile}.old`,
-		)
-
-		try {
-			await workspace.fs.rename(fileToUpload, fileNewName, { overwrite: true })
-		} catch (err) {
-			if (err instanceof FileSystemError) {
-				this.outChannel.appendLine(`Appending .old to the file name. ${err.message}`)
-				this.outChannel.show(true)
-			}
 		}
 	}
 }

@@ -3,7 +3,7 @@ import { ExtensionContext, Uri, commands, tasks, window } from 'vscode'
 import DeviceTreeItem from './tree/DeviceTreeItem'
 import DeviceTreeProvider from './tree/DeviceTreeProvider'
 import FileTreeItem from './tree/FileTreeItem'
-import NodemcuTaskProvider from './task/nodemcuTaskProvider'
+import NodemcuTaskProvider from './task/NodemcuTaskProvider'
 import NodemcuTools from './NodemcuTools'
 import TerminalView from './terminal/TerminalView'
 

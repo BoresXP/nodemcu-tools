@@ -11,8 +11,9 @@ import {
 	window,
 	workspace,
 } from 'vscode'
+
 import { INodemcuTaskDefinition } from './task/INodemcuTask'
-import NodemcuTaskProvider from './task/nodemcuTaskProvider'
+import NodemcuTaskProvider from './task/NodemcuTaskProvider'
 import { initialSettings } from './terminal/content/state/state'
 import luamin from 'luamin'
 
@@ -126,13 +127,8 @@ export default class NodemcuTools {
 
 	public async compileFileAndUpload(file: Uri, taskProvider: NodemcuTaskProvider): Promise<string | undefined> {
 		const devicePath = await NodemcuTools.selectConnectedDevice()
-		if (!devicePath) {
-			return void 0
-		}
 		const config = taskProvider.actualConfig
-		if (!config) {
-			taskProvider.outChannel.appendLine('Error: no config file.')
-			taskProvider.outChannel.show(true)
+		if (!devicePath || !config) {
 			return void 0
 		}
 

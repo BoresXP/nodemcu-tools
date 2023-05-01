@@ -1,5 +1,5 @@
 import { IConfiguration, INodemcuTaskDefinition } from './INodemcuTask'
-import { OutputChannel, Uri, window, workspace } from 'vscode'
+import { OutputChannel, Uri, commands, window, workspace } from 'vscode'
 import { getOutputChannel } from './getOutputChannel'
 import path = require('path')
 
@@ -11,6 +11,7 @@ export async function getConfig(
 	revealMessage = true,
 ): Promise<IConfiguration | undefined> {
 	outChannel = getOutputChannel()
+	await commands.executeCommand('setContext', 'nodemcu-tools:isConfig', false)
 
 	if (!(await isExists(configFile, revealMessage))) {
 		return void 0
@@ -67,6 +68,7 @@ export async function getConfig(
 		return void 0
 	}
 
+	await commands.executeCommand('setContext', 'nodemcu-tools:isConfig', true)
 	return config
 }
 
