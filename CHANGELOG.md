@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.6] - 2023-05-02
+### Added
+- command 'buildLfs': Builds LFS on host machine. Command is available in build tasks menu;
+- command 'crossCompile': Compiles a file on the host machine. Command is available in Explorer context menu by pressing ALT key (SHIFT key on Linux) when opening menu;
+- Run icon in tree view
+.lua or .lc file can be runned on device by pressing on Run icon in location: view/item/context.
+
 ## [3.5.5] - 2023-04-29
 ### Added
 - Add command 'Compile file and upload'
