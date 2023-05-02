@@ -70,7 +70,11 @@
 				"command": "nodemcu-tools.runFile",
 				"title": "Run",
 				"category": "NodeMCU",
-				"enablement": "viewItem =~ /^nodemcu-file-(lua|lc)$/"
+				"enablement": "viewItem =~ /^nodemcu-file-(lua|lc)$/",
+				"icon":{
+					"dark": "resources/dark/RunOutline.svg",
+					"light": "resources/light/RunOutline.svg"
+				}
 			},
 			{
 				"command": "nodemcu-tools.uploadFile",
@@ -230,6 +234,11 @@
 					"command": "nodemcu-tools.runFile",
 					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/",
 					"group": "nodemcu-tools@20"
+				},
+				{
+					"command": "nodemcu-tools.runFile",
+					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/",
+					"group": "inline"
 				},
 				{
 					"command": "nodemcu-tools.compileFile",
