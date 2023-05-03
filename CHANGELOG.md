@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.7] - 2023-05-03
+### Changed
+- Fix incorrect file path in commands *Builds LFS on host machine* and *Compile on host machine*
+- Improve UI
+
 ## [3.5.6] - 2023-05-02
 ### Added
 - command 'buildLfs': Builds LFS on host machine. Command is available in build tasks menu;
