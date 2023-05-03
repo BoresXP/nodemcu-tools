@@ -32,7 +32,9 @@ export default class NodemcuTaskProvider implements TaskProvider {
 
 		const fileWatcher = workspace.createFileSystemWatcher(this._configFile)
 		fileWatcher.onDidChange(() => this.rebuildConfig())
-		fileWatcher.onDidCreate(() => this.rebuildConfig())
+		fileWatcher.onDidCreate(() => {
+			this._tasks = void 0; this._config = void 0
+		})
 		fileWatcher.onDidDelete(() => this.rebuildConfig())
 
 		tasks.onDidEndTaskProcess(event => (this._processExitCode = event.exitCode))
