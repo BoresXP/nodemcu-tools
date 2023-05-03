@@ -144,7 +144,7 @@ export default class NodemcuTools {
 			outFile: `${fileBasenameNoExtension}.lc`,
 		}
 
-		const commandLine = `${nodemcuTaskDefinition.compilerExecutable} -o ${nodemcuTaskDefinition.outDir}/${nodemcuTaskDefinition.outFile} -l ${file.path} > ${nodemcuTaskDefinition.outDir}/luaccross.log`
+		const commandLine = `${nodemcuTaskDefinition.compilerExecutable} -o ${nodemcuTaskDefinition.outDir}/${nodemcuTaskDefinition.outFile} -l ${file.fsPath} > ${nodemcuTaskDefinition.outDir}/luaccross.log`
 
 		const nodemcuTask = new Task(
 			nodemcuTaskDefinition,
