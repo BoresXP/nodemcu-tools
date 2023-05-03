@@ -25,7 +25,7 @@ export const HoverTooltipGLobalClass = createGlobalStyle`
 }
 
 .nodemcu-tools-tooltip {
-	max-width: 600px;
+	max-width: 500px;
   background-color: var(--vscode-badge-background);
   color: var(--vscode-badge-foreground);
   font: var(--vscode-font-weight) var(--vscode-font-size) var(--vscode-font-family);
