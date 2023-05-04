@@ -27,18 +27,25 @@ export function activate(context: ExtensionContext): void {
 
 		context.subscriptions.push(
 			commands.registerCommand('nodemcu-tools.connect', async (item: DeviceTreeItem) => {
-				const device = await tools.connect(item.path)
+				let device
+				try {
+					device = await tools.connect(item.path)
+				} catch (err) {
+					if (err instanceof Error) {
+						await window.showWarningMessage(err.message)
+					}
+				}
+				if (device) {
+					const wv = TerminalView.create(context, device)
 
-				const wv = TerminalView.create(context, device)
+					treeProvider.refresh()
+					await treeView.reveal(item, { select: true, expand: true })
 
-				treeProvider.refresh()
-				await treeView.reveal(item, { select: true, expand: true })
-
-				await new Promise<void>(resolve => {
-					setTimeout(() => resolve(), 200)
-				})
-
-				await wv.show()
+					await new Promise<void>(resolve => {
+						setTimeout(() => resolve(), 200)
+					})
+					await wv.show()
+				}
 			}),
 		)
 
