@@ -290,6 +290,11 @@
 					"type": "boolean",
 					"default": false,
 					"description": "Controls whether the Lua code should be minified before upload with 'sendLine' and 'sendBlock' commands."
+				},
+				"nodemcu-tools.overwriteSnippets": {
+					"type": "boolean",
+					"default": true,
+					"description": "Controls whether snippets in workspace should overwrite ones in user settings and defaults"
 				}
 			}
 		},

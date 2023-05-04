@@ -10,6 +10,7 @@ export interface ISettings {
 	historyMaxLines: number
 	snippets: Record<string, string>
 	minifyEnabled?: boolean
+	overwriteSnippets?: boolean
 }
 
 export interface IDeviceInfo {
@@ -39,6 +40,7 @@ export const initialSettings: ISettings = {
 	historyMaxLines: 30,
 	snippets: {},
 	minifyEnabled: false,
+	overwriteSnippets: true,
 }
 
 export const initialState: IState = {

@@ -91,12 +91,15 @@ export default class TerminalView {
 		const configuration = workspace.getConfiguration('nodemcu-tools')
 		const snippetsInspection = configuration.inspect<Record<string, string>>('snippets')
 		const snippetsInWorkspace = snippetsInspection?.workspaceValue
+		const commonSnippets = configuration.get('snippets', initialSettings.snippets)
 
 		await this._webViewPanel.webview.postMessage(
 			setConfiguration(
 				configuration.get('terminal.scrollbackSize', initialSettings.scrollbackMaxLines),
 				configuration.get('terminal.commandHistorySize', initialSettings.historyMaxLines),
-				snippetsInWorkspace ?? configuration.get('snippets', initialSettings.snippets),
+				configuration.get('overwriteSnippets', initialSettings.overwriteSnippets)
+					? snippetsInWorkspace ?? commonSnippets
+					: { ...commonSnippets, ...snippetsInWorkspace },
 			),
 		)
 	}
