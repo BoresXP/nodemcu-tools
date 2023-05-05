@@ -8,7 +8,7 @@ const myExtId = 'boressoft.nodemcu-tools'
 function loadSerialPort(): any {
 	const myExtension = extensions.getExtension(myExtId)
 	if (!myExtension?.extensionPath) {
-		throw new Error(`Extension wit id ${myExtId} not found or path is empty`)
+		throw new Error(`Extension with id ${myExtId} not found or path is empty`)
 	}
 
 	const fullPath = Path.join(myExtension.extensionPath, 'lib')

@@ -61,6 +61,7 @@ const config: webpack.Configuration[] = [
 		},
 		externals: {
 			vscode: 'commonjs vscode',
+			// eslint-disable-next-line @typescript-eslint/naming-convention
 			'node-gyp-build': './bindingsProxy',
 		},
 	},
