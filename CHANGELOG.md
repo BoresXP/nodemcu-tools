@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.8] - 2023-05-06
+### Added
+- New option **nodemcu-tools.overwriteSnippets**. Defaults **true**
+- Update native bindings
+- Update dependencies
+
+## Fixed
+- Catch errors when opening the serial port
+
 ## [3.5.7] - 2023-05-03
 ### Changed
 - Fix incorrect file path in commands *Builds LFS on host machine* and *Compile on host machine*
