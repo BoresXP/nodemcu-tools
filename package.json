@@ -351,7 +351,7 @@
 		"@types/bindings": "^1.5.1",
 		"@types/node": "^16.18.23",
 		"@types/react": "^18.2.5",
-		"@types/react-dom": "^18.2.3",
+		"@types/react-dom": "^18.2.4",
 		"@types/serialport": "^8.0.2",
 		"@types/styled-components": "^5.1.26",
 		"@types/vscode": "^1.74.0",
