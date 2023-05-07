@@ -11,6 +11,7 @@ export interface ISettings {
 	snippets: Record<string, string>
 	minifyEnabled?: boolean
 	overwriteSnippets?: boolean
+	deviceFilterActive?: boolean
 }
 
 export interface IDeviceInfo {
@@ -41,6 +42,7 @@ export const initialSettings: ISettings = {
 	snippets: {},
 	minifyEnabled: false,
 	overwriteSnippets: true,
+	deviceFilterActive: true,
 }
 
 export const initialState: IState = {

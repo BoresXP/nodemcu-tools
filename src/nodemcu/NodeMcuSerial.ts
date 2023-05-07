@@ -1,7 +1,8 @@
-import { EventEmitter, Event as VsEvent } from 'vscode'
+import { EventEmitter, Event as VsEvent, workspace } from 'vscode'
 import { ReadlineParser, SerialPort } from 'serialport'
 
 import { PortInfo } from '@serialport/bindings-cpp'
+import { initialSettings } from '../terminal/content/state/state'
 
 export interface ErrorDisconnect extends Error {
 	disconnected?: boolean
@@ -16,6 +17,7 @@ export default abstract class NodeMcuSerial {
 		'1A86', // NodeMCU v1.0 - CH341 Adapter | 0x1a86  QinHeng Electronics
 		'10C4', // NodeMCU v1.1 - CP2102 Adapter | 0x10c4  Cygnal Integrated Products, Inc
 		'1A86', // NodeMCU v3 - CH340G Adapter | 0x1A86 Nanjing QinHeng Electronics Co., Ltd.
+		'0403', // FTDI232 adapter Product ID 6001
 	]
 
 	private readonly _port: SerialPort
@@ -54,7 +56,13 @@ export default abstract class NodeMcuSerial {
 
 	public static async listDevices(): Promise<PortInfo[]> {
 		const ports = await SerialPort.list()
-		return ports.filter(p => this._vendorIDs.includes(p.vendorId?.toUpperCase() ?? ''))
+		const deviceFilterEnabled = workspace
+			.getConfiguration()
+			.get('nodemcu-tools.deviceFilterActive', initialSettings.deviceFilterActive)
+
+		return deviceFilterEnabled
+			? ports.filter(p => this._vendorIDs.includes(p.vendorId?.toUpperCase() ?? ''))
+			: ports.filter(p => p.vendorId)
 	}
 
 	public connect(): Promise<void> {
