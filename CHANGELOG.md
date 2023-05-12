@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.9] - 2023-05-10
+### Added
+- New option **nodemcu-tools.deviceFilterActive**. Defaults **true**
+- vendorID for FTDI232 adapter was added in list of known devices
+- Update dependencies
+
 ## [3.5.8] - 2023-05-06
 ### Added
 - New option **nodemcu-tools.overwriteSnippets**. Defaults **true**
