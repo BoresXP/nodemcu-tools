@@ -381,8 +381,8 @@
 		"webpack-cli": "^5.1.1"
 	},
 	"dependencies": {
-		"effector": "^22.8.3",
-		"effector-react": "^22.5.1",
+		"effector": "^22.8.5",
+		"effector-react": "^22.5.2",
 		"luamin": "github:FATH-Mechatronics/luamin#d735925",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
