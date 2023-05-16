@@ -230,6 +230,12 @@ export default class NodeMcuCommands {
 
 		await this._device.executeSingleLineCommand(this._luaCommands.readFileHelper(fileName), false)
 
+		await new Promise(resolve => {
+			setTimeout(() => {
+				resolve(true)
+			}, 100)
+		})
+
 		return new Promise(resolve => {
 			const unsubscribe = this._device.onDataRaw(data => {
 				retVal = retVal ? Buffer.concat([retVal, data]) : data
