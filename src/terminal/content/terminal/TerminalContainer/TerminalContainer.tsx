@@ -14,6 +14,8 @@ import { getCurrentCommandText, getDeviceBusy, getTerminalAutoscrollEnabled, use
 
 import SvgButton from '../SvgButton/SvgButton'
 import Terminal from '../Terminal/Terminal'
+import { formatRequest } from '../../../messages/FormatRequest'
+import vscode from '../../state/vscode'
 
 const TerminalContainer: React.FC = () => {
 	const isDeviceBusy = useRootStore(getDeviceBusy)
@@ -58,7 +60,7 @@ const TerminalContainer: React.FC = () => {
 	}, [])
 	const onFormat = useCallback(() => {
 		if (!isDeviceBusy) {
-			Events.formatEspRequest()
+			vscode.postMessage(formatRequest())
 		}
 	}, [isDeviceBusy])
 

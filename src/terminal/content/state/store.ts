@@ -3,7 +3,6 @@ import * as Events from './events'
 import { IState, initialState } from './state'
 
 import { createStore } from 'effector'
-import { formatRequest } from '../../messages/FormatRequest'
 import { terminalCommand } from '../../messages/TerminalCommand'
 import vscode from './vscode'
 
@@ -79,12 +78,6 @@ export const rootStore = createStore<IState>(savedState ?? initialState)
 		...state,
 		terminalAutoscrollEnabled: params,
 	}))
-	.on(Events.formatEspRequest, state => {
-		if (state.isDeviceBusy) {
-			return state
-		}
-		vscode.postMessage(formatRequest())
-	})
 
 rootStore.watch(state => vscode.setState(state))
 

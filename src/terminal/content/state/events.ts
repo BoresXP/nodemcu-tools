@@ -21,5 +21,3 @@ export const terminalAutoscrollSet = createEvent<boolean>()
 export const setSettings = createEvent<ISettings>()
 
 export const setDeviceInfo = createEvent<IDeviceInfo>()
-
-export const formatEspRequest = createEvent()
