@@ -1,4 +1,4 @@
 export default interface IToTerminalData {
-	type: 'echo' | 'output'
+	color: 'default' | 'red' | 'green' | 'yellow' | 'blue' | 'cyan'
 	data: string
 }

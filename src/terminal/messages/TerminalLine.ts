@@ -1,17 +1,17 @@
 import IMessage from './IMessage'
 
-export type TerminalLineType = 'echo' | 'output'
+export type TerminalLineColor = 'default' | 'red' | 'green' | 'yellow' | 'blue' | 'cyan'
 
 export interface ITerminalLine extends IMessage {
 	type: 'terminalLine'
-	textType: 'echo' | 'output'
+	textColor: TerminalLineColor
 	text: string
 }
 
-export function terminalLine(textType: TerminalLineType, text: string): ITerminalLine {
+export function terminalLine(textColor: TerminalLineColor, text: string): ITerminalLine {
 	return {
 		type: 'terminalLine',
-		textType,
+		textColor,
 		text,
 	}
 }

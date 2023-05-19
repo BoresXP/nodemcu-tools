@@ -32,7 +32,7 @@ export default class TerminalView {
 			this._webViewPanel.dispose()
 		})
 		this._device.toTerminal(async data => {
-			await this._webViewPanel.webview.postMessage(terminalLine(data.type, data.data))
+			await this._webViewPanel.webview.postMessage(terminalLine(data.color, data.data))
 		})
 		this._device.onBusyChanged(async isBusy => {
 			await this._webViewPanel.webview.postMessage(deviceState(isBusy))
@@ -114,9 +114,9 @@ export default class TerminalView {
 
 		if (answer === 'Format ESP') {
 			this._device.commandTimeout = 30000
-			await this._webViewPanel.webview.postMessage(terminalLine('output', 'Formatting...'))
+			await this._webViewPanel.webview.postMessage(terminalLine('cyan', 'Formatting...'))
 			await this._device.commands.formatEsp()
-			await this._webViewPanel.webview.postMessage(terminalLine('output', 'Format done.'))
+			await this._webViewPanel.webview.postMessage(terminalLine('cyan', 'Format done.'))
 			await commands.executeCommand('nodemcu-tools.refreshTreeView')
 			this._device.commandTimeout = 15000
 		}

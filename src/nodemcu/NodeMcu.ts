@@ -17,6 +17,13 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	private static readonly _luaCommands = {
 		getChipID: 'uart.write(0,tostring(node.chipid()).."\\r\\n")',
 	}
+	private static readonly _colorMap: [string, IToTerminalData['color']][] = [
+		['\x1B[0;31m', 'red'],
+		['\x1B[0;32m', 'green'],
+		['\x1B[0;33m', 'yellow'],
+		['\x1B[0;34m', 'blue'],
+		['\x1B[0;36m', 'cyan'],
+	]
 	private _commandTimeout = 15000 // msec
 
 	private readonly _evtToTerminal = new EventEmitter<IToTerminalData>()
@@ -176,10 +183,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	private handleData(data: string): void {
 		console.log('R: ' + data) // eslint-disable-line no-console
 		if (!this._isBusy) {
-			this._evtToTerminal.fire({
-				type: this._lastInput && data.endsWith(this._lastInput.trimEnd()) ? 'echo' : 'output',
-				data,
-			})
+			this._evtToTerminal.fire(this.makeLineColored(data))
 		}
 	}
 
@@ -242,5 +246,22 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			await this._currentCommand
 			this._currentCommand = void 0
 		}
+	}
+
+	private makeLineColored(data: string): IToTerminalData {
+		if (this._lastInput && data.endsWith(this._lastInput.trimEnd())) {
+			return { color: 'blue', data }
+		}
+
+		for (const fgColor of NodeMcu._colorMap) {
+			if (data.startsWith(fgColor[0])) {
+				return {
+					data: data.trimEnd().slice(7, -4),
+					color: fgColor[1],
+				}
+			}
+		}
+
+		return { color: 'default', data }
 	}
 }

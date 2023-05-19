@@ -14,7 +14,7 @@ ReactDOM.render(<App />, document.getElementById('root'))
 window.addEventListener('message', evt => {
 	const message = evt.data as IMessage
 	if (isTerminalLine(message)) {
-		Events.terminalLineAdd({ text: message.text, type: message.textType })
+		Events.terminalLineAdd({ text: message.text, lineColor: message.textColor })
 	} else if (isDeviceState(message)) {
 		Events.deviceIsBusy(message.isBusy)
 	} else if (isSetConfiguration(message)) {

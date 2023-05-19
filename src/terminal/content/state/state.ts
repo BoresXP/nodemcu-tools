@@ -1,8 +1,8 @@
-import { TerminalLineType } from '../../messages/TerminalLine'
+import { TerminalLineColor } from '../../messages/TerminalLine'
 
 export interface ITerminalLine {
 	text: string
-	type: TerminalLineType
+	lineColor: TerminalLineColor
 }
 
 export interface ISettings {
