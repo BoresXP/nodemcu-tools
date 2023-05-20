@@ -157,7 +157,7 @@ export default class NodeMcuCommands {
 			const tailSize = data.length % NodeMcuSerial.maxLineLength
 
 			if (data.length > NodeMcuSerial.maxLineLength) {
-				await this.waitDone('QKiw', async () => {
+				await this.waitDone('QKiw\r\n', async () => {
 					await this._device.executeSingleLineCommand(
 						this._luaCommands.writeFileHelper(remoteName, data.length - tailSize, NodeMcuSerial.maxLineLength, 'w'),
 						false,
@@ -166,7 +166,7 @@ export default class NodeMcuCommands {
 					let offset = 0
 					while (data.length - offset > NodeMcuSerial.maxLineLength) {
 						const block = data.slice(offset, offset + NodeMcuSerial.maxLineLength)
-						await this.waitDone('kxyJ', async () => {
+						await this.waitDone('kxyJ\r\n', async () => {
 							await this._device.writeRaw(block)
 						})
 
@@ -178,7 +178,7 @@ export default class NodeMcuCommands {
 				tailWriteMode = 'a'
 			}
 
-			await this.waitDone('QKiw', async () => {
+			await this.waitDone('QKiw\r\n', async () => {
 				await this._device.executeSingleLineCommand(
 					this._luaCommands.writeFileHelper(remoteName, tailSize, tailSize, tailWriteMode),
 					false,
@@ -334,7 +334,7 @@ export default class NodeMcuCommands {
 		const tailSize = data.length % NodeMcuSerial.maxLineLength
 
 		if (data.length > NodeMcuSerial.maxLineLength) {
-			await this.waitDone('QKiw', async () => {
+			await this.waitDone('QKiw\r\n', async () => {
 				await this._device.executeSingleLineCommand(
 					this._luaCommands.sendChunkHelper(data.length - tailSize, NodeMcuSerial.maxLineLength, true),
 					false,
@@ -343,7 +343,7 @@ export default class NodeMcuCommands {
 				let offset = 0
 				while (data.length - offset > NodeMcuSerial.maxLineLength) {
 					const block = data.slice(offset, offset + NodeMcuSerial.maxLineLength)
-					await this.waitDone('kxyJ', async () => {
+					await this.waitDone('kxyJ\r\n', async () => {
 						await this._device.writeRaw(block)
 					})
 
@@ -354,7 +354,7 @@ export default class NodeMcuCommands {
 			firstCall = false
 		}
 
-		await this.waitDone('QKiw', async () => {
+		await this.waitDone('QKiw\r\n', async () => {
 			await this._device.executeSingleLineCommand(
 				this._luaCommands.sendChunkHelper(tailSize, tailSize, firstCall),
 				false,
@@ -369,7 +369,7 @@ export default class NodeMcuCommands {
 	public async formatEsp(): Promise<void> {
 		await this.checkReady()
 
-		await this.waitDone('format done.', async () => {
+		await this.waitDone('format done.\r\n', async () => {
 			await this._device.executeSingleLineCommand(this._luaCommands.formatEsp, false)
 		})
 

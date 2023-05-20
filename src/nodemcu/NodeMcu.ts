@@ -102,7 +102,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		this._espID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
 
 		// esp32 chipid (hex with '0x' prefix)?
-		this._espArch = this._espID.match(/^0x[\dA-Fa-f]+\r?$/) ? 'esp32' : 'esp8266'
+		this._espArch = this._espID.match(/^0x[\dA-Fa-f]+\r+\n$/) ? 'esp32' : 'esp8266'
 	}
 
 	public waitToBeReady(): Promise<void> {
@@ -249,7 +249,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	}
 
 	private makeLineColored(data: string): IToTerminalData {
-		if (this._lastInput && data.endsWith(this._lastInput.trimEnd())) {
+		if (this._lastInput && data.trimEnd().endsWith(this._lastInput.trimEnd())) {
 			return { color: 'blue', data }
 		}
 
