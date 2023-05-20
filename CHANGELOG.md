@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.10] - 2023-05-20
+### Added
+- Support for colored output to the terminal. These ANSI color codes are supported:
+  - 0;31m Red
+  - 0;32m Green
+  - 0;33m Yellow
+  - 0;34m Blue
+  - 0;36m Cyan
+
+## Fixed
+- Download fails sometimes due to leading unwanted chars in receive buffer.
+
 ## [3.5.9] - 2023-05-10
 ### Added
 - New option **nodemcu-tools.deviceFilterActive**. Defaults **true**
