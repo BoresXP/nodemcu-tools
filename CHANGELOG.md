@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.11] - 2023-05-21
+## Fixed
+- Handling the newline character received from device
+- Sort files on device
+
 ## [3.5.10] - 2023-05-20
 ### Added
 - Support for colored output to the terminal. These ANSI color codes are supported:
