@@ -362,7 +362,7 @@ export default class NodeMcuCommands {
 			await this._device.writeRaw(data.length > 254 ? data.slice(data.length - tailSize) : data)
 		})
 
-		await this._device.executeSingleLineCommand(this._luaCommands.runChunk(), false)
+		await this._device.executeSingleLineCommand(this._luaCommands.runChunk())
 		this._device.setBusy(false)
 	}
 
