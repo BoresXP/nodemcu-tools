@@ -55,6 +55,8 @@ export default class NodeMcuCommands {
 			'uart.write(0,".\\r\\n")local f,ce=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then local ok,e=pcall(f)if not ok then uart.write(0,"Execution error:\\r\\n",e.."\\r\\n")end else uart.write(0,"Compilation error:\\r\\n",ce.."\\r\\n")end;_r_B=nil',
 
 		formatEsp: 'file.format()',
+
+		done: 'uart.write(0,"Done\\r\\n")',
 	}
 
 	private readonly _luaCommands32 = {
@@ -95,6 +97,8 @@ export default class NodeMcuCommands {
 			'uart.write(0,".\\n")local f,ce=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then local ok,e=pcall(f)if not ok then uart.write(0,"Execution error:\\n",e.."\\n")end else uart.write(0,"Compilation error:\\n",ce.."\\n")end;_r_B=nil',
 
 		formatEsp: 'file.format()',
+
+		done: 'uart.write(0,"Done\\n")',
 	}
 
 	private readonly _luaCommands: {
@@ -114,6 +118,7 @@ export default class NodeMcuCommands {
 		sendChunkHelper: (chunkSize: number, blockSize: number, firstCall: boolean) => string
 		runChunk: () => string
 		formatEsp: string
+		done: string
 	}
 
 	private readonly _device: NodeMcu
@@ -229,15 +234,14 @@ export default class NodeMcuCommands {
 		}
 
 		await this._device.executeSingleLineCommand(this._luaCommands.readFileHelper(fileName), false)
-
-		await new Promise(resolve => {
+		await new Promise<void>(resolve => {
 			setTimeout(() => {
-				resolve(true)
+				resolve()
 			}, 100)
 		})
 
 		return new Promise(resolve => {
-			const unsubscribe = this._device.onDataRaw(data => {
+			const unsubscribe = this._device.onDataRaw(async data => {
 				retVal = retVal ? Buffer.concat([retVal, data]) : data
 				progressCb?.((retVal.length * 100) / fileSize)
 
@@ -247,6 +251,7 @@ export default class NodeMcuCommands {
 
 				if (retVal.length === receivedFileSize) {
 					unsubscribe.dispose()
+					await this._device.executeSingleLineCommand(this._luaCommands.done)
 
 					progressCb?.(100)
 					this._device.setBusy(false)
