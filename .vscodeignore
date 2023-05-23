@@ -8,6 +8,5 @@ webpack.config.ts
 out/*.map
 **/*.ts
 node_modules
-.travis.yml
 bitbucket-pipelines.yml
 package-lock.json
