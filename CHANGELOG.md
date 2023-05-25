@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Upgrade serialport to v11
+- Colored line handling was improved
 - Fixed, device should not busy when 'runChunk' command has been executed
 - Fixed, content of received file should not be displayed in the terminal
 

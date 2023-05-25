@@ -18,11 +18,11 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		getChipID: 'uart.write(0,tostring(node.chipid()).."\\r\\n")',
 	}
 	private static readonly _colorMap: [string, IToTerminalData['color']][] = [
-		['\x1B[0;31m', 'red'],
-		['\x1B[0;32m', 'green'],
-		['\x1B[0;33m', 'yellow'],
-		['\x1B[0;34m', 'blue'],
-		['\x1B[0;36m', 'cyan'],
+		['31', 'red'],
+		['32', 'green'],
+		['33', 'yellow'],
+		['34', 'blue'],
+		['36', 'cyan'],
 	]
 	private _commandTimeout = 15000 // msec
 
@@ -253,11 +253,15 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			return { color: 'blue', data }
 		}
 
-		for (const fgColor of NodeMcu._colorMap) {
-			if (data.startsWith(fgColor[0])) {
-				return {
-					data: data.trimEnd().slice(7, -4),
-					color: fgColor[1],
+		// eslint-disable-next-line no-control-regex
+		const matches = data.match(/^\x1b\[\d?;?(\d\d)m(.+)\x1b\[0m(.*)\r+\n/)
+		if (matches) {
+			for (const fgColor of NodeMcu._colorMap) {
+				if (matches[1] === fgColor[0]) {
+					return {
+						data: matches[2] + matches[3],
+						color: fgColor[1],
+					}
 				}
 			}
 		}
