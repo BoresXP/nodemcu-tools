@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.12] - 2023-05-25
 ### Changed
 - Upgrade serialport to v11
-- Colored line handling was improved
+- Colored line handling was improved. New color code 35m was added
 - Fixed, device should not busy when 'runChunk' command has been executed
 - Fixed, content of received file should not be displayed in the terminal
 
