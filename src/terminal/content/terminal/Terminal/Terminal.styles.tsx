@@ -31,6 +31,10 @@ export const TerminalLine = styled.div<{ lineColor: TerminalLineColor }>`
 				return '#569cd6'
 				break
 			}
+			case 'magenta': {
+				return '#cd00cd'
+				break
+			}
 			case 'cyan': {
 				return '#00cdcd'
 				break

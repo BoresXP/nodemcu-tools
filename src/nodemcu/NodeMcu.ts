@@ -22,6 +22,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		['32', 'green'],
 		['33', 'yellow'],
 		['34', 'blue'],
+		['35', 'magenta'],
 		['36', 'cyan'],
 	]
 	private _commandTimeout = 15000 // msec

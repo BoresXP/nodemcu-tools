@@ -1,6 +1,6 @@
 import IMessage from './IMessage'
 
-export type TerminalLineColor = 'default' | 'red' | 'green' | 'yellow' | 'blue' | 'cyan'
+export type TerminalLineColor = 'default' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan'
 
 export interface ITerminalLine extends IMessage {
 	type: 'terminalLine'
