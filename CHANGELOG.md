@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Support com0com virtual port
+
 ## [3.5.12] - 2023-05-25
 ### Changed
 - Upgrade serialport to v11
