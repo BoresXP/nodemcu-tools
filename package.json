@@ -358,7 +358,6 @@
 		"@types/react": "^18.2.15",
 		"@types/react-dom": "^18.2.7",
 		"@types/serialport": "^8.0.2",
-		"@types/styled-components": "^5.1.26",
 		"@types/vscode": "^1.74.0",
 		"@types/webpack": "^5.28.1",
 		"@typescript-eslint/eslint-plugin": "^6.1.0",
@@ -374,6 +373,7 @@
 		"eslint-webpack-plugin": "^4.0.1",
 		"fork-ts-checker-webpack-plugin": "^8.0.0",
 		"style-loader": "^3.3.3",
+		"stylis": "^4.3.0",
 		"ts-loader": "^9.4.4",
 		"ts-node": "^10.9.1",
 		"typescript": "^4.9.5",
@@ -389,6 +389,6 @@
 		"react-dom": "^18.2.0",
 		"react-tooltip": "^5.18.1",
 		"serialport": "^11.0.0",
-		"styled-components": "^5.3.10"
+		"styled-components": "^6.0.4"
 	}
 }
