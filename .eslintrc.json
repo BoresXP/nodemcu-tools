@@ -117,7 +117,6 @@
 		"@typescript-eslint/func-call-spacing": ["error", "never"], // Require or disallow spacing between function identifiers and their invocations
 		"@typescript-eslint/no-useless-constructor": "error", // Disallow unnecessary constructors
 		"@typescript-eslint/prefer-for-of": "warn", // Prefer a ‘for-of’ loop over a standard ‘for’ loop if the index is only used to access the array being iterated
-		"@typescript-eslint/no-parameter-properties": "error", // Disallow the use of parameter properties in class constructors
 		"@typescript-eslint/no-unnecessary-type-arguments": "warn", // Warns if an explicitly specified type argument is the default for that type parameter
 		"@typescript-eslint/prefer-function-type": "warn", // Use function types instead of interfaces with call signatures
 		"@typescript-eslint/prefer-readonly": "warn", // Requires that private members are marked as readonly if they're never modified outside of the constructor
