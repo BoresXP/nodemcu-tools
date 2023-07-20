@@ -17,7 +17,8 @@
 		"url": "https://bitbucket.org/BoresExpress/nodemcu-tools/issues"
 	},
 	"engines": {
-		"vscode": "^1.74.0"
+		"vscode": "^1.74.0",
+		"node": ">=14.0.0"
 	},
 	"categories": [
 		"Programming Languages",
