@@ -3,13 +3,13 @@ import * as Events from './state/events'
 import App from './App/App'
 import IMessage from '../messages/IMessage'
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { isDeviceInfo } from '../messages/DeviceInfo'
 import { isDeviceState } from '../messages/DeviceState'
 import { isSetConfiguration } from '../messages/SetConfiguration'
 import { isTerminalLine } from '../messages/TerminalLine'
 
-ReactDOM.render(<App />, document.getElementById('root'))
+createRoot(document.getElementById('root')!).render(<App />)
 
 window.addEventListener('message', evt => {
 	const message = evt.data as IMessage

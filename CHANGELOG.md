@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Support com0com virtual port
+- Update node to v.18
+- Update dependencies
 
 ## [3.5.12] - 2023-05-25
 ### Changed
