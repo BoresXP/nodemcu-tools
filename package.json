@@ -382,14 +382,14 @@
 		"webpack-cli": "^5.1.4"
 	},
 	"dependencies": {
-		"@serialport/bindings-cpp": "^11.0.1",
+		"@serialport/bindings-cpp": "^12.0.1",
 		"effector": "^22.8.6",
 		"effector-react": "^22.5.3",
 		"luamin": "github:FATH-Mechatronics/luamin#d735925",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-tooltip": "^5.18.1",
-		"serialport": "^11.0.0",
+		"serialport": "^12.0.0",
 		"styled-components": "^6.0.4"
 	}
 }
