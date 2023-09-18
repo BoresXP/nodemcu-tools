@@ -1,4 +1,5 @@
 import 'react-tooltip/dist/react-tooltip.css'
+
 import { Page } from './App.styles'
 import React from 'react'
 import SnippetsContainer from '../snippets/SnippetsContainer/SnippetsContainer'
@@ -13,16 +14,19 @@ const App: React.FC = () => (
 		<StatusBar />
 		<Tooltip
 			id="main-tooltip"
+			disableStyleInjection={true}
 			delayShow={500}
 			className='nodemcu-tools-tooltip'
 		/>
 		<Tooltip
 			id='snippet-tooltip'
+			disableStyleInjection={true}
 			delayShow={2000}
 			className='nodemcu-tools-tooltip'
 		/>
 		<Tooltip
 			id="modules-tooltip"
+			disableStyleInjection={true}
 			delayShow={500}
 			delayHide={500}
 			clickable={true}
