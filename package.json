@@ -384,12 +384,12 @@
 	"dependencies": {
 		"@serialport/bindings-cpp": "^12.0.1",
 		"effector": "^22.8.6",
-		"effector-react": "^22.5.3",
+		"effector-react": "^22.5.4",
 		"luamin": "github:FATH-Mechatronics/luamin#d735925",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"react-tooltip": "^5.18.1",
+		"react-tooltip": "^5.21.4",
 		"serialport": "^12.0.0",
-		"styled-components": "^6.0.4"
+		"styled-components": "^6.0.8"
 	}
 }
