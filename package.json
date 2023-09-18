@@ -354,7 +354,7 @@
 		"lint": "eslint src"
 	},
 	"devDependencies": {
-		"@types/bindings": "^1.5.1",
+		"@types/bindings": "^1.5.2",
 		"@types/node": "^18.17.1",
 		"@types/react": "^18.2.15",
 		"@types/react-dom": "^18.2.7",
