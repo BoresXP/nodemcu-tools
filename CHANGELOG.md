@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Drop node v14
+- Update dependencies
+
 ### Added
 - Support com0com virtual port
-- Update node to v.18
-- Update dependencies
 
 ## [3.5.12] - 2023-05-25
 ### Changed
