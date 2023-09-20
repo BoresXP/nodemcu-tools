@@ -8,5 +8,5 @@ webpack.config.ts
 out/*.map
 **/*.ts
 node_modules
-bitbucket-pipelines.yml
+.github/**
 package-lock.json
