@@ -1,0 +1,52 @@
+name: CI
+on:
+  # workflow_dispatch
+  push:
+    branches:
+      - master
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build_vsix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm ci
+
+      - name: Setup Environment
+        run: node -e "console.log('PKG_VERSION=' + require('./package.json').version + '\nPKG_NAME=' + require('./package.json').name + '-' + require('./package.json').version)" >> $GITHUB_ENV
+
+      - name: Verify versions
+        run: node -e "if ('refs/tags/v' + '${{ env.PKG_VERSION }}' !== '${{ github.ref }}') { console.log('::error' + 'Version Mismatch. refs/tags/v' + '${{ env.PKG_VERSION }}', '${{ github.ref }}'); throw Error('Version Mismatch')} "
+
+      - name: Pack vsix
+        shell: bash
+        run: |
+          using: 'node18'
+          npm install -g @vscode/vsce
+          vsce package -o ${{ env.PKG_NAME }}.vsix
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          generate_release_notes: true
+          files: ${{ env.PKG_NAME }}.vsix
+
+      # - name: Publish to VSCode Market
+      #   if: startsWith(github.ref, 'refs/tags/')
+      #   run: vsce publish -i ${{ env.PKG_NAME }}.vsix -p ${{ secrets.VSCE_TOKEN }}
+
+      # - name: Publish to Open VSX Registry
+      #   if: startsWith(github.ref, 'refs/tags/')
+      #   run: |
+      #     npm install -g ovsx
+      #     ovsx publish -i ${{ env.PKG_NAME }}.vsix -p ${{ secrets.OVSX_TOKEN }}
