@@ -17,7 +17,7 @@ _(see detailed description below)_
 
 ## Window layout
 
-![](https://bitbucket.org/BoresExpress/nodemcu-tools/raw/9737356c0f77636223d97f1b7c9e3c86010b801d/resources/docs/main-screen.png)
+![](https://github.com/BoresXP/nodemcu-tools/blob/master/resources/docs/main-screen.png)
 
 ### 1. Terminal
 
@@ -44,7 +44,7 @@ Here you will find all connected NodeMCU devices (11). With right click [connect
 
 ## Keybindings & Commands
 
-_(ALT commands are available by pressing ALT key when opening menu)_
+_(ALT commands are available by pressing ALT key when opening menu); on Linux you should use SHIFT key instead_ 
 
 ### Explorer context menu:
 
@@ -68,20 +68,29 @@ _(ALT commands are available by pressing ALT key when opening menu)_
 * [ALT] **Download as...:** download file to host machine (see above) but lets you change name under which file will be saved.
 * [On .lua and .lc files only] **Run:** run file on device. It just executes `dofile` command which you will see in terminal (1).
 
+### Active editor window
+
+[On .lua files only] 
+* **Send line** Send current line to device
+* **Send block** Send selected block to device
+
 ## Extension Settings
 
 * **Terminal:**
   * **Scrollback Size:** how many lines of scrollback will terminal (1) have. Min - 10, max - 1000, default - 300.
   * **Command History Size:** how many commands will be held in history. You can navigate command history by pressing up and down arrow keys in command input box (2). Min - 0, max - 100, default - 30.
 * **Snippets:** snippets are buttons at the bottom of main window (3). These are just commands to run on device. You can configure it yourself with this setting. Setting itself is an object with each property representing one snippet: name is shown on a button, value is command text. You can set different snippets for each workspace. Workspace snippets _overrides_ ones set in user settings and defaults. With this behavior you can remove some default snippets. 
+  * **overwriteSnippets** Controls whether snippets in workspace should overwrite ones in user settings and defaults.
+* **minify.enabled**  Controls whether the Lua code should be minified before upload with 'sendLine' and 'sendBlock' commands.
+* **deviceFilterActive** Controls whether device filter is active - only known NodeMCU devices (USB vendor-id) will be listed.
 
 ## What's New / Change Log
 
-See [Changelog](https://bitbucket.org/BoresExpress/nodemcu-tools/src/master/CHANGELOG.md)
+See [Changelog](https://github.com/BoresXP/nodemcu-tools/blob/master/CHANGELOG.md)
 
 ## Known issues
 
-Please report issues here: [bugtracker](https://bitbucket.org/BoresExpress/nodemcu-tools/issues).
+Please report issues here: [bugtracker](https://github.com/BoresXP/nodemcu-tools/issues).
 
 ## Acknowledgments
 
@@ -91,4 +100,4 @@ Please report issues here: [bugtracker](https://bitbucket.org/BoresExpress/nodem
 
 ## License
 
-This extension is licensed under the [MIT License](https://bitbucket.org/BoresExpress/nodemcu-tools/raw/cccc452c3dad7539e553ad45bafda68eaff7b9d7/LICENSE.md).
+This extension is licensed under the [MIT License](https://github.com/BoresXP/nodemcu-tools/blob/master/LICENSE.md).
