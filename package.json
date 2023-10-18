@@ -8,6 +8,12 @@
 		"name": "Boris Gulay",
 		"email": "boris@gulay.name"
 	},
+	"contributors": [
+		{
+			"name": "serg3295",
+			"url": "https://github.com/serg3295"
+		}
+	],
 	"license": "MIT",
 	"repository": {
 		"type": "git",
