@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking Changes
 - Drop node v14
 - VS Code version should be >= 1.74.0
-- Built-in auto-completion of NodeMCU functions was removed . It is suggested to use sumneko's [LuaLS](https://github.com/Lua/lua-language-server ) with [addons](https://github.com/LuaLS/lua-language-server/wiki/Addons ) *nodemcu-esp32* and *nodemcu-esp8266* instead.
+- Built-in auto-completion of NodeMCU functions was removed . It is suggested to use sumneko's [LuaLS](https://github.com/LuaLS/lua-language-server ) with [addons](https://github.com/LuaLS/lua-language-server/wiki/Addons ) *nodemcu-esp32* and *nodemcu-esp8266* instead.
 
 ### Changed
 - Sequences of white space are preserved when rendering in the terminal
