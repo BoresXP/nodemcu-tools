@@ -1,4 +1,4 @@
-import { TerminalLineColor } from '../../messages/TerminalLine'
+export type TerminalLineColor = 'default' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan'
 
 export interface ITerminalLine {
 	text: string

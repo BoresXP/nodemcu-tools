@@ -1,4 +1,4 @@
-import { TerminalLineColor } from '../../../messages/TerminalLine'
+import { TerminalLineColor } from '../../../content/state/state'
 import styled from 'styled-components'
 
 export const TerminalStyled = styled.div`

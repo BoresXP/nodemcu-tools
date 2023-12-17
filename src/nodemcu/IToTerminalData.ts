@@ -1,4 +1,6 @@
+import { TerminalLineColor } from '../terminal/content/state/state'
+
 export default interface IToTerminalData {
-	color: 'default' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan'
+	color: TerminalLineColor
 	data: string
 }
