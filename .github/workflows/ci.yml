@@ -33,7 +33,6 @@ jobs:
       - name: Pack vsix
         shell: bash
         run: |
-          using: 'node18'
           npm install -g @vscode/vsce
           vsce package -o ${{ env.PKG_NAME }}.vsix
 
