@@ -1,7 +1,7 @@
 import { IConfiguration, INodemcuTaskDefinition } from './INodemcuTask'
 import { OutputChannel, Uri, commands, window, workspace } from 'vscode'
 import { getOutputChannel } from './getOutputChannel'
-import path = require('path')
+import path from 'path'
 
 let outChannel: OutputChannel
 
@@ -38,18 +38,18 @@ export async function getConfig(
 		}
 		config.compilerExecutable = userConfig.compilerExecutable
 
-		if ('outDir' in userConfig) {
-			config.outDir = userConfig.outDir as string
+		if ('outDir' in userConfig && userConfig.outDir) {
+			config.outDir = userConfig.outDir
 		}
 		if (
-			!(await isExists(path.join(rootFolder, config.outDir))) &&
-			!(await createDirectory(path.join(rootFolder, config.outDir)))
+			!(await isExists(path.join(rootFolder, config.outDir)))
+			&& !(await createDirectory(path.join(rootFolder, config.outDir)))
 		) {
 			return void 0
 		}
 
-		if ('include' in userConfig) {
-			config.include = userConfig.include as string[]
+		if ('include' in userConfig && userConfig.include) {
+			config.include = userConfig.include
 		}
 		for (const pattern of config.include) {
 			const pathToCheck = path.dirname(path.resolve(rootFolder, pattern))
@@ -59,8 +59,8 @@ export async function getConfig(
 			}
 		}
 
-		if ('outFile' in userConfig) {
-			config.outFile = userConfig.outFile as string
+		if ('outFile' in userConfig && userConfig.outFile) {
+			config.outFile = userConfig.outFile
 		}
 	} catch (error) {
 		await displayError(new Error('Error in config file'))
