@@ -360,7 +360,7 @@
 		"lint": "eslint src"
 	},
 	"devDependencies": {
-		"@types/bindings": "^1.5.2",
+		"@types/bindings": "^1.5.5",
 		"@types/node": "^18.17.1",
 		"@types/react": "^18.2.25",
 		"@types/react-dom": "^18.2.11",
