@@ -10,7 +10,9 @@ const commonConfig: webpack.Configuration = {
 	output: {
 		path: path.resolve('out'),
 		filename: '[name].js',
-		libraryTarget: 'commonjs2',
+		library: {
+			type: 'commonjs2',
+		},
 	},
 	resolve: {
 		extensions: ['.wasm', '.mjs', '.js', '.json', '.ts'],
