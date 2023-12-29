@@ -62,7 +62,7 @@ export default abstract class NodeMcuSerial {
 
 		return deviceFilterEnabled
 			? ports.filter(p => this._vendorIDs.includes(p.vendorId?.toUpperCase() ?? ''))
-			: ports.filter(p => p.vendorId || p.manufacturer)
+			: ports.filter(p => p.vendorId ?? p.manufacturer)
 	}
 
 	public connect(): Promise<void> {

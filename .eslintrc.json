@@ -17,9 +17,11 @@
 		"plugin:react/recommended",
 		"plugin:promise/recommended",
 		"plugin:sonarjs/recommended",
-		"plugin:@typescript-eslint/eslint-recommended",
-		"plugin:@typescript-eslint/recommended",
-		"plugin:@typescript-eslint/recommended-requiring-type-checking"
+		"plugin:@typescript-eslint/recommended-type-checked",
+		"plugin:@typescript-eslint/stylistic-type-checked"
+		// "plugin:@typescript-eslint/recommended",
+		// "plugin:@typescript-eslint/eslint-recommended",
+		// "plugin:@typescript-eslint/recommended-type-checked"
 	],
 	"settings": {
 		"react": {
@@ -101,7 +103,7 @@
 		"sort-imports": "error", // enforce sorted import declarations within modules
 		"template-curly-spacing": "error", // require or disallow spacing around embedded expressions of template strings
 
-		"promise/prefer-await-to-then": "error", // refer await to then() for reading Promise values,
+		"promise/prefer-await-to-then": "error", // prefer await to then() for reading Promise values,
 		// TODO: Waiting this rule to be fixed
 		// "promise/prefer-await-to-callbacks": "error", // Prefer async/await to the callback pattern
 		// https://github.com/xjamundx/eslint-plugin-promise/issues/175
@@ -145,6 +147,10 @@
 				"selector": "parameter",
 				"format": ["camelCase"],
 				"leadingUnderscore": "allow"
+			},
+			{
+				"selector": "import",
+				"format": ["PascalCase", "camelCase"]
 			}
 		], // Enforces naming conventions for everything across a codebase
 		"@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true }],

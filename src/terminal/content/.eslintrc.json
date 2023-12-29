@@ -41,6 +41,10 @@
 						"modifiers": ["const"],
 						"types": ["function"],
 						"format": ["PascalCase", "camelCase"]
+					},
+					{
+						"selector": "import",
+						"format": ["PascalCase", "camelCase"]
 					}
 				] // Enforces naming conventions for everything across a codebase
 			}

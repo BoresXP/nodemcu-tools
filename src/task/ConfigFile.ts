@@ -1,5 +1,6 @@
 import { IConfiguration, INodemcuTaskDefinition } from './INodemcuTask'
 import { OutputChannel, Uri, commands, window, workspace } from 'vscode'
+
 import { getOutputChannel } from './getOutputChannel'
 import path from 'path'
 
@@ -30,7 +31,7 @@ export async function getConfig(
 		const configData = await workspace.fs.readFile(Uri.file(configFile))
 		const readStr = Buffer.from(configData).toString('utf8')
 
-		userConfig = <INodemcuTaskDefinition>JSON.parse(readStr)
+		userConfig = JSON.parse(readStr) as INodemcuTaskDefinition
 
 		if (!('compilerExecutable' in userConfig)) {
 			await displayError(new Error('No path to the luac.cross'))

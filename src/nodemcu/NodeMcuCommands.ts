@@ -292,7 +292,7 @@ export default class NodeMcuCommands {
 
 		this._device.setBusy(false)
 
-		const infoParams: { [name: string]: string } = {}
+		const infoParams: Record<string, string> = {}
 		deviceInfo
 			.split(';')
 			.filter(i => i.includes(':'))
@@ -303,7 +303,8 @@ export default class NodeMcuCommands {
 
 		if (this._device.espArch === 'esp32') {
 			const systemTables = ['string', 'table', 'coroutine', 'debug', 'math', 'utf8', 'ROM']
-			infoParams['modules'] = infoParams['modules']
+			// eslint-disable-next-line @typescript-eslint/dot-notation
+			infoParams.modules = infoParams['modules']
 				.split(',')
 				.reduce((actualModules: string[], item: string) => {
 					if (!systemTables.includes(item)) {
@@ -318,9 +319,11 @@ export default class NodeMcuCommands {
 
 		return {
 			freeHeap: parseInt(freeHeap, 10),
+			// eslint-disable-next-line @typescript-eslint/dot-notation
 			numberType: infoParams['number_type'] || 'unknown',
+			// eslint-disable-next-line @typescript-eslint/dot-notation
 			ssl: infoParams['ssl'] === 'true',
-			modules: infoParams['modules'],
+			modules: infoParams.modules,
 			fsTotal: fsInfoArray[2],
 			fsUsed: fsInfoArray[1],
 			chipArch: this._device.espArch,
