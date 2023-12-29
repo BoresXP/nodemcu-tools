@@ -361,9 +361,9 @@
 	},
 	"devDependencies": {
 		"@types/bindings": "^1.5.5",
-		"@types/node": "^18.17.1",
-		"@types/react": "^18.2.25",
-		"@types/react-dom": "^18.2.11",
+		"@types/node": "^18.19.3",
+		"@types/react": "^18.2.46",
+		"@types/react-dom": "^18.2.18",
 		"@types/serialport": "^8.0.5",
 		"@types/vscode": "^1.74.0",
 		"@types/webpack": "^5.28.5",
