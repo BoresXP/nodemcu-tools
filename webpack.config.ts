@@ -1,6 +1,7 @@
 import CopyPlugin from 'copy-webpack-plugin'
 import ESLintWebpackPlugin from 'eslint-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
+import JsonMinimizerPlugin from 'json-minimizer-webpack-plugin'
 import path from 'path'
 import webpack from 'webpack'
 
@@ -44,6 +45,9 @@ const commonConfig: webpack.Configuration = {
 			patterns: [{ from: 'src/task/nodemcutools-schema.json', to: './' }],
 		}),
 	],
+	optimization: {
+		minimizer: [new JsonMinimizerPlugin(), '...'],
+	},
 }
 
 const config: webpack.Configuration[] = [

@@ -379,6 +379,7 @@
 		"eslint-plugin-sonarjs": "^0.23.0",
 		"eslint-webpack-plugin": "^4.0.1",
 		"fork-ts-checker-webpack-plugin": "^9.0.2",
+		"json-minimizer-webpack-plugin": "^4.0.0",
 		"style-loader": "^3.3.3",
 		"stylis": "^4.3.0",
 		"ts-loader": "^9.5.1",
