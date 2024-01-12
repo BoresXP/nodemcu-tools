@@ -42,7 +42,21 @@ const commonConfig: webpack.Configuration = {
 			files: './src/**/*.{ts,tsx}',
 		}),
 		new CopyPlugin({
-			patterns: [{ from: 'src/task/nodemcutools-schema.json', to: './' }],
+			patterns: [
+				{ from: path.resolve(__dirname, 'src/task/nodemcutools-schema.json'), to: path.resolve(__dirname, './out') },
+				{
+					from: path.resolve(__dirname, './node_modules/@serialport/bindings-cpp/prebuilds/darwin-x64+arm64'),
+					to: path.resolve(__dirname, './prebuilds/darwin-x64+arm64'),
+				},
+				{
+					from: path.resolve(__dirname, './node_modules/@serialport/bindings-cpp/prebuilds/linux-x64'),
+					to: path.resolve(__dirname, './prebuilds/linux-x64'),
+				},
+				{
+					from: path.resolve(__dirname, './node_modules/@serialport/bindings-cpp/prebuilds/win32-x64'),
+					to: path.resolve(__dirname, './prebuilds/win32-x64'),
+				},
+			],
 		}),
 	],
 	optimization: {
@@ -54,21 +68,10 @@ const config: webpack.Configuration[] = [
 	{
 		...commonConfig,
 		entry: {
-			bindingsProxy: './src/bindingsProxy.ts',
-		},
-		externals: {
-			vscode: 'commonjs vscode',
-		},
-	},
-	{
-		...commonConfig,
-		entry: {
 			extension: './src/extension.ts',
 		},
 		externals: {
 			vscode: 'commonjs vscode',
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			'node-gyp-build': './bindingsProxy',
 		},
 	},
 	{
