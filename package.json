@@ -85,9 +85,21 @@
 			},
 			{
 				"command": "nodemcu-tools.uploadFile",
-				"title": "Upload to device",
+				"title": "Upload File(s) to device",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder"
+			},
+			{
+				"command": "nodemcu-tools.uploadFolderRename",
+				"title": "Upload Folder to device",
+				"category": "NodeMCU",
+				"enablement": "explorerViewletFocus && explorerResourceIsFolder"
+			},
+			{
+				"command": "nodemcu-tools.uploadFolder",
+				"title": "Upload files under folder to device",
+				"category": "NodeMCU",
+				"enablement": "explorerViewletFocus && explorerResourceIsFolder"
 			},
 			{
 				"command": "nodemcu-tools.uploadFileAs",
@@ -191,6 +203,12 @@
 				{
 					"command": "nodemcu-tools.uploadFile",
 					"alt": "nodemcu-tools.uploadFileAs",
+					"group": "nodemcu-tools@10",
+					"when": "nodemcu-tools:isConnected"
+				},
+				{
+					"command": "nodemcu-tools.uploadFolderRename",
+					"alt": "nodemcu-tools.uploadFolder",
 					"group": "nodemcu-tools@10",
 					"when": "nodemcu-tools:isConnected"
 				},

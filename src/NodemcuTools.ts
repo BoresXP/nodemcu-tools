@@ -1,5 +1,5 @@
-import { INodeMcu, NodeMcuRepository } from './nodemcu'
 import {
+	FileType,
 	ProgressLocation,
 	ShellExecution,
 	Task,
@@ -11,11 +11,13 @@ import {
 	window,
 	workspace,
 } from 'vscode'
+import { INodeMcu, NodeMcuRepository } from './nodemcu'
 
 import { INodemcuTaskDefinition } from './task/INodemcuTask'
 import NodemcuTaskProvider from './task/NodemcuTaskProvider'
 import { initialSettings } from './terminal/content/state/state'
 import luamin from 'luamin'
+import { posix } from 'path'
 
 export default class NodemcuTools {
 	private static async selectConnectedDevice(): Promise<string | undefined> {
@@ -27,7 +29,7 @@ export default class NodemcuTools {
 				return void 0
 			}
 		} else {
-			[path] = allConnected
+			;[path] = allConnected
 		}
 
 		return path
@@ -80,6 +82,28 @@ export default class NodemcuTools {
 		await commands.executeCommand('setContext', 'nodemcu-tools:isConnected', NodeMcuRepository.allConnected.length > 0)
 	}
 
+	public async uploadFolder(folder: Uri, withPath: boolean): Promise<string | undefined> {
+		const devicePath = await NodemcuTools.selectConnectedDevice()
+		if (!devicePath) {
+			return void 0
+		}
+
+		for (const [name, type] of await workspace.fs.readDirectory(folder)) {
+			if (type === FileType.File) {
+				const filePath = posix.join(folder.path, name)
+				const deviceFileName = withPath ? filePath.split('/').slice(-2).join('/') : filePath.split('/').slice(-1)[0]
+				const file = folder.with({ path: posix.join(folder.path, name) })
+
+				const fileName = await NodemcuTools.uploadFileInternal(devicePath, file, deviceFileName)
+				if (!fileName) {
+					throw new Error(`Error uploading ${filePath}`)
+				}
+			}
+		}
+
+		return 'ok_folder'
+	}
+
 	public async uploadFile(file: Uri, deviceFileName?: string): Promise<string | undefined> {
 		const devicePath = await NodemcuTools.selectConnectedDevice()
 		if (!devicePath) {
@@ -125,7 +149,11 @@ export default class NodemcuTools {
 		return deviceFileName
 	}
 
-	public async compileFileAndUpload(file: Uri, taskProvider: NodemcuTaskProvider, upload: boolean): Promise<string | undefined> {
+	public async compileFileAndUpload(
+		file: Uri,
+		taskProvider: NodemcuTaskProvider,
+		upload: boolean,
+	): Promise<string | undefined> {
 		const devicePath = await NodemcuTools.selectConnectedDevice()
 		const config = taskProvider.actualConfig
 		if (!devicePath || !config) {
