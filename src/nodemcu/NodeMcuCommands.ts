@@ -153,44 +153,55 @@ export default class NodeMcuCommands {
 	public async upload(data: Buffer, remoteName: string, progressCb?: (percent: number) => void): Promise<void> {
 		await this.checkReady()
 
-		progressCb?.(0)
-
 		if (data.length === 0) {
 			await this._device.executeSingleLineCommand(this._luaCommands.createEmptyFile(remoteName))
-		} else {
-			let tailWriteMode = 'w'
-			const tailSize = data.length % NodeMcuSerial.maxLineLength
+			this._device.setBusy(false)
+			return
+		}
 
-			if (data.length > NodeMcuSerial.maxLineLength) {
-				await this.waitDone('QKiw\r\n', async () => {
-					await this._device.executeSingleLineCommand(
-						this._luaCommands.writeFileHelper(remoteName, data.length - tailSize, NodeMcuSerial.maxLineLength, 'w'),
-						false,
-					)
+		progressCb?.(0)
 
-					let offset = 0
-					while (data.length - offset > NodeMcuSerial.maxLineLength) {
-						const block = data.slice(offset, offset + NodeMcuSerial.maxLineLength)
-						await this.waitDone('kxyJ\r\n', async () => {
-							await this._device.writeRaw(block)
-						})
+		let tailWriteMode = 'w'
+		const tailSize =
+			data.length === NodeMcuSerial.maxLineLength
+				? NodeMcuSerial.maxLineLength
+				: data.length % NodeMcuSerial.maxLineLength
 
-						offset += NodeMcuSerial.maxLineLength
-						progressCb?.((offset * 100) / data.length)
-					}
-				})
-
-				tailWriteMode = 'a'
-			}
-
+		if (data.length > NodeMcuSerial.maxLineLength) {
 			await this.waitDone('QKiw\r\n', async () => {
 				await this._device.executeSingleLineCommand(
-					this._luaCommands.writeFileHelper(remoteName, tailSize, tailSize, tailWriteMode),
+					this._luaCommands.writeFileHelper(remoteName, data.length - tailSize, NodeMcuSerial.maxLineLength, 'w'),
 					false,
 				)
-				await this._device.writeRaw(data.length > 254 ? data.slice(data.length - tailSize) : data)
+
+				let offset = 0
+				while (data.length - offset >= NodeMcuSerial.maxLineLength) {
+					const block = data.subarray(offset, offset + NodeMcuSerial.maxLineLength)
+					await this.waitDone('kxyJ\r\n', async () => {
+						await this._device.writeRaw(block)
+					})
+
+					offset += NodeMcuSerial.maxLineLength
+					progressCb?.((offset * 100) / data.length)
+				}
 			})
+
+			if (tailSize === 0) {
+				progressCb?.(100)
+				this._device.setBusy(false)
+				return
+			}
+
+			tailWriteMode = 'a'
 		}
+
+		await this.waitDone('QKiw\r\n', async () => {
+			await this._device.executeSingleLineCommand(
+				this._luaCommands.writeFileHelper(remoteName, tailSize, tailSize, tailWriteMode),
+				false,
+			)
+			await this._device.writeRaw(data.length > 254 ? data.subarray(data.length - tailSize) : data)
+		})
 
 		progressCb?.(100)
 		this._device.setBusy(false)
@@ -271,7 +282,7 @@ export default class NodeMcuCommands {
 							}
 						})
 
-						retVal = Buffer.concat([retValnoCR, retVal.slice(startLFindex, retVal.length)])
+						retVal = Buffer.concat([retValnoCR, retVal.subarray(startLFindex, retVal.length)])
 					}
 
 					resolve(retVal)
@@ -350,7 +361,7 @@ export default class NodeMcuCommands {
 
 				let offset = 0
 				while (data.length - offset > NodeMcuSerial.maxLineLength) {
-					const block = data.slice(offset, offset + NodeMcuSerial.maxLineLength)
+					const block = data.subarray(offset, offset + NodeMcuSerial.maxLineLength)
 					await this.waitDone('kxyJ\r\n', async () => {
 						await this._device.writeRaw(block)
 					})
@@ -367,7 +378,7 @@ export default class NodeMcuCommands {
 				this._luaCommands.sendChunkHelper(tailSize, tailSize, firstCall),
 				false,
 			)
-			await this._device.writeRaw(data.length > 254 ? data.slice(data.length - tailSize) : data)
+			await this._device.writeRaw(data.length > 254 ? data.subarray(data.length - tailSize) : data)
 		})
 
 		await this._device.executeSingleLineCommand(this._luaCommands.runChunk())
