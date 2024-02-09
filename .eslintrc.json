@@ -19,9 +19,6 @@
 		"plugin:sonarjs/recommended",
 		"plugin:@typescript-eslint/recommended-type-checked",
 		"plugin:@typescript-eslint/stylistic-type-checked"
-		// "plugin:@typescript-eslint/recommended",
-		// "plugin:@typescript-eslint/eslint-recommended",
-		// "plugin:@typescript-eslint/recommended-type-checked"
 	],
 	"settings": {
 		"react": {
@@ -29,6 +26,7 @@
 		}
 	},
 	"rules": {
+		"no-extra-semi": "off", // (prettier does this) disallows unnecessary semicolons.
 		"no-shadow": ["error", { "builtinGlobals": true }], // disallow variable declarations from shadowing variables declared in the outer scope
 		"no-duplicate-imports": ["error", { "includeExports": true }], // disallow duplicate module imports
 		"no-template-curly-in-string": "error", // disallow template literal placeholder syntax in regular strings
@@ -110,6 +108,7 @@
 
 		"optimize-regex/optimize-regex": "warn", // Optimize regex literals
 
+		// "@typescript-eslint/no-extra-semi": "warn", // Require or disallow semicolons instead of ASI
 		"@typescript-eslint/semi": ["error", "never"], // Require or disallow semicolons instead of ASI
 		"@typescript-eslint/member-delimiter-style": ["error", { "multiline": { "delimiter": "none" } }], // Require a specific member delimiter style for interfaces and type literals
 		"@typescript-eslint/member-ordering": "warn", // Require a consistent member declaration order
