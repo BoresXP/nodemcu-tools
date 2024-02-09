@@ -121,11 +121,6 @@ export default class NodemcuTools {
 
 		for (const file of files) {
 			const [pathEnd] = file.path.split('/').slice(-1)
-			const [fileExtension] = pathEnd.split('.').slice(-1)
-			if (!pathEnd.includes('.') || fileExtension !== 'lua') {
-				continue
-			}
-
 			const fileName = await NodemcuTools.uploadFileInternal(devicePath, file)
 			if (!fileName) {
 				throw new Error(`Error uploading ${pathEnd}`)
