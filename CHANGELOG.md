@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Command to upload all files under folder to device. “folder_name/” will be prepended to the file_names uploaded to the device
+- Command to upload all files under folder to device without adding path to the file names
+
+### Changed
+- Upload multiple selected files with any extension. Not only *.lua
+- Update dependencies
 
 ## [4.0.1] - 2024-01-08
 ### Changed

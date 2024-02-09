@@ -48,8 +48,10 @@ _(ALT commands are available by pressing ALT key when opening menu); on Linux yo
 
 ### Explorer context menu:
 
-* **Upload to device** upload selected file on device. If you have more than one device connected you will be presented with QuickPick UI to select device to upload file to.
+* **Upload File(s) to device** upload selected file (or multiple files) on device. If you have more than one device connected you will be presented with QuickPick UI to select device to upload file to.
 * [ALT] **Upload to device...** upload selected file on device (see above) but lets you change name under which file will be saved.
+* **Upload Folder to device** upload all files under folder on device. “Folder_name/” will be prepended to the file_names uploaded to the device.
+* [ALT] **Upload files under folder to device** upload all files under folder on device without adding path to the file names.
 * **Upload to device and set as LFS** upload selected file on device (see above) and reloads LFS with it.
 * [ALT] **Upload to device and set as LFS...** upload selected file on device with LFS refresh (see above) but lets you change name under which file will be saved.
 * **Upload to device and compile:** upload file to device (see above), compile it and remove source.
