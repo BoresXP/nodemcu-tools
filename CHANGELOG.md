@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [4.1.0] - 2024-02-11
 ### Added
 - Command to upload all files under folder to device. “folder_name/” will be prepended to the file_names uploaded to the device
 - Command to upload all files under folder to device without adding path to the file names
