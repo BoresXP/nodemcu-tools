@@ -1,6 +1,6 @@
 Extension brings NodeMCU device interaction to Visual Studio Code.
 
-[![Build Status](https://travis-ci.com/BoresExpress/nodemcu-tools.svg?branch=master)](https://travis-ci.com/BoresExpress/nodemcu-tools)
+![build](https://img.shields.io/github/actions/workflow/status/BoresXP/nodemcu-tools/.github%2Fworkflows%2Fci.yml)
 
 ## Features
 
@@ -17,7 +17,7 @@ _(see detailed description below)_
 
 ## Window layout
 
-![](https://github.com/BoresXP/nodemcu-tools/blob/master/resources/docs/main-screen.png)
+![](resources/docs/main-screen.png)
 
 ### 1. Terminal
 
