@@ -15,6 +15,8 @@ _(see detailed description below)_
 * Code completion for NodeMCU modules
 * Works on all platforms (Windows, Linux, MacOS)
 
+[See our wiki for more info](https://github.com/BoresXP/nodemcu-tools/wiki).
+
 ## Window layout
 
 ![](resources/docs/main-screen.png)
