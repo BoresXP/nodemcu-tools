@@ -308,7 +308,7 @@
 					"default": {
 						"Restart": "node.restart()",
 						"Heap": "=node.heap()",
-						"Globals": "local p,r,c=print,string.rep,0;local function f(m,t)p(r('=',9)..m..r('=',9))for k,v in pairs(t)do p(k,v)if type(k)=='number'then c=c+1 end end;return c end;f(' _G ',_G)f(' package.loaded ',_G.package.loaded)p('Regs:',f(' Regs ',debug.getregistry()))"
+						"Globals": "local p,r,c,s=print,string.rep,0,' Regs: 'local function f(m,t)p(r('=',9)..m..r('=',9))for k,v in pairs(t)do p(k,v)c=type(k)=='number'and c+1 or c end;end;f(' _G ',_G)f(' package.loaded ',_G.package.loaded)f(s,debug.getregistry())p(s,c)collectgarbage()"
 					},
 					"description": "Command snippets"
 				},
