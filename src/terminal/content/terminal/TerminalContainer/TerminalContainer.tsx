@@ -3,11 +3,11 @@ import * as Events from '../../state/events'
 import {
 	BottomContainer,
 	CmdLineInput,
-	FormatContainer,
 	MiddleContainer,
 	TerminalContainerStyled,
 	TerminalControls,
 	TerminalInnerContainer,
+	TopContainer,
 } from './TerminalContainer.styles'
 import React, { useCallback } from 'react'
 import { getCurrentCommandText, getDeviceBusy, getTerminalAutoscrollEnabled, useRootStore } from '../../state/selectors'
@@ -71,15 +71,25 @@ const TerminalContainer: React.FC = () => {
 				<CmdLineInput onKeyUp={onKeyUp} onChange={onChange} value={cmdText} />
 			</TerminalInnerContainer>
 			<TerminalControls>
-				<SvgButton tooltip="Clear terminal" svgName="#svg-garbage" onClick={onClear} />
+				<SvgButton tooltip="Format ESP" svgName="#svg-folder-delete" disabled={isDeviceBusy} onClick={onFormat} />
+				<TopContainer>
+					<SvgButton
+						tooltip="Autoscroll"
+						svgName="#svg-download"
+						disabled={autoscrollEnabled}
+						onClick={onEnableAutoscroll}
+					/>
+				</TopContainer>
 				<MiddleContainer>
-					<SvgButton tooltip="Autoscroll" svgName="#svg-download" disabled={autoscrollEnabled} onClick={onEnableAutoscroll} />
+					<SvgButton tooltip="Clear terminal" svgName="#svg-garbage" onClick={onClear} />
 				</MiddleContainer>
-				<FormatContainer>
-					<SvgButton tooltip="Format ESP" svgName="#svg-folder-delete" disabled={isDeviceBusy} onClick={onFormat} />
-				</FormatContainer>
 				<BottomContainer>
-					<SvgButton tooltip="Send to device" svgName="#svg-play-button" disabled={isDeviceBusy || !cmdText} onClick={onRun} />
+					<SvgButton
+						tooltip="Send to device"
+						svgName="#svg-play-button"
+						disabled={isDeviceBusy || !cmdText}
+						onClick={onRun}
+					/>
 				</BottomContainer>
 			</TerminalControls>
 		</TerminalContainerStyled>

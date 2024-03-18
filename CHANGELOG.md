@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add collectgarbage() in "Globals" snippet
 
+### Changed
+- Re-arrange control buttons in Termimal container
+
 ## [4.1.1] - 2024-02-16
 ### Added
 - Add extension logo
