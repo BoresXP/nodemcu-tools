@@ -197,6 +197,16 @@ export function activate(context: ExtensionContext): void {
 		)
 
 		context.subscriptions.push(
+			commands.registerCommand('nodemcu-tools.uploadActiveFile', async (file: Uri) => {
+				const deviceFileName = await tools.uploadFile(file)
+
+				if (deviceFileName) {
+					treeProvider.refresh()
+				}
+			}),
+		)
+
+		context.subscriptions.push(
 			commands.registerCommand('nodemcu-tools.sendBlock', async () => {
 				const editor = window.activeTextEditor
 				if (editor) {

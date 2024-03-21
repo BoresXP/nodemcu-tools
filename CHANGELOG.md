@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add collectgarbage() in "Globals" snippet
 
+- New command 'nodemcu-tools.uploadActiveFile' to upload file in the currently active editor to device.
+The command is also accessible from editor context menu.
+
 ### Changed
 - Re-arrange control buttons in Termimal container
 

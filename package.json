@@ -85,6 +85,12 @@
 				}
 			},
 			{
+				"command": "nodemcu-tools.uploadActiveFile",
+				"title": "Upload active file to device",
+				"category": "NodeMCU",
+				"enablement": "editorTextFocus"
+			},
+			{
 				"command": "nodemcu-tools.uploadFile",
 				"title": "Upload File(s) to device",
 				"category": "NodeMCU",
@@ -198,6 +204,11 @@
 					"command": "nodemcu-tools.sendBlock",
 					"group": "nodemcu-tools@20",
 					"when": "editorTextFocus && editorHasSelection == true && nodemcu-tools:isConnected"
+				},
+				{
+					"command": "nodemcu-tools.uploadActiveFile",
+					"group": "nodemcu-tools@30",
+					"when": "editorTextFocus && nodemcu-tools:isConnected"
 				}
 			],
 			"explorer/context": [
