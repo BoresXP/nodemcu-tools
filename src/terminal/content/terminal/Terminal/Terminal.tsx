@@ -29,7 +29,7 @@ const Terminal: React.FC = () => {
 	return (
 		<TerminalStyled onScroll={onScroll}>
 			{useList(terminalLinesStore, line => (
-				<TerminalLine lineColor={line.lineColor}>{line.text}</TerminalLine>
+				<TerminalLine $lineColor={line.lineColor}>{line.text}</TerminalLine>
 			))}
 			<div ref={messageEndRef} />
 		</TerminalStyled>

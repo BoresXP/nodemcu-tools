@@ -11,10 +11,10 @@ export const TerminalStyled = styled.div`
 	font: var(--vscode-editor-font-weight) var(--vscode-editor-font-size) var(--vscode-editor-font-family);
 `
 
-export const TerminalLine = styled.div<{ lineColor: TerminalLineColor }>`
+export const TerminalLine = styled.div<{ $lineColor: TerminalLineColor }>`
 	margin: 2px 5px;
 	color: ${props => {
-		switch (props.lineColor) {
+		switch (props.$lineColor) {
 			case 'red': {
 				return '#cd0000'
 				break
