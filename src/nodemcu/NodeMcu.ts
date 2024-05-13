@@ -234,7 +234,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			this._unsubscribeOnData.dispose()
 			this._unsubscribeOnData = this.onData(handleCommand)
 
-			void this.write(command.endsWith('\n') ? command : command + NodeMcuSerial.lineEnd)
+			void this.write(command.endsWith('\n') ? command : command + '\n')
 		})
 
 		console.log('C: ' + command) // eslint-disable-line no-console

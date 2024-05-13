@@ -73,12 +73,12 @@ export default class NodeMcuCommands {
 		fileSetLfs: (name: string) => `node.LFS.reload("${name}")uart.write(0,"Done\\n")`,
 
 		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
-			`__f=io.open("${name}","${mode}")local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};__f:write(d)uart.write(0,"kxyJ\\n")if bw>=${fileSize} then uart.on("data")__f:close()__f=nil;uart.write(0,"QKiw\\n")end end,0)uart.write(0,"Ready\\n")`,
+			`__f=io.open("${name}","${mode}")local bw=0;uart.start(0)uart.on("data",${blockSize},function(d)bw=bw+${blockSize};__f:write(d)uart.write(0,"kxyJ\\n")if bw>=${fileSize} then uart.on("data")__f:close()__f=nil;uart.write(0,"QKiw\\n")uart.stop(0)end end,0)uart.write(0,"Ready\\n")`,
 
 		createEmptyFile: (name: string) => `io.open("${name}","w")io.close()uart.write(0,"Ready\\n")`,
 
 		readFileHelper: (name: string) =>
-			`local fh=io.input("${name}")uart.on("data",0,function(d)while true do local b=fh:read(${NodeMcuSerial.maxLineLength})if b==nil then uart.on("data")fh:close()break end;uart.write(0,b)tmr.wdclr()end end,0)uart.write(0,"Ready\\n")`,
+			`local fh=io.input("${name}")uart.start(0)uart.on("data",0,function(d)while true do local b=fh:read(${NodeMcuSerial.maxLineLength})if b==nil then uart.on("data")fh:close()break end;uart.write(0,b)tmr.wdclr()uart.stop(0)end end,0)uart.write(0,"Ready\\n")`,
 
 		getFileSize: (name: string) =>
 			`local fh=io.open("${name}","r")local s=fh:seek("end")fh:close()uart.write(0,s.."\\n")`,
@@ -91,7 +91,7 @@ export default class NodeMcuCommands {
 		getFsInfo: 'local remaining,used,total=file.fsinfo()uart.write(0,remaining..";"..used..";"..total.."\\n")',
 
 		sendChunkHelper: (chunkSize: number, blockSize: number, firstCall: boolean) =>
-			`if ${firstCall} then _r_B={}end;local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};_r_B[#_r_B+1]=d;uart.write(0,"kxyJ\\n")if bw>=${chunkSize} then uart.on("data")uart.write(0,"QKiw\\n")end end,0)uart.write(0,"Ready\\n")`,
+			`if ${firstCall} then _r_B={}end;local bw=0;uart.start(0)uart.on("data",${blockSize},function(d)bw=bw+${blockSize};_r_B[#_r_B+1]=d;uart.write(0,"kxyJ\\n")if bw>=${chunkSize} then uart.on("data")uart.write(0,"QKiw\\n")uart.stop(0)end end,0)uart.write(0,"Ready\\n")`,
 
 		runChunk: () =>
 			'uart.write(0,".\\n")local f,c=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then tmr.create():alarm(100,0,function()local x,e=pcall(f)if not x then uart.write(0,"\\nE: ",e.."\\n")end end)else uart.write(0,"\\nCE: "..c.."\\n")end;_r_B=nil',
