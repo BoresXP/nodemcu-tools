@@ -94,7 +94,7 @@ export default class NodeMcuCommands {
 			`if ${firstCall} then _r_B={}end;local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};_r_B[#_r_B+1]=d;uart.write(0,"kxyJ\\n")if bw>=${chunkSize} then uart.on("data")uart.write(0,"QKiw\\n")end end,0)uart.write(0,"Ready\\n")`,
 
 		runChunk: () =>
-			'uart.write(0,".\\n")local f,ce=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then local ok,e=pcall(f)if not ok then uart.write(0,"Execution error:\\n",e.."\\n")end else uart.write(0,"Compilation error:\\n",ce.."\\n")end;_r_B=nil',
+			'uart.write(0,".\\n")local f,c=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then tmr.create():alarm(100,0,function()local x,e=pcall(f)if not x then uart.write(0,"\\nE: ",e.."\\n")end end)else uart.write(0,"\\nCE: "..c.."\\n")end;_r_B=nil',
 
 		formatEsp: 'file.format()',
 
@@ -381,7 +381,7 @@ export default class NodeMcuCommands {
 			await this._device.writeRaw(data.length > 254 ? data.subarray(data.length - tailSize) : data)
 		})
 
-		await this._device.executeSingleLineCommand(this._luaCommands.runChunk())
+		await this._device.executeSingleLineCommand(this._luaCommands.runChunk(), false)
 		this._device.setBusy(false)
 	}
 
