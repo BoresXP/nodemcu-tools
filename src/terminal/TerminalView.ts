@@ -65,6 +65,7 @@ export default class TerminalView {
 				info.fsTotal,
 				info.fsUsed,
 				info.chipArch,
+				info.chipModel,
 				info.chipID,
 			),
 		)

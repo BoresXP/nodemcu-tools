@@ -22,6 +22,7 @@ export interface IDeviceInfo {
 	fsTotal?: number
 	fsUsed?: number
 	chipArch?: string
+	chipModel?: string
 	chipID?: string
 }
 

@@ -14,6 +14,7 @@ export interface IDeviceInfo {
 	fsTotal: number
 	fsUsed: number
 	chipArch: string
+	chipModel: string
 	chipID: string
 }
 
@@ -351,6 +352,7 @@ export default class NodeMcuCommands {
 			fsTotal: fsInfoArray[2],
 			fsUsed: fsInfoArray[1],
 			chipArch: this._device.espArch,
+			chipModel: this._device.espModel,
 			chipID: this._device.espID,
 		}
 	}
