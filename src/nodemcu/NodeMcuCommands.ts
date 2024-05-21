@@ -120,12 +120,25 @@ export default class NodeMcuCommands {
 		formatEsp: string
 		done: string
 	}
+	private readonly _mark
+
+	private readonly _markers = {
+		newEsp32: {
+			lastStep: 'QKiw\n',
+			nextStep: 'kxyJ\n',
+		},
+		legacy: {
+			lastStep: 'QKiw\r\n',
+			nextStep: 'kxyJ\r\n',
+		},
+	}
 
 	private readonly _device: NodeMcu
 
 	constructor(device: NodeMcu) {
 		this._device = device
 		this._luaCommands = device.espArch === 'esp32' ? this._luaCommands32 : this._luaCommands8266
+		this._mark = device.isNewEsp32 ? this._markers.newEsp32 : this._markers.legacy
 	}
 
 	public async files(): Promise<IDeviceFileInfo[]> {
@@ -168,7 +181,7 @@ export default class NodeMcuCommands {
 				: data.length % NodeMcuSerial.maxLineLength
 
 		if (data.length > NodeMcuSerial.maxLineLength) {
-			await this.waitDone('QKiw\r\n', async () => {
+			await this.waitDone(this._mark.lastStep, async () => {
 				await this._device.executeSingleLineCommand(
 					this._luaCommands.writeFileHelper(remoteName, data.length - tailSize, NodeMcuSerial.maxLineLength, 'w'),
 					false,
@@ -177,7 +190,7 @@ export default class NodeMcuCommands {
 				let offset = 0
 				while (data.length - offset >= NodeMcuSerial.maxLineLength) {
 					const block = data.subarray(offset, offset + NodeMcuSerial.maxLineLength)
-					await this.waitDone('kxyJ\r\n', async () => {
+					await this.waitDone(this._mark.nextStep, async () => {
 						await this._device.writeRaw(block)
 					})
 
@@ -195,7 +208,7 @@ export default class NodeMcuCommands {
 			tailWriteMode = 'a'
 		}
 
-		await this.waitDone('QKiw\r\n', async () => {
+		await this.waitDone(this._mark.lastStep, async () => {
 			await this._device.executeSingleLineCommand(
 				this._luaCommands.writeFileHelper(remoteName, tailSize, tailSize, tailWriteMode),
 				false,
@@ -256,7 +269,7 @@ export default class NodeMcuCommands {
 				retVal = retVal ? Buffer.concat([retVal, data]) : data
 				progressCb?.((retVal.length * 100) / fileSize)
 
-				if (this._device.espArch === 'esp32') {
+				if (this._device.espArch === 'esp32' && !this._device.isNewEsp32) {
 					receivedFileSize += data.filter(x => x === 10).length
 				}
 
@@ -267,7 +280,7 @@ export default class NodeMcuCommands {
 					progressCb?.(100)
 					this._device.setBusy(false)
 
-					if (this._device.espArch === 'esp32' && receivedFileSize !== fileSize) {
+					if (this._device.espArch === 'esp32' && !this._device.isNewEsp32 && receivedFileSize !== fileSize) {
 						let retValnoCR = new Uint8Array()
 						let startLFindex = 0
 
@@ -353,7 +366,7 @@ export default class NodeMcuCommands {
 		const tailSize = data.length % NodeMcuSerial.maxLineLength
 
 		if (data.length > NodeMcuSerial.maxLineLength) {
-			await this.waitDone('QKiw\r\n', async () => {
+			await this.waitDone(this._mark.lastStep, async () => {
 				await this._device.executeSingleLineCommand(
 					this._luaCommands.sendChunkHelper(data.length - tailSize, NodeMcuSerial.maxLineLength, true),
 					false,
@@ -362,7 +375,7 @@ export default class NodeMcuCommands {
 				let offset = 0
 				while (data.length - offset > NodeMcuSerial.maxLineLength) {
 					const block = data.subarray(offset, offset + NodeMcuSerial.maxLineLength)
-					await this.waitDone('kxyJ\r\n', async () => {
+					await this.waitDone(this._mark.nextStep, async () => {
 						await this._device.writeRaw(block)
 					})
 
@@ -373,7 +386,7 @@ export default class NodeMcuCommands {
 			firstCall = false
 		}
 
-		await this.waitDone('QKiw\r\n', async () => {
+		await this.waitDone(this._mark.lastStep, async () => {
 			await this._device.executeSingleLineCommand(
 				this._luaCommands.sendChunkHelper(tailSize, tailSize, firstCall),
 				false,

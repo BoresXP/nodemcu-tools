@@ -67,7 +67,7 @@ export default abstract class NodeMcuSerial {
 
 	public connect(): Promise<void> {
 		return new Promise((resolve, reject) => {
-			const parser = this._port.pipe(new ReadlineParser({ delimiter: NodeMcuSerial.lineEnd, includeDelimiter: true }))
+			const parser = this._port.pipe(new ReadlineParser({ delimiter: '\n', includeDelimiter: true }))
 			this._port.open(err => {
 				if (err) {
 					reject(err)

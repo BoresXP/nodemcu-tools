@@ -15,7 +15,8 @@ interface INodeMcuCommandState {
 
 export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	private static readonly _luaCommands = {
-		getChipID: 'uart.write(0,tostring(node.chipid()).."\\r\\n")',
+		getChipID: 'uart.write(0,tostring(node.chipid and node.chipid()).."\\r\\n")',
+		getModel: 'uart.write(0,tostring(node.chipmodel and node.chipmodel()).."\\r\\n")',
 	}
 	private static readonly _colorMap: [string, IToTerminalData['color']][] = [
 		['31', 'red'],
@@ -41,6 +42,8 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 	private _espArch = ''
 	private _espID = ''
+	private _espModel = ''
+	private _isNewEsp32 = false
 
 	constructor(path: string) {
 		super(path)
@@ -55,6 +58,14 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 	public get espID(): string {
 		return this._espID
+	}
+
+	public get espModel(): string {
+		return this._espModel
+	}
+
+	public get isNewEsp32(): boolean {
+		return this._isNewEsp32
 	}
 
 	public get isBusy(): boolean {
@@ -100,10 +111,29 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 	public async detectEspType(): Promise<void> {
 		await this.waitToBeReady()
-		this._espID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
+		const responseModel = await this.executeSingleLineCommand(NodeMcu._luaCommands.getModel)
+		const responseID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
 
-		// esp32 chipid (hex with '0x' prefix)?
-		this._espArch = this._espID.match(/^0x[\dA-Fa-f]+\r+\n$/) ? 'esp32' : 'esp8266'
+		// esp32xx - the chip model as a string, e.g. "esp32c3" or "esp32"
+		const espModel = responseModel.trimEnd().match(/^esp32.?.?/)
+
+		// to distinguish the outdated esp32 firmware with crlf/cr settings
+		this._isNewEsp32 = espModel !== null
+
+		// esp32 chipid (hex with '0x' prefix). Only available on the base ESP32 model; esp32xx returns nil
+		const esp32ID = responseID.trimEnd().match(/^0x\w+/)
+		this._espID = esp32ID ? esp32ID[0] : responseID.trimEnd() ?? 'unknown'
+
+		if (espModel) {
+			;[this._espModel] = espModel
+			this._espArch = 'esp32'
+		} else if (esp32ID && !espModel) {
+			this._espModel = 'esp32' // legacy esp32
+			this._espArch = 'esp32'
+		} else {
+			this._espModel = 'esp8266'
+			this._espArch = 'esp8266'
+		}
 	}
 
 	public waitToBeReady(): Promise<void> {
@@ -255,7 +285,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		}
 
 		// eslint-disable-next-line no-control-regex
-		const matches = data.match(/^\x1b\[\d?;?(\d\d)m(.+)\x1b\[0m(.*)\r+\n/)
+		const matches = data.match(/^\x1b\[\d?;?(\d\d)m(.+)\x1b\[0m(.*)\r*\n/)
 		if (matches) {
 			for (const fgColor of NodeMcu._colorMap) {
 				if (matches[1] === fgColor[0]) {
