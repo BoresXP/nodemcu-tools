@@ -16,7 +16,7 @@
 		"eslint:recommended",
 		"plugin:react/recommended",
 		"plugin:promise/recommended",
-		"plugin:sonarjs/recommended",
+		"plugin:sonarjs/recommended-legacy",
 		"plugin:@typescript-eslint/recommended-type-checked",
 		"plugin:@typescript-eslint/stylistic-type-checked"
 	],
