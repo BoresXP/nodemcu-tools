@@ -119,7 +119,7 @@ export default class NodemcuTaskProvider implements TaskProvider {
 		const taskDefinition = event.execution.task.definition
 		if (
 			taskDefinition.type !== NodemcuTaskProvider.taskType ||
-			!(NodeMcuRepository.allConnected.length > 0) ||
+			NodeMcuRepository.allConnected.length <= 0 ||
 			this._processExitCode !== 0
 		) {
 			return
