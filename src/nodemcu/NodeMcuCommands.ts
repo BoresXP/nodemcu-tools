@@ -116,10 +116,12 @@ export default class NodeMcuCommands {
 		newEsp32: {
 			lastStep: 'QKiw\n',
 			nextStep: 'kxyJ\n',
+			formatEnd: 'format done.\n',
 		},
 		legacy: {
 			lastStep: 'QKiw\r\n',
 			nextStep: 'kxyJ\r\n',
+			formatEnd: 'format done.\r\n',
 		},
 	}
 
@@ -421,7 +423,7 @@ export default class NodeMcuCommands {
 	public async formatEsp(): Promise<void> {
 		await this.checkReady()
 
-		await this.waitDone('format done.\r\n', async () => {
+		await this.waitDone(this._mark.formatEnd, async () => {
 			await this._device.executeSingleLineCommand(this._luaCommands.formatEsp, false)
 		})
 
