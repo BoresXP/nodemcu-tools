@@ -122,17 +122,19 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 		// esp32 chipid (hex with '0x' prefix). Only available on the base ESP32 model; esp32xx returns nil
 		const esp32ID = responseID.trimEnd().match(/^0x\w+/)
-		this._espID = esp32ID ? esp32ID[0] : responseID.trimEnd() ?? 'unknown'
 
 		if (espModel) {
 			;[this._espModel] = espModel
 			this._espArch = 'esp32'
+			this._espID = esp32ID ? esp32ID[0] : 'unknown'
 		} else if (esp32ID && !espModel) {
 			this._espModel = 'esp32' // legacy esp32
 			this._espArch = 'esp32'
+			;[this._espID] = esp32ID
 		} else {
 			this._espModel = 'esp8266'
 			this._espArch = 'esp8266'
+			this._espID = responseID.trimEnd()
 		}
 	}
 
