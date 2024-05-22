@@ -19,119 +19,98 @@ export interface IDeviceInfo {
 }
 
 export default class NodeMcuCommands {
-	private readonly _luaCommands8266 = {
-		listFiles: 'local l=file.list()local s=";"for k,v in pairs(l)do s=s..k..":"..v..";"end;uart.write(0,s.."\\r\\n")',
+	private readonly _commands = {
+		luaCommands8266: {
+			listFiles: 'local l=file.list()local s=";"for k,v in pairs(l)do s=s..k..":"..v..";"end;uart.write(0,s.."\\r\\n")',
 
-		delete: (name: string) => `file.remove("${name}")uart.write(0,"Done\\r\\n")`,
+			delete: (name: string) => `file.remove("${name}")uart.write(0,"Done\\r\\n")`,
 
-		fileCompile: (name: string) => `node.compile("${name}")uart.write(0,"Done\\r\\n")`,
+			fileCompile: (name: string) => `node.compile("${name}")uart.write(0,"Done\\r\\n")`,
 
-		fileRun: (name: string) => `dofile("${name}")`,
+			fileRun: (name: string) => `dofile("${name}")`,
 
-		fileRunAndDelete: (name: string) => `dofile("${name}")file.remove("${name}")`,
+			fileRunAndDelete: (name: string) => `dofile("${name}")file.remove("${name}")`,
 
-		fileSetLfs: (name: string) => `node.LFS.reload("${name}")uart.write(0,"Done\\r\\n")`,
+			fileSetLfs: (name: string) => `node.LFS.reload("${name}")uart.write(0,"Done\\r\\n")`,
 
-		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
-			`file.open("${name}","${mode}")local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};file.write(d)uart.write(0,"kxyJ\\r\\n")if bw>=${fileSize} then uart.on("data")file.close()uart.write(0,"QKiw\\r\\n")end end,0)uart.write(0,"Ready\\r\\n")`,
+			writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
+				`file.open("${name}","${mode}")local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};file.write(d)uart.write(0,"kxyJ\\r\\n")if bw>=${fileSize} then uart.on("data")file.close()uart.write(0,"QKiw\\r\\n")end end,0)uart.write(0,"Ready\\r\\n")`,
 
-		createEmptyFile: (name: string) => `file.open("${name}","w")file.close()uart.write(0,"Ready\\r\\n")`,
+			createEmptyFile: (name: string) => `file.open("${name}","w")file.close()uart.write(0,"Ready\\r\\n")`,
 
-		readFileHelper: (name: string) =>
-			`file.open("${name}","r")uart.on("data",0,function(d)while true do local b=file.read(${NodeMcuSerial.maxLineLength})if b==nil then uart.on("data")file.close()break end uart.write(0,b)end end,0)uart.write(0,"Ready\\r\\n")`,
+			readFileHelper: (name: string) =>
+				`file.open("${name}","r")uart.on("data",0,function(d)while true do local b=file.read(${NodeMcuSerial.maxLineLength})if b==nil then uart.on("data")file.close()break end uart.write(0,b)end end,0)uart.write(0,"Ready\\r\\n")`,
 
-		getFileSize: (name: string) => `local s=file.stat("${name}")uart.write(0,s.size.."\\r\\n")`,
+			getFileSize: (name: string) => `local s=file.stat("${name}")uart.write(0,s.size.."\\r\\n")`,
 
-		getFreeHeap: 'uart.write(0,tostring(node.heap()).."\\r\\n")',
+			getFreeHeap: 'uart.write(0,tostring(node.heap()).."\\r\\n")',
 
-		getDeviceInfo:
-			'local i=node.info("build_config")local s="";for k,v in pairs(i) do s=s..k..":"..tostring(v)..";"end;uart.write(0,s.."\\r\\n")',
+			getDeviceInfo:
+				'local i=node.info("build_config")local s="";for k,v in pairs(i) do s=s..k..":"..tostring(v)..";"end;uart.write(0,s.."\\r\\n")',
 
-		getFsInfo: 'local remaining,used,total=file.fsinfo()uart.write(0,remaining..";"..used..";"..total.."\\r\\n")',
+			getFsInfo: 'local remaining,used,total=file.fsinfo()uart.write(0,remaining..";"..used..";"..total.."\\r\\n")',
 
-		sendChunkHelper: (chunkSize: number, blockSize: number, firstCall: boolean) =>
-			`if ${firstCall} then _r_B={}end;local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};_r_B[#_r_B+1]=d;uart.write(0,"kxyJ\\r\\n")if bw>=${chunkSize} then uart.on("data")uart.write(0,"QKiw\\r\\n")end end,0)uart.write(0,"Ready\\r\\n")`,
+			sendChunkHelper: (chunkSize: number, blockSize: number, firstCall: boolean) =>
+				`if ${firstCall} then _r_B={}end;local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};_r_B[#_r_B+1]=d;uart.write(0,"kxyJ\\r\\n")if bw>=${chunkSize} then uart.on("data")uart.write(0,"QKiw\\r\\n")end end,0)uart.write(0,"Ready\\r\\n")`,
 
-		runChunk: () =>
-			'uart.write(0,".\\r\\n")local f,ce=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then local ok,e=pcall(f)if not ok then uart.write(0,"Execution error:\\r\\n",e.."\\r\\n")end else uart.write(0,"Compilation error:\\r\\n",ce.."\\r\\n")end;_r_B=nil',
+			runChunk: () =>
+				'uart.write(0,".\\r\\n")local f,ce=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then local ok,e=pcall(f)if not ok then uart.write(0,"Execution error:\\r\\n",e.."\\r\\n")end else uart.write(0,"Compilation error:\\r\\n",ce.."\\r\\n")end;_r_B=nil',
 
-		formatEsp: 'file.format()',
+			formatEsp: 'file.format()',
 
-		done: 'uart.write(0,"Done\\r\\n")',
+			done: 'uart.write(0,"Done\\r\\n")',
 
-		uartStart: 'uart.start(0)uart.write(0,".\\n")',
+			uartStart: 'uart.start(0)uart.write(0,".\\r\\n")',
 
-		uartStop: 'uart.stop(0)uart.write(0,".\\n")',
+			uartStop: 'uart.stop(0)uart.write(0,".\\r\\n")',
+		},
+
+		luaCommands32: {
+			listFiles: 'local l=file.list()local s=";"for k,v in pairs(l)do s=s..k..":"..v..";"end;uart.write(0,s.."\\n")',
+
+			delete: (name: string) => `file.remove("${name}")uart.write(0,"Done\\n")`,
+
+			fileCompile: (name: string) => `node.compile("${name}")uart.write(0,"Done\\n")`,
+
+			fileRun: (name: string) => `dofile("${name}")`,
+
+			fileRunAndDelete: (name: string) => `dofile("${name}")file.remove("${name}")`,
+
+			fileSetLfs: (name: string) => `node.LFS.reload("${name}")uart.write(0,"Done\\n")`,
+
+			writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
+				`__f=io.open("${name}","${mode}")local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};__f:write(d)uart.write(0,"kxyJ\\n")if bw>=${fileSize} then uart.on("data")__f:close()__f=nil;uart.write(0,"QKiw\\n")end end,0)uart.write(0,"Ready\\n")`,
+
+			createEmptyFile: (name: string) => `io.open("${name}","w")io.close()uart.write(0,"Ready\\n")`,
+
+			readFileHelper: (name: string) =>
+				`local fh=io.input("${name}")uart.on("data",0,function(d)while true do local b=fh:read(${NodeMcuSerial.maxLineLength})if b==nil then uart.on("data")fh:close()break end;uart.write(0,b)tmr.wdclr()end end,0)uart.write(0,"Ready\\n")`,
+
+			getFileSize: (name: string) =>
+				`local fh=io.open("${name}","r")local s=fh:seek("end")fh:close()uart.write(0,s.."\\n")`,
+
+			getFreeHeap: 'uart.write(0,tostring(node.heap()).."\\n")',
+
+			getDeviceInfo:
+				'local m={}for k,v in pairs(getmetatable(_G)["__index"])do if type(v)=="table"then m[#m+1]=k end end;local d={modules=table.concat(m,",")}local s=""for k,v in pairs(d)do s=s..k..":"..tostring(v)..";"end;uart.write(0,s.."\\n")',
+
+			getFsInfo: 'local remaining,used,total=file.fsinfo()uart.write(0,remaining..";"..used..";"..total.."\\n")',
+
+			sendChunkHelper: (chunkSize: number, blockSize: number, firstCall: boolean) =>
+				`if ${firstCall} then _r_B={}end;local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};_r_B[#_r_B+1]=d;uart.write(0,"kxyJ\\n")if bw>=${chunkSize} then uart.on("data")uart.write(0,"QKiw\\n")end end,0)uart.write(0,"Ready\\n")`,
+
+			runChunk: () =>
+				'uart.write(0,".\\n")local f,c=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then tmr.create():alarm(100,0,function()local x,e=pcall(f)if not x then uart.write(0,"\\nE: ",e.."\\n")end end)else uart.write(0,"\\nCE: "..c.."\\n")end;_r_B=nil',
+
+			formatEsp: 'file.format()',
+
+			done: 'uart.write(0,"Done\\n")',
+
+			uartStart: 'uart.start(0)uart.write(0,".\\n")',
+
+			uartStop: 'uart.stop(0)uart.write(0,".\\n")',
+		},
 	}
-
-	private readonly _luaCommands32 = {
-		listFiles: 'local l=file.list()local s=";"for k,v in pairs(l)do s=s..k..":"..v..";"end;uart.write(0,s.."\\n")',
-
-		delete: (name: string) => `file.remove("${name}")uart.write(0,"Done\\n")`,
-
-		fileCompile: (name: string) => `node.compile("${name}")uart.write(0,"Done\\n")`,
-
-		fileRun: (name: string) => `dofile("${name}")`,
-
-		fileRunAndDelete: (name: string) => `dofile("${name}")file.remove("${name}")`,
-
-		fileSetLfs: (name: string) => `node.LFS.reload("${name}")uart.write(0,"Done\\n")`,
-
-		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
-			`__f=io.open("${name}","${mode}")local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};__f:write(d)uart.write(0,"kxyJ\\n")if bw>=${fileSize} then uart.on("data")__f:close()__f=nil;uart.write(0,"QKiw\\n")end end,0)uart.write(0,"Ready\\n")`,
-
-		createEmptyFile: (name: string) => `io.open("${name}","w")io.close()uart.write(0,"Ready\\n")`,
-
-		readFileHelper: (name: string) =>
-			`local fh=io.input("${name}")uart.on("data",0,function(d)while true do local b=fh:read(${NodeMcuSerial.maxLineLength})if b==nil then uart.on("data")fh:close()break end;uart.write(0,b)tmr.wdclr()end end,0)uart.write(0,"Ready\\n")`,
-
-		getFileSize: (name: string) =>
-			`local fh=io.open("${name}","r")local s=fh:seek("end")fh:close()uart.write(0,s.."\\n")`,
-
-		getFreeHeap: 'uart.write(0,tostring(node.heap()).."\\n")',
-
-		getDeviceInfo:
-			'local m={}for k,v in pairs(getmetatable(_G)["__index"])do if type(v)=="table"then m[#m+1]=k end end;local d={modules=table.concat(m,",")}local s=""for k,v in pairs(d)do s=s..k..":"..tostring(v)..";"end;uart.write(0,s.."\\n")',
-
-		getFsInfo: 'local remaining,used,total=file.fsinfo()uart.write(0,remaining..";"..used..";"..total.."\\n")',
-
-		sendChunkHelper: (chunkSize: number, blockSize: number, firstCall: boolean) =>
-			`if ${firstCall} then _r_B={}end;local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};_r_B[#_r_B+1]=d;uart.write(0,"kxyJ\\n")if bw>=${chunkSize} then uart.on("data")uart.write(0,"QKiw\\n")end end,0)uart.write(0,"Ready\\n")`,
-
-		runChunk: () =>
-			'uart.write(0,".\\n")local f,c=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then tmr.create():alarm(100,0,function()local x,e=pcall(f)if not x then uart.write(0,"\\nE: ",e.."\\n")end end)else uart.write(0,"\\nCE: "..c.."\\n")end;_r_B=nil',
-
-		formatEsp: 'file.format()',
-
-		done: 'uart.write(0,"Done\\n")',
-
-		uartStart: 'uart.start(0)uart.write(0,".\\n")',
-
-		uartStop: 'uart.stop(0)uart.write(0,".\\n")',
-	}
-
-	private readonly _luaCommands: {
-		listFiles: string
-		delete: (name: string) => string
-		fileCompile: (name: string) => string
-		fileRun: (name: string) => string
-		fileRunAndDelete: (name: string) => string
-		fileSetLfs: (name: string) => string
-		writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) => string
-		createEmptyFile: (name: string) => string
-		readFileHelper: (name: string) => string
-		getFileSize: (name: string) => string
-		getFreeHeap: string
-		getDeviceInfo: string
-		getFsInfo: string
-		sendChunkHelper: (chunkSize: number, blockSize: number, firstCall: boolean) => string
-		runChunk: () => string
-		formatEsp: string
-		done: string
-		uartStart: string
-		uartStop: string
-	}
-	private readonly _mark
 
 	private readonly _markers = {
 		newEsp32: {
@@ -144,11 +123,13 @@ export default class NodeMcuCommands {
 		},
 	}
 
+	private readonly _luaCommands
+	private readonly _mark
 	private readonly _device: NodeMcu
 
 	constructor(device: NodeMcu) {
 		this._device = device
-		this._luaCommands = device.espArch === 'esp32' ? this._luaCommands32 : this._luaCommands8266
+		this._luaCommands = device.espArch === 'esp32' ? this._commands.luaCommands32 : this._commands.luaCommands8266
 		this._mark = device.isNewEsp32 ? this._markers.newEsp32 : this._markers.legacy
 	}
 
