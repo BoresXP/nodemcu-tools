@@ -5,11 +5,17 @@ All notable changes to the "nodemcu-tools" extension will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
-### Added
-- Add collectgarbage() in "Globals" snippet
 
+### Added
+- collectgarbage() in "Globals" snippet
 - New command 'nodemcu-tools.uploadActiveFile' to upload file in the currently active editor to device.
 The command is also accessible from editor context menu.
+- All esp32 models (e.g. esp32s2, esp32h6) are displayed in status bar
+- Support handling of IDF LF/LF line endings
+
+### Fixed
+
+- run chunk on esp32
 
 ### Changed
 - Re-arrange control buttons in Termimal container
