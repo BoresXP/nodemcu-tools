@@ -38,7 +38,7 @@
 		"esp32"
 	],
 	"activationEvents": [
-		"workspaceContains:.nodemcutools"
+		"onStartupFinished"
 	],
 	"icon": "./resources/icon.png",
 	"main": "./out/extension.js",
