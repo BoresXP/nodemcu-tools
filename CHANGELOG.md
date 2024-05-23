@@ -4,9 +4,13 @@ All notable changes to the "nodemcu-tools" extension will be documented in this 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 ## [Unreleased]
 
+## [4.2.0] - 2024-05-23
+
 ### Added
+
 - collectgarbage() in "Globals" snippet
 - New command 'nodemcu-tools.uploadActiveFile' to upload file in the currently active editor to device.
 The command is also accessible from editor context menu.
@@ -18,6 +22,7 @@ The command is also accessible from editor context menu.
 - run chunk on esp32
 
 ### Changed
+
 - Re-arrange control buttons in Termimal container
 
 ## [4.1.1] - 2024-02-16
