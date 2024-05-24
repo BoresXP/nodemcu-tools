@@ -20,7 +20,7 @@ export async function getConfig(
 
 	const config: IConfiguration = {
 		compilerExecutable: '',
-		include: ['./lfs/*.lua'],
+		include: [],
 		outDir: 'out',
 		outFile: 'lfs.img',
 	}
@@ -64,7 +64,7 @@ export async function getConfig(
 			config.outFile = userConfig.outFile
 		}
 	} catch (error) {
-		await displayError(new Error('Error in config file'))
+		await displayError(new Error("Error in config file '.nodemcutools'"))
 
 		return void 0
 	}
@@ -107,7 +107,7 @@ async function showGenericErrorNotification(): Promise<void> {
 	outChannel.show(true)
 }
 
-async function displayError(errorThrown: Error): Promise<void> {
+export async function displayError(errorThrown: Error): Promise<void> {
 	const { message } = errorThrown
 
 	outChannel.appendLine(message)

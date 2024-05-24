@@ -9,7 +9,7 @@
       "type": "string"
     },
     "include": {
-      "markdownDescription": "Specifies a list of glob patterns that match files to be included in LFS image. If no **include** property is present in a NodeMCU task definition, the compiler defaults to including all *.lua* files under the **./lfs** folder.",
+      "markdownDescription": "Specifies a list of glob patterns that match files to be included in LFS image. (e.g. ./lfs/*.lua)",
       "type": "array",
       "items": {
         "type": "string"

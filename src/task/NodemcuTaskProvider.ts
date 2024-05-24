@@ -12,9 +12,9 @@ import {
 	tasks,
 	workspace,
 } from 'vscode'
+import { displayError, getConfig } from './ConfigFile'
 
 import { NodeMcuRepository } from '../nodemcu'
-import { getConfig } from './ConfigFile'
 import path from 'path'
 
 export default class NodemcuTaskProvider implements TaskProvider {
@@ -33,7 +33,8 @@ export default class NodemcuTaskProvider implements TaskProvider {
 		const fileWatcher = workspace.createFileSystemWatcher(this._configFile)
 		fileWatcher.onDidChange(() => this.rebuildConfig())
 		fileWatcher.onDidCreate(() => {
-			this._tasks = void 0; this._config = void 0
+			this._tasks = void 0
+			this._config = void 0
 		})
 		fileWatcher.onDidDelete(() => this.rebuildConfig())
 
@@ -85,8 +86,13 @@ export default class NodemcuTaskProvider implements TaskProvider {
 				outDir: this._config.outDir,
 				outFile: this._config.outFile,
 			}
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const filesLFS = this.getFilesLFS(nodemcuTaskDefinition.include!)
+
+			if (filesLFS === '') {
+				void (async () => {
+					await displayError(new Error('Include path is not specified in config file'))
+				})()
+			}
 
 			const commandLine = `${nodemcuTaskDefinition.compilerExecutable} -o ${nodemcuTaskDefinition.outDir}/${nodemcuTaskDefinition.outFile} -f -l ${filesLFS} > ${nodemcuTaskDefinition.outDir}/luaccross.log`
 
