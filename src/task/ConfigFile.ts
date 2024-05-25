@@ -1,6 +1,6 @@
-import { IConfiguration, INodemcuTaskDefinition } from './INodemcuTask'
 import { OutputChannel, Uri, commands, window, workspace } from 'vscode'
 
+import { IConfiguration } from './INodemcuTask'
 import { getOutputChannel } from './getOutputChannel'
 import path from 'path'
 
@@ -8,13 +8,13 @@ let outChannel: OutputChannel
 
 export async function getConfig(
 	rootFolder: string,
-	configFile: string,
+	configFileName: string,
 	revealMessage = true,
 ): Promise<IConfiguration | undefined> {
 	outChannel = getOutputChannel()
 	await commands.executeCommand('setContext', 'nodemcu-tools:isConfig', false)
 
-	if (!(await isExists(configFile, revealMessage))) {
+	if (!(await isExists(configFileName, revealMessage))) {
 		return void 0
 	}
 
@@ -25,47 +25,59 @@ export async function getConfig(
 		outFile: 'lfs.img',
 	}
 
-	let userConfig: INodemcuTaskDefinition
-
 	try {
-		const configData = await workspace.fs.readFile(Uri.file(configFile))
-		const readStr = Buffer.from(configData).toString('utf8')
+		const data = await workspace.fs.readFile(Uri.file(configFileName))
+		const userConfig = JSON.parse(Buffer.from(data).toString('utf8')) as IConfiguration
 
-		userConfig = JSON.parse(readStr) as INodemcuTaskDefinition
+		for (const prop in userConfig) {
+			if (prop in config && userConfig[prop]) {
+				config[prop] = userConfig[prop]
+			}
+			switch (prop) {
+				case 'compilerExecutable':
+					if (config.compilerExecutable.trimEnd() === '') {
+						await displayError(new Error('No path to the luac.cross'))
+						return void 0
+					}
+					break
+				case 'outDir': {
+					if (config.outDir.trimEnd() === '') {
+						await displayError(new Error(`Invalid folder name for '${prop}'`))
+						return void 0
+					}
+					break
+				}
+				case 'outFile':
+					if (config.outFile.trimEnd() === '') {
+						await displayError(new Error(`Invalid file name for '${prop}'`))
+						return void 0
+					}
+					break
+				case 'include':
+					for (const pattern of config.include) {
+						const pathToCheck = path.dirname(path.resolve(rootFolder, pattern))
+						if (!(await isExists(pathToCheck))) {
+							await displayError(new Error(`Include path '${pathToCheck}' is not found.`))
+							return void 0
+						}
+					}
+					break
+				default:
+					await displayError(new Error(`Unknown property '${prop}' in config file`))
+					break
+			}
 
-		if (!('compilerExecutable' in userConfig)) {
-			await displayError(new Error('No path to the luac.cross'))
-			return void 0
-		}
-		config.compilerExecutable = userConfig.compilerExecutable
-
-		if ('outDir' in userConfig && userConfig.outDir) {
-			config.outDir = userConfig.outDir
-		}
-		if (
-			!(await isExists(path.join(rootFolder, config.outDir)))
-			&& !(await createDirectory(path.join(rootFolder, config.outDir)))
-		) {
-			return void 0
-		}
-
-		if ('include' in userConfig && userConfig.include) {
-			config.include = userConfig.include
-		}
-		for (const pattern of config.include) {
-			const pathToCheck = path.dirname(path.resolve(rootFolder, pattern))
-			if (!(await isExists(pathToCheck))) {
-				await displayError(new Error(`Include path '${pathToCheck}' is not found.`))
-				return void 0
+			if (!(await isExists(path.join(rootFolder, config.outDir)))) {
+				try {
+					await createDirectory(path.join(rootFolder, config.outDir))
+				} catch {
+					await displayError(new Error(`Can not create the directory '${config.outDir}'`))
+					return void 0
+				}
 			}
 		}
-
-		if ('outFile' in userConfig && userConfig.outFile) {
-			config.outFile = userConfig.outFile
-		}
 	} catch (error) {
-		await displayError(new Error("Error in config file '.nodemcutools'"))
-
+		await window.showErrorMessage(`Failed to parse ".nodemcutools". ${error}`)
 		return void 0
 	}
 
@@ -79,7 +91,7 @@ async function isExists(f: string, revealMessage = true): Promise<boolean> {
 		return true
 	} catch (err) {
 		if (revealMessage) {
-			outChannel.appendLine(`Error: no such file or directory '${f}'`)
+			outChannel.appendLine(`No such file or directory '${f}'`)
 			outChannel.show(true)
 		}
 		return false
@@ -93,7 +105,6 @@ async function createDirectory(folder: string): Promise<boolean> {
 		outChannel.show(true)
 		return true
 	} catch (err) {
-		await displayError(new Error(`Can not create the directory '${folder}'`))
 		return false
 	}
 }

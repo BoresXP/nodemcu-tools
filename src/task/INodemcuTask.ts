@@ -9,6 +9,7 @@ export interface INodemcuTaskDefinition extends TaskDefinition {
 }
 
 export interface IConfiguration {
+	[index: string]: string | string[]
 	compilerExecutable: string
 	include: string[]
 	outDir: string
