@@ -12,9 +12,10 @@ import {
 	tasks,
 	workspace,
 } from 'vscode'
-import { displayError, getConfig } from './ConfigFile'
 
 import { NodeMcuRepository } from '../nodemcu'
+import { displayError } from "./OutputChannel"
+import { getConfig } from './ConfigFile'
 import path from 'path'
 
 export default class NodemcuTaskProvider implements TaskProvider {

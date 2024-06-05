@@ -1,7 +1,7 @@
 import { OutputChannel, Uri, commands, window, workspace } from 'vscode'
+import { displayError, getOutputChannel } from './OutputChannel'
 
 import { IConfiguration } from './INodemcuTask'
-import { getOutputChannel } from './getOutputChannel'
 import path from 'path'
 
 let outChannel: OutputChannel
@@ -107,20 +107,4 @@ async function createDirectory(folder: string): Promise<boolean> {
 	} catch (err) {
 		return false
 	}
-}
-
-async function showGenericErrorNotification(): Promise<void> {
-	await window.showWarningMessage(
-		'An Error occurred in the nodemcu-tools extension. See the output for more information.',
-		'Go to output',
-	)
-
-	outChannel.show(true)
-}
-
-export async function displayError(errorThrown: Error): Promise<void> {
-	const { message } = errorThrown
-
-	outChannel.appendLine(message)
-	await showGenericErrorNotification()
 }
