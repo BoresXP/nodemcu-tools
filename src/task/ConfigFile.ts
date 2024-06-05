@@ -23,6 +23,7 @@ export async function getConfig(
 		include: [],
 		outDir: 'out',
 		outFile: 'lfs.img',
+		resourceDir: '',
 	}
 
 	try {
@@ -33,6 +34,7 @@ export async function getConfig(
 			if (prop in config && userConfig[prop]) {
 				config[prop] = userConfig[prop]
 			}
+
 			switch (prop) {
 				case 'compilerExecutable':
 					if (config.compilerExecutable.trimEnd() === '') {
@@ -60,6 +62,16 @@ export async function getConfig(
 							await displayError(new Error(`Include path '${pathToCheck}' is not found.`))
 							return void 0
 						}
+					}
+					break
+				case 'resourceDir':
+					if (config.resourceDir.trimEnd() === '') {
+						await displayError(new Error(`Invalid folder name for '${prop}'`))
+						return void 0
+					}
+					if (!(await isExists(path.join(rootFolder, config.resourceDir)))) {
+						await displayError(new Error(`Path to the resource folder '${config.resourceDir}' is not found.`))
+						return void 0
 					}
 					break
 				default:

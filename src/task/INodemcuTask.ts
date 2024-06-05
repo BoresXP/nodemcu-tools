@@ -14,4 +14,5 @@ export interface IConfiguration {
 	include: string[]
 	outDir: string
 	outFile: string
+	resourceDir: string
 }

@@ -16,6 +16,7 @@ import {
 import { NodeMcuRepository } from '../nodemcu'
 import { displayError } from "./OutputChannel"
 import { getConfig } from './ConfigFile'
+import { makeResource } from './MakeResource'
 import path from 'path'
 
 export default class NodemcuTaskProvider implements TaskProvider {
@@ -70,29 +71,48 @@ export default class NodemcuTaskProvider implements TaskProvider {
 
 		const nodemcuTasks: Task[] = []
 		this._config = await getConfig(this._rootFolder, this._configFile)
+		if (!this._config) {
+			return nodemcuTasks
+		}
+
+		if (this._config.resourceDir) {
+			const resourceFolderWatcher = workspace.createFileSystemWatcher(path.join(this._rootFolder, this._config.resourceDir) + '/**')
+			resourceFolderWatcher.onDidChange(() => this.rebuildResource(this._config!))
+			resourceFolderWatcher.onDidCreate(() => this.rebuildResource(this._config!))
+			resourceFolderWatcher.onDidDelete(() => this.rebuildResource(this._config!))
+
+			const resourceFile = await makeResource(this._config)
+			// add resource.lua in LFS img
+			if (resourceFile) {
+				const relativeResourceFilePath = workspace.asRelativePath(resourceFile)
+				if (!(this._config.include.includes(relativeResourceFilePath))) {
+					this._config.include.push(relativeResourceFilePath)
+				}
+			}
+		}
+
+		const filesLFS = this._config.include.join(' ')
+		if (filesLFS === '') {
+			await displayError(new Error('Include-path is not specified in config file'))
+		}
+
 		const listTasks = [
-			['buildLfsAndUploadSerial', 'Build LFS and upload to device via serial port'],
-			['buildLfs', 'Build LFS on host machine'],
+			['buildLFSandUploadSerial', 'Build LFS and upload to device via serial port'],
+			['buildLFS', 'Build LFS on host machine'],
 		]
 
 		listTasks.forEach(nextTask => {
 			if (!this._config) {
 				return nodemcuTasks
 			}
+
 			const nodemcuTaskDefinition: INodemcuTaskDefinition = {
-				type: NodemcuTaskProvider.taskType,
-				nodemcuTaskName: nextTask[0],
 				compilerExecutable: this._config.compilerExecutable,
 				include: this._config.include,
 				outDir: this._config.outDir,
 				outFile: this._config.outFile,
-			}
-			const filesLFS = this.getFilesLFS(nodemcuTaskDefinition.include!)
-
-			if (filesLFS === '') {
-				void (async () => {
-					await displayError(new Error('Include path is not specified in config file'))
-				})()
+				type: NodemcuTaskProvider.taskType,
+				nodemcuTaskName: nextTask[0],
 			}
 
 			const commandLine = `${nodemcuTaskDefinition.compilerExecutable} -o ${nodemcuTaskDefinition.outDir}/${nodemcuTaskDefinition.outFile} -f -l ${filesLFS} > ${nodemcuTaskDefinition.outDir}/luaccross.log`
@@ -113,13 +133,13 @@ export default class NodemcuTaskProvider implements TaskProvider {
 		return nodemcuTasks
 	}
 
-	private getFilesLFS(include: string[]): string {
-		return include.join(' ')
-	}
-
 	private async rebuildConfig(): Promise<void> {
 		this._tasks = void 0
 		this._config = await getConfig(this._rootFolder, this._configFile)
+	}
+
+	private async rebuildResource(config: IConfiguration): Promise<void> {
+		await makeResource(config)
 	}
 
 	private async endTaskHandler(event: TaskEndEvent): Promise<void> {
@@ -139,7 +159,7 @@ export default class NodemcuTaskProvider implements TaskProvider {
 		)
 
 		switch (taskDefinition.nodemcuTaskName) {
-			case 'buildLfsAndUploadSerial':
+			case 'buildLFSandUploadSerial':
 				await commands.executeCommand('nodemcu-tools.uploadFileSetLfs', fileToUpload)
 				break
 

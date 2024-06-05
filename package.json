@@ -360,11 +360,11 @@
 						"type": "string"
 					},
 					"compilerExecutable": {
-						"markdownDescription": "The executable path to the luac.cross compiler (e.g. *\"/opt/lua/esp8266/5.3/luac.cross\"* or *\"C:\\Temp\\luac.cross.exe\"*)",
+						"markdownDescription": "Specifies the path to luac.cross executable. (e.g. *\"/opt/lua/esp8266/5.3/luac.cross\"* or *\"C:\\Temp\\luac.cross.exe\"*)",
 						"type": "string"
 					},
 					"include": {
-						"markdownDescription": "Specifies a list of glob patterns that match files to be included in LFS image. (e.g. ./lfs/*.lua)",
+						"markdownDescription": "Specifies an array of filenames or patterns to include in the LFS image. (e.g. ./lfs/*.lua)",
 						"type": "array",
 						"items": {
 							"type": "string"
@@ -373,12 +373,16 @@
 						"uniqueItems": true
 					},
 					"outDir": {
-						"markdownDescription": "Specify an output folder for all emitted files. Default is **./out**",
+						"markdownDescription": "Specifies an output folder for all emitted files. Default is **./out**",
 						"type": "string"
 					},
 					"outFile": {
-						"markdownDescription": "Specify an output a flash image file. Default is **lfs.img**",
+						"markdownDescription": "Specifies an output LFS image file name. Default is **lfs.img**",
 						"type": "string"
+					},
+					"resourceDir": {
+						"markdownDescription": "Specifies the folder containing the files to be included in resource.lua (e.g. ./resource)",
+							"type": "string"
 					}
 				}
 			}
