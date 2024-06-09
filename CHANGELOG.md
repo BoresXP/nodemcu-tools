@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-**Breaking change:**
+ ⚠️  **Breaking changes**
 
 - Default value for "Include path" in the config file has been removed. You'll have to specify a list of glob patterns that match files to be included in LFS image yourself. For example, './lfs/\*lua' to include all *.lua* files under the **./lfs** folder.
 
@@ -16,8 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the feature of creating *resource.lua* file to use it with [file_lfs](https://nodemcu.readthedocs.io/en/release/lua-modules/file_lfs/#file-lfs-module) module.
 
 New option **resourceDir** in the config file specifies the folder containing the files to be included in resource.lua. (e.g. ./resource)
-
 The created *resource.lua* will be emitted to *OutDir* folder and automatically included in the LFS image build.
+
+### Changed
+
+- Update dependencies
 
 ## [4.2.0] - 2024-05-23
 

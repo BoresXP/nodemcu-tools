@@ -1,7 +1,8 @@
 {
   "title": "NodeMCU-tools configuration",
   "required": [
-    "compilerExecutable"
+    "compilerExecutable",
+    "include"
   ],
   "properties": {
     "compilerExecutable": {

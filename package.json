@@ -352,7 +352,8 @@
 			{
 				"type": "NodeMCU",
 				"required": [
-					"compilerExecutable"
+					"compilerExecutable",
+					"include"
 				],
 				"properties": {
 					"nodemcuTaskName": {
