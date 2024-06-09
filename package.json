@@ -383,7 +383,7 @@
 					},
 					"resourceDir": {
 						"markdownDescription": "Specifies the folder containing the files to be included in resource.lua (e.g. ./resource)",
-							"type": "string"
+						"type": "string"
 					}
 				}
 			}
@@ -412,7 +412,7 @@
 		"eslint-plugin-react": "^7.34.1",
 		"eslint-plugin-react-hooks": "^4.6.2",
 		"eslint-plugin-sonarjs": "^1.0.3",
-		"eslint-webpack-plugin": "^4.1.0",
+		"eslint-webpack-plugin": "^4.2.0",
 		"fork-ts-checker-webpack-plugin": "^9.0.2",
 		"json-minimizer-webpack-plugin": "^5.0.0",
 		"style-loader": "^4.0.0",
