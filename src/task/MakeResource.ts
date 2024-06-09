@@ -2,7 +2,7 @@ import { FileType, Uri, window, workspace } from 'vscode'
 import { join, posix } from 'path'
 
 import { IConfiguration } from './INodemcuTask'
-import { displayError } from "./OutputChannel"
+import { displayError } from './OutputChannel'
 
 export async function makeResource(config: IConfiguration): Promise<Uri | undefined> {
 	const [rootFolder] = workspace.workspaceFolders!
@@ -75,7 +75,7 @@ async function getFilesListFromFolder(folder: Uri): Promise<string[]> {
 				await dive(Uri.file(join(nextFolder.path, name)), ++depth)
 				depth--
 			} else if (type === FileType.SymbolicLink) {
-				await window.showErrorMessage(`Symbolic links in the resource folder are not supported`)
+				await window.showErrorMessage('Symbolic links in the resource folder are not supported')
 			}
 		}
 	}

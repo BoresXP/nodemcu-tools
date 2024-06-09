@@ -29,7 +29,7 @@ export default class NodemcuTools {
 				return void 0
 			}
 		} else {
-			;[path] = allConnected
+			[path] = allConnected
 		}
 
 		return path

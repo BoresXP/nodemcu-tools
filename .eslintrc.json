@@ -11,14 +11,13 @@
 		"sourceType": "module",
 		"project": "tsconfig.json"
 	},
-	"plugins": ["react", "react-hooks", "promise", "optimize-regex", "sonarjs", "@typescript-eslint"],
+	"plugins": ["react", "react-hooks", "promise", "optimize-regex", "sonarjs", "@typescript-eslint", "@stylistic"],
 	"extends": [
 		"eslint:recommended",
 		"plugin:react/recommended",
 		"plugin:promise/recommended",
 		"plugin:sonarjs/recommended-legacy",
-		"plugin:@typescript-eslint/recommended-type-checked",
-		"plugin:@typescript-eslint/stylistic-type-checked"
+    "plugin:@typescript-eslint/recommended"
 	],
 	"settings": {
 		"react": {
@@ -26,7 +25,6 @@
 		}
 	},
 	"rules": {
-		"no-extra-semi": "off", // (prettier does this) disallows unnecessary semicolons.
 		"no-shadow": ["error", { "builtinGlobals": true }], // disallow variable declarations from shadowing variables declared in the outer scope
 		"no-duplicate-imports": ["error", { "includeExports": true }], // disallow duplicate module imports
 		"no-template-curly-in-string": "error", // disallow template literal placeholder syntax in regular strings
@@ -108,14 +106,14 @@
 
 		"optimize-regex/optimize-regex": "warn", // Optimize regex literals
 
-		// "@typescript-eslint/no-extra-semi": "warn", // Require or disallow semicolons instead of ASI
-		"@typescript-eslint/semi": ["error", "never"], // Require or disallow semicolons instead of ASI
-		"@typescript-eslint/member-delimiter-style": ["error", { "multiline": { "delimiter": "none" } }], // Require a specific member delimiter style for interfaces and type literals
+		"@stylistic/no-extra-semi": "warn", // Require or disallow semicolons instead of ASI
+		"@stylistic/semi": ["error", "never"], // Require or disallow semicolons instead of ASI
+		"@stylistic/member-delimiter-style": ["error", { "multiline": { "delimiter": "none" } }], // Require a specific member delimiter style for interfaces and type literals
 		"@typescript-eslint/member-ordering": "warn", // Require a consistent member declaration order
-		// "@typescript-eslint/brace-style": ["error", "1tbs"], // Enforce consistent brace style for blocks
-		// "@typescript-eslint/indent": ["error", "tab", { "SwitchCase": 1 }], // Enforce consistent indentation
-		// "@typescript-eslint/quotes": ["error", "single", { "avoidEscape": true }], // Enforce the consistent use of either backticks, double, or single quotes
-		"@typescript-eslint/func-call-spacing": ["error", "never"], // Require or disallow spacing between function identifiers and their invocations
+		"@stylistic/brace-style": ["error", "1tbs"], // Enforce consistent brace style for blocks
+		"@stylistic/indent": ["error", "tab", { "SwitchCase": 1 }], // Enforce consistent indentation
+		"@stylistic/quotes": ["error", "single", { "avoidEscape": true }], // Enforce the consistent use of either backticks, double, or single quotes
+		"@stylistic/func-call-spacing": ["error", "never"], // Require or disallow spacing between function identifiers and their invocations
 		"@typescript-eslint/no-useless-constructor": "error", // Disallow unnecessary constructors
 		"@typescript-eslint/prefer-for-of": "warn", // Prefer a ‘for-of’ loop over a standard ‘for’ loop if the index is only used to access the array being iterated
 		"@typescript-eslint/no-unnecessary-type-arguments": "warn", // Warns if an explicitly specified type argument is the default for that type parameter

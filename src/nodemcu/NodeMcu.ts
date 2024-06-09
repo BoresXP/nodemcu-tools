@@ -124,7 +124,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		const esp32ID = responseID.trimEnd().match(/^0x\w+/)
 
 		if (espModel) {
-			;[this._espModel] = espModel
+			[this._espModel] = espModel
 			this._espArch = 'esp32'
 			this._espID = esp32ID ? esp32ID[0] : 'unknown'
 		} else if (esp32ID && !espModel) {

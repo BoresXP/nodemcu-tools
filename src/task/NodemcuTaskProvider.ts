@@ -14,7 +14,7 @@ import {
 } from 'vscode'
 
 import { NodeMcuRepository } from '../nodemcu'
-import { displayError } from "./OutputChannel"
+import { displayError } from './OutputChannel'
 import { getConfig } from './ConfigFile'
 import { makeResource } from './MakeResource'
 import path from 'path'
