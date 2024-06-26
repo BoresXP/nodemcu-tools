@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 New option **resourceDir** in the config file specifies the folder containing the files to be included in resource.lua. (e.g. ./resource)
 The created *resource.lua* will be emitted to *OutDir* folder and automatically included in the LFS image build.
 
+- Added support for new esp32 feature - node.info().
+
 ### Changed
 
 - Update dependencies

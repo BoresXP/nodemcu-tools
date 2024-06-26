@@ -45,7 +45,7 @@ export default class NodeMcuCommands {
 
 			getFreeHeap: 'uart.write(0,tostring(node.heap()).."\\r\\n")',
 
-			getDeviceInfo:
+			getDeviceInfo: () =>
 				'local i=node.info("build_config")local s="";for k,v in pairs(i) do s=s..k..":"..tostring(v)..";"end;uart.write(0,s.."\\r\\n")',
 
 			getFsInfo: 'local remaining,used,total=file.fsinfo()uart.write(0,remaining..";"..used..";"..total.."\\r\\n")',
@@ -91,8 +91,9 @@ export default class NodeMcuCommands {
 
 			getFreeHeap: 'uart.write(0,tostring(node.heap()).."\\n")',
 
-			getDeviceInfo:
-				'local m={}for k,v in pairs(getmetatable(_G)["__index"])do if type(v)=="table"then m[#m+1]=k end end;local d={modules=table.concat(m,",")}local s=""for k,v in pairs(d)do s=s..k..":"..tostring(v)..";"end;uart.write(0,s.."\\n")',
+			getDeviceInfo: () => this._isNewEsp32
+				? 'local i=node.info("build_config")local s="";for k,v in pairs(i) do s=s..k..":"..tostring(v)..";"end;uart.write(0,s.."\\n")'
+				: 'local m={}for k,v in pairs(getmetatable(_G)["__index"])do if type(v)=="table"then m[#m+1]=k end end;local d={modules=table.concat(m,",")}local s=""for k,v in pairs(d)do s=s..k..":"..tostring(v)..";"end;uart.write(0,s.."\\n")',
 
 			getFsInfo: 'local remaining,used,total=file.fsinfo()uart.write(0,remaining..";"..used..";"..total.."\\n")',
 
@@ -118,7 +119,7 @@ export default class NodeMcuCommands {
 			nextStep: 'kxyJ\n',
 			formatEnd: 'format done.\n',
 		},
-		legacy: {
+		legacy32: {
 			lastStep: 'QKiw\r\n',
 			nextStep: 'kxyJ\r\n',
 			formatEnd: 'format done.\r\n',
@@ -128,11 +129,15 @@ export default class NodeMcuCommands {
 	private readonly _luaCommands
 	private readonly _mark
 	private readonly _device: NodeMcu
+	private readonly _isNewEsp32: boolean
+	private readonly _espArch:string
 
 	constructor(device: NodeMcu) {
 		this._device = device
-		this._luaCommands = device.espArch === 'esp32' ? this._commands.luaCommands32 : this._commands.luaCommands8266
-		this._mark = device.isNewEsp32 ? this._markers.newEsp32 : this._markers.legacy
+		this._espArch = device.espArch
+		this._isNewEsp32 = device.isNewEsp32
+		this._luaCommands = this._espArch === 'esp32' ? this._commands.luaCommands32 : this._commands.luaCommands8266
+		this._mark = this._isNewEsp32 ? this._markers.newEsp32 : this._markers.legacy32
 	}
 
 	public async files(): Promise<IDeviceFileInfo[]> {
@@ -174,7 +179,7 @@ export default class NodeMcuCommands {
 				? NodeMcuSerial.maxLineLength
 				: data.length % NodeMcuSerial.maxLineLength
 
-		if (this._device.isNewEsp32) {
+		if (this._isNewEsp32) {
 			await this._device.executeSingleLineCommand(this._luaCommands.uartStart)
 		}
 
@@ -198,7 +203,7 @@ export default class NodeMcuCommands {
 			})
 
 			if (tailSize === 0) {
-				if (this._device.isNewEsp32) {
+				if (this._isNewEsp32) {
 					await this._device.executeSingleLineCommand(this._luaCommands.uartStop)
 				}
 				progressCb?.(100)
@@ -217,7 +222,7 @@ export default class NodeMcuCommands {
 			await this._device.writeRaw(data.length > 254 ? data.subarray(data.length - tailSize) : data)
 		})
 
-		if (this._device.isNewEsp32) {
+		if (this._isNewEsp32) {
 			await this._device.executeSingleLineCommand(this._luaCommands.uartStop)
 		}
 
@@ -262,7 +267,7 @@ export default class NodeMcuCommands {
 			})
 		}
 
-		if (this._device.isNewEsp32) {
+		if (this._isNewEsp32) {
 			await this._device.executeSingleLineCommand(this._luaCommands.uartStart)
 		}
 
@@ -278,7 +283,7 @@ export default class NodeMcuCommands {
 				retVal = retVal ? Buffer.concat([retVal, data]) : data
 				progressCb?.((retVal.length * 100) / fileSize)
 
-				if (this._device.espArch === 'esp32' && !this._device.isNewEsp32) {
+				if (this._espArch === 'esp32' && !this._isNewEsp32) {
 					receivedFileSize += data.filter(x => x === 10).length
 				}
 
@@ -286,14 +291,14 @@ export default class NodeMcuCommands {
 					unsubscribe.dispose()
 					await this._device.executeSingleLineCommand(this._luaCommands.done)
 
-					if (this._device.isNewEsp32) {
+					if (this._isNewEsp32) {
 						await this._device.executeSingleLineCommand(this._luaCommands.uartStop)
 					}
 
 					progressCb?.(100)
 					this._device.setBusy(false)
 
-					if (this._device.espArch === 'esp32' && !this._device.isNewEsp32 && receivedFileSize !== fileSize) {
+					if (this._espArch === 'esp32' && !this._isNewEsp32 && receivedFileSize !== fileSize) {
 						let retValnoCR = new Uint8Array()
 						let startLFindex = 0
 
@@ -323,7 +328,7 @@ export default class NodeMcuCommands {
 
 		const freeHeap = await this._device.executeSingleLineCommand(this._luaCommands.getFreeHeap, false)
 
-		const deviceInfo = await this._device.executeSingleLineCommand(this._luaCommands.getDeviceInfo, false)
+		const deviceInfo = await this._device.executeSingleLineCommand(this._luaCommands.getDeviceInfo(), false)
 
 		const fsInfo = await this._device.executeSingleLineCommand(this._luaCommands.getFsInfo, false)
 
@@ -338,7 +343,7 @@ export default class NodeMcuCommands {
 				infoParams[name] = value
 			})
 
-		if (this._device.espArch === 'esp32') {
+		if (this._espArch === 'esp32' && !this._isNewEsp32) {
 			const systemTables = ['string', 'table', 'coroutine', 'debug', 'math', 'utf8', 'ROM']
 			// eslint-disable-next-line @typescript-eslint/dot-notation
 			infoParams.modules = infoParams['modules']
@@ -363,7 +368,7 @@ export default class NodeMcuCommands {
 			modules: infoParams.modules,
 			fsTotal: fsInfoArray[2],
 			fsUsed: fsInfoArray[1],
-			chipArch: this._device.espArch,
+			chipArch: this._espArch,
 			chipModel: this._device.espModel,
 			chipID: this._device.espID,
 		}
@@ -372,13 +377,13 @@ export default class NodeMcuCommands {
 	public async sendChunk(minifiedBlock: string): Promise<void> {
 		await this.checkReady()
 
-		if (this._device.isNewEsp32) {
+		if (this._isNewEsp32) {
 			await this._device.executeSingleLineCommand(this._luaCommands.uartStart)
 		}
 
 		let firstCall = true
 		if (!minifiedBlock.endsWith('\n')) {
-			minifiedBlock += this._device.espArch === 'esp8266' ? '\r\n' : '\n'
+			minifiedBlock += this._espArch === 'esp8266' ? '\r\n' : '\n'
 		}
 		const data = Buffer.from(minifiedBlock)
 		const tailSize = data.length % NodeMcuSerial.maxLineLength
@@ -412,7 +417,7 @@ export default class NodeMcuCommands {
 			await this._device.writeRaw(data.length > 254 ? data.subarray(data.length - tailSize) : data)
 		})
 
-		if (this._device.isNewEsp32) {
+		if (this._isNewEsp32) {
 			await this._device.executeSingleLineCommand(this._luaCommands.uartStop)
 		}
 
