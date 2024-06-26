@@ -410,7 +410,7 @@
 		"eslint": "^8.57.0",
 		"eslint-plugin-optimize-regex": "^1.2.1",
 		"eslint-plugin-promise": "^6.2.0",
-		"eslint-plugin-react": "^7.34.2",
+		"eslint-plugin-react": "^7.34.3",
 		"eslint-plugin-react-hooks": "^4.6.2",
 		"eslint-plugin-sonarjs": "^1.0.3",
 		"eslint-webpack-plugin": "^4.2.0",
