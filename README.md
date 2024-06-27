@@ -12,7 +12,6 @@ _(see detailed description below)_
 * Download file from device to solution folder
 * Compile, delete, run LUA file on device
 * Work with many devices simultaneously
-* Code completion for NodeMCU modules
 * Works on all platforms (Windows, Linux, MacOS)
 
 [See our wiki for more info](https://github.com/BoresXP/nodemcu-tools/wiki).
