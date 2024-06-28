@@ -148,6 +148,11 @@
 			{
 				"selector": "import",
 				"format": ["PascalCase", "camelCase"]
+			},
+			{
+				"selector": "objectLiteralMethod",
+				"format": null,
+				"modifiers": ["requiresQuotes"]
 			}
 		], // Enforces naming conventions for everything across a codebase
 		"@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true }],

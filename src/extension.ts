@@ -9,7 +9,6 @@ import TerminalView from './terminal/TerminalView'
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export function activate(context: ExtensionContext): void {
 	try {
 		const treeProvider = new DeviceTreeProvider()
@@ -25,8 +24,9 @@ export function activate(context: ExtensionContext): void {
 
 		const tools = new NodemcuTools()
 
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.connect', async (item: DeviceTreeItem) => {
+		type RegisterCommand = Record<string, (...args: any[]) => Promise<void> | void>
+		const nodeMCUcommands: RegisterCommand = {
+			'nodemcu-tools.connect': async (item: DeviceTreeItem) => {
 				let device
 				try {
 					device = await tools.connect(item.path)
@@ -46,50 +46,40 @@ export function activate(context: ExtensionContext): void {
 					})
 					await wv.show()
 				}
-			}),
-		)
+			},
 
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.disconnect', async (item: DeviceTreeItem) => {
+			'nodemcu-tools.disconnect': async (item: DeviceTreeItem) => {
 				await tools.disconnect(item.path)
 				treeProvider.refresh()
-			}),
-		)
+			},
 
-		context.subscriptions.push(commands.registerCommand('nodemcu-tools.refreshTreeView', () => treeProvider.refresh()))
+			'nodemcu-tools.refreshTreeView': () => treeProvider.refresh(),
 
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.uploadFile', async (file: Uri, files: Uri[]) => {
+			'nodemcu-tools.uploadFile': async (file: Uri, files: Uri[]) => {
 				const deviceFileName = files.length > 1 ? await tools.uploadBundle(files) : await tools.uploadFile(file)
 
 				if (deviceFileName) {
 					treeProvider.refresh()
 				}
-			}),
-		)
+			},
 
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.uploadFolderRename', async (folder: Uri) => {
+			'nodemcu-tools.uploadFolderRename': async (folder: Uri) => {
 				const deviceFileName = await tools.uploadFolder(folder, true)
 
 				if (deviceFileName) {
 					treeProvider.refresh()
 				}
-			}),
-		)
+			},
 
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.uploadFolder', async (folder: Uri) => {
+			'nodemcu-tools.uploadFolder': async (folder: Uri) => {
 				const deviceFileName = await tools.uploadFolder(folder, false)
 
 				if (deviceFileName) {
 					treeProvider.refresh()
 				}
-			}),
-		)
+			},
 
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.uploadFileAs', async (file: Uri) => {
+			'nodemcu-tools.uploadFileAs': async (file: Uri) => {
 				const newName = await renameFile(file, 'File will be saved under this name on device')
 				if (!newName) {
 					return
@@ -99,91 +89,68 @@ export function activate(context: ExtensionContext): void {
 				if (deviceFileName) {
 					treeProvider.refresh()
 				}
-			}),
-		)
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.uploadFileCompile', async (file: Uri) => {
+			},
+
+			'nodemcu-tools.uploadFileCompile': async (file: Uri) => {
 				const deviceFileName = await tools.uploadFileAndCompile(file)
 				if (deviceFileName) {
 					treeProvider.refresh()
 				}
-			}),
-		)
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.compileFileUpload', async (file: Uri) => {
+			},
+
+			'nodemcu-tools.compileFileUpload': async (file: Uri) => {
 				const deviceFileName = await tools.compileFileAndUpload(file, nodemcuTaskProvider, true)
 				if (deviceFileName) {
 					treeProvider.refresh()
 				}
-			}),
-		)
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.crossCompile', async (file: Uri) => {
+			},
+
+			'nodemcu-tools.crossCompile': async (file: Uri) => {
 				const deviceFileName = await tools.compileFileAndUpload(file, nodemcuTaskProvider, false)
 				if (deviceFileName) {
 					treeProvider.refresh()
 				}
-			}),
-		)
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.uploadFileRun', async (file: Uri) => {
+			},
+
+			'nodemcu-tools.uploadFileRun': async (file: Uri) => {
 				await tools.uploadFileAndRun(file)
-			}),
-		)
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.uploadFileSetLfs', async (file: Uri) => {
+			},
+
+			'nodemcu-tools.uploadFileSetLfs': async (file: Uri) => {
 				await tools.uploadFileAndSetLfs(file)
-			}),
-		)
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.uploadFileSetLfsAs', async (file: Uri) => {
+			},
+
+			'nodemcu-tools.uploadFileSetLfsAs': async (file: Uri) => {
 				const newName = await renameFile(file, 'File will be saved under this name on device')
 				if (!newName) {
 					return
 				}
 
 				await tools.uploadFileAndSetLfs(file, newName)
-			}),
-		)
+			},
 
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.compileFile', async (item: FileTreeItem) => {
+			'nodemcu-tools.compileFile': async (item: FileTreeItem) => {
 				await tools.compileFile(item.parent.path, item.name)
 				treeProvider.refresh()
-			}),
-		)
+			},
 
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.runFile', async (item: FileTreeItem) =>
-				tools.runFile(item.parent.path, item.name),
-			),
-		)
-
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.deleteFile', async (item: FileTreeItem) => {
+			'nodemcu-tools.runFile': async (item: FileTreeItem) => tools.runFile(item.parent.path, item.name),
+			'nodemcu-tools.deleteFile': async (item: FileTreeItem) => {
 				await tools.deleteFile(item.parent.path, item.name)
 				treeProvider.refresh()
-			}),
-		)
+			},
 
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.downloadFile', async (item: FileTreeItem) =>
-				tools.downloadFile(item.parent.path, item.name),
-			),
-		)
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.downloadFileAs', async (item: FileTreeItem) => {
+			'nodemcu-tools.downloadFile': async (item: FileTreeItem) => tools.downloadFile(item.parent.path, item.name),
+			'nodemcu-tools.downloadFileAs': async (item: FileTreeItem) => {
 				const newName = await renameFile(item.name, 'File will be saved under this name on host machine')
 				if (!newName) {
 					return
 				}
 
 				return tools.downloadFile(item.parent.path, item.name, newName)
-			}),
-		)
+			},
 
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.sendLine', async () => {
+			'nodemcu-tools.sendLine': async () => {
 				const editor = window.activeTextEditor
 				if (editor) {
 					const currentLine = editor.document.lineAt(editor.selection.active.line)
@@ -193,28 +160,28 @@ export function activate(context: ExtensionContext): void {
 
 					await tools.sendLine(currentLine.text)
 				}
-			}),
-		)
+			},
 
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.uploadActiveFile', async (file: Uri) => {
+			'nodemcu-tools.uploadActiveFile': async (file: Uri) => {
 				const deviceFileName = await tools.uploadFile(file)
 
 				if (deviceFileName) {
 					treeProvider.refresh()
 				}
-			}),
-		)
+			},
 
-		context.subscriptions.push(
-			commands.registerCommand('nodemcu-tools.sendBlock', async () => {
+			'nodemcu-tools.sendBlock': async () => {
 				const editor = window.activeTextEditor
 				if (editor) {
 					const block = editor.document.getText(editor.selection)
 					await tools.sendBlock(block)
 				}
-			}),
-		)
+			},
+		}
+
+		for (const commandName in nodeMCUcommands) {
+			context.subscriptions.push(commands.registerCommand(commandName, nodeMCUcommands[commandName]))
+		}
 	} catch (ex) {
 		console.error(ex) // eslint-disable-line no-console
 		void window.showErrorMessage(`Error in nodemcu-tools: ${ex}`)
