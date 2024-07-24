@@ -91,6 +91,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 		return this._commands
 	}
+
 	public set commandTimeout(msec: number) {
 		this._commandTimeout = msec
 	}
@@ -107,6 +108,36 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		}
 
 		return reply ?? ''
+	}
+
+	public async delayConnection(delay: number): Promise<void> {
+		await this.waitToBeReady()
+
+		// This procedure was borrowed from https://github.com/AndiDittrich/NodeMCU-Tool/blob/master/lib/connector/connect.js
+		// delay the connection process ? may fix issues related to rebooting modules
+
+		// step 1 - sleep
+		await new Promise<void>(resolve => {
+			setTimeout(() => resolve(), delay)
+		})
+
+		// step 2 - send dummy sequence
+		await this.write('\n\n\nprint("dummy printing")\n\n\n')
+
+		// step 3 - wait 1/3 to get the dummy sequence processed
+		await new Promise<void>(resolve => {
+			setTimeout(() => resolve(), delay)
+		})
+
+		// step 4 - send second dummy sequence
+		await this.write('\n\n\nprint("dummy printing")\n\n\n')
+
+		// step 5 - wait 1/3 to get the dummy sequence processed
+		await new Promise<void>(resolve => {
+			setTimeout(() => resolve(), delay)
+		})
+
+		this.setBusy(false)
 	}
 
 	public async detectEspType(): Promise<void> {

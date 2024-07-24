@@ -20,6 +20,8 @@ The created *resource.lua* will be emitted to *OutDir* folder and automatically 
 
 - Added support for new esp32 feature - node.info().
 
+- Added new **connectionDelay** parameter - connection delay (in milliseconds) between opening the serial device and starting the communication.
+
 ### Changed
 
 - Update dependencies

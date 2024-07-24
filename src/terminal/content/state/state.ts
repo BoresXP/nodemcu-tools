@@ -12,6 +12,7 @@ export interface ISettings {
 	minifyEnabled?: boolean
 	overwriteSnippets?: boolean
 	deviceFilterActive?: boolean
+	connectionDelay?: number
 }
 
 export interface IDeviceInfo {
@@ -44,6 +45,7 @@ export const initialSettings: ISettings = {
 	minifyEnabled: false,
 	overwriteSnippets: true,
 	deviceFilterActive: true,
+	connectionDelay: 0,
 }
 
 export const initialState: IState = {

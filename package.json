@@ -337,6 +337,13 @@
 					"type": "boolean",
 					"default": true,
 					"description": "Controls whether device filter is active - only known NodeMCU devices (USB vendor-id) will be listed.'"
+				},
+				"nodemcu-tools.connectionDelay": {
+					"type": "number",
+					"minimum": 0,
+					"maximum": 1000,
+					"default": 0,
+					"description": "Connection delay (in milliseconds) between opening the serial device and starting the communication.'"
 				}
 			}
 		},
