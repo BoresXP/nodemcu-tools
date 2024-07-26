@@ -16,6 +16,6 @@ export default interface INodeMcu {
 	connect: () => Promise<void>
 	disconnect: () => Promise<void>
 	waitToBeReady: () => Promise<void>
-	detectEspType: () => Promise<void>
+	fetchEspInfo: () => Promise<void>
 	delayConnection: (delay: number) => Promise<void>
 }

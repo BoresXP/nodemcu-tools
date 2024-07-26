@@ -13,10 +13,21 @@ interface INodeMcuCommandState {
 	returnValue?: string
 }
 
+export interface IEspInfo {
+	espArch: string
+	espID: string
+	espModel: string
+	isNewEsp32fw: boolean
+	isUART: boolean
+	hasEncoder: boolean
+}
+
 export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	private static readonly _luaCommands = {
 		getChipID: 'uart.write(0,tostring(node.chipid and node.chipid()).."\\r\\n")',
 		getModel: 'uart.write(0,tostring(node.chipmodel and node.chipmodel()).."\\r\\n")',
+		checkEncoder: 'uart.write(0,tostring(encoder and encoder.fromBase64).."\\r\\n")',
+		getUartType: 'uart.write(0,tostring(node.info and node.info("build_config")["esp_console"]).."\\r\\n")',
 	}
 	private static readonly _colorMap: [string, IToTerminalData['color']][] = [
 		['31', 'red'],
@@ -40,10 +51,14 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 	private _commands: NodeMcuCommands | undefined
 
-	private _espArch = ''
-	private _espID = ''
-	private _espModel = ''
-	private _isNewEsp32 = false
+	private readonly _espInfo = {
+		espArch: '',
+		espID: '',
+		espModel: '',
+		isNewEsp32fw: false,
+		isUART: true,
+		hasEncoder: false,
+	}
 
 	constructor(path: string) {
 		super(path)
@@ -52,20 +67,8 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		this.onDisconnect(err => this.handleDisconnect(err))
 	}
 
-	public get espArch(): string {
-		return this._espArch
-	}
-
-	public get espID(): string {
-		return this._espID
-	}
-
-	public get espModel(): string {
-		return this._espModel
-	}
-
-	public get isNewEsp32(): boolean {
-		return this._isNewEsp32
+	public get espInfo(): IEspInfo {
+		return this._espInfo
 	}
 
 	public get isBusy(): boolean {
@@ -140,33 +143,46 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		this.setBusy(false)
 	}
 
-	public async detectEspType(): Promise<void> {
+	public async fetchEspInfo(): Promise<void> {
 		await this.waitToBeReady()
-		const responseModel = await this.executeSingleLineCommand(NodeMcu._luaCommands.getModel)
-		const responseID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
-
-		// esp32xx - the chip model as a string, e.g. "esp32c3" or "esp32"
-		const espModel = responseModel.trimEnd().match(/^esp32.?.?/)
-
-		// to distinguish the outdated esp32 firmware with crlf/cr settings
-		this._isNewEsp32 = espModel !== null
-
 		// esp32 chipid (hex with '0x' prefix). Only available on the base ESP32 model; esp32xx returns nil
+		const responseID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
 		const esp32ID = responseID.trimEnd().match(/^0x\w+/)
 
+		// The commit 'Actually honour Kconfig line-endings settings.' https://github.com/nodemcu/nodemcu-firmware/commit/918f75310e98aea2ea908f9256c435f1be50de53
+		// requires changing the communication protocol between esp32 and the extension.
+		// Now we have to use uart.start/stop and handle default lf/lf line endings instead of crlf/cr
+		// Use node.model() to distinguish the outdated esp32 firmware. The chip model is a string, e.g. "esp32c3" or "esp32"
+		const responseModel = await this.executeSingleLineCommand(NodeMcu._luaCommands.getModel)
+		const espModel = responseModel.trimEnd().match(/^esp32.?.?/)
+		this._espInfo.isNewEsp32fw = espModel !== null
+
 		if (espModel) {
-			[this._espModel] = espModel
-			this._espArch = 'esp32'
-			this._espID = esp32ID ? esp32ID[0] : 'unknown'
+			[this._espInfo.espModel] = espModel
+			this._espInfo.espArch = 'esp32'
+			this._espInfo.espID = esp32ID ? esp32ID[0] : 'unknown'
 		} else if (esp32ID && !espModel) {
-			this._espModel = 'esp32' // legacy esp32
-			this._espArch = 'esp32'
-			;[this._espID] = esp32ID
+			this._espInfo.espModel = 'esp32' // legacy esp32 firmware
+			this._espInfo.espArch = 'esp32'
+			;[this._espInfo.espID] = esp32ID
 		} else {
-			this._espModel = 'esp8266'
-			this._espArch = 'esp8266'
-			this._espID = responseID.trimEnd()
+			this._espInfo.espModel = 'esp8266'
+			this._espInfo.espArch = 'esp8266'
+			this._espInfo.espID = responseID.trimEnd()
 		}
+
+		// isUART on esp8266 and esp32 is always true
+		// isUART on esp32xx depends on settings:
+		// CONSOLE_UART_DEFAULT || CONSOLE_UART_CUSTOM: true
+		// CONSOLE_USB_CDC || CONSOLE_USB_SERIAL_JTAG: false
+		this._espInfo.isUART = true
+		if (this._espInfo.espModel !== 'esp8266' && this._espInfo.espModel !== 'esp32') {
+			const responseUart = await this.executeSingleLineCommand(NodeMcu._luaCommands.getUartType)
+			this._espInfo.isUART = responseUart.trimEnd() === 'uart'
+		}
+
+		const responseEncoder = await this.executeSingleLineCommand(NodeMcu._luaCommands.checkEncoder)
+		this._espInfo.hasEncoder = responseEncoder.trimEnd() !== 'nil'
 	}
 
 	public waitToBeReady(): Promise<void> {
@@ -189,7 +205,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			return
 		}
 		if (!text.endsWith('\n')) {
-			text += this._espArch === 'esp8266' ? NodeMcuSerial.lineEnd : '\n'
+			text += this._espInfo.espArch === 'esp8266' ? NodeMcuSerial.lineEnd : '\n'
 		}
 
 		this._lastInput = text

@@ -67,14 +67,11 @@ export default class NodemcuTools {
 	public async connect(devicePath: string): Promise<INodeMcu> {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 		await device.connect()
-		const delay = workspace
-			.getConfiguration()
-			.get('nodemcu-tools.connectionDelay', initialSettings.connectionDelay)
+		const delay = workspace.getConfiguration().get('nodemcu-tools.connectionDelay', initialSettings.connectionDelay)
 		if (delay && delay > 0) {
 			await device.delayConnection(delay)
 		}
-		await device.detectEspType()
-
+		await device.fetchEspInfo()
 		await commands.executeCommand('setContext', 'nodemcu-tools:isConnected', true)
 
 		return device

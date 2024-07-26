@@ -133,6 +133,7 @@ export default abstract class NodeMcuSerial {
 	}
 
 	private onDataRawHandler(data: Buffer): void {
+		console.log('====== Data: ', data)
 		this._evtOnDataRaw.fire(data)
 	}
 }
