@@ -55,7 +55,7 @@ export default class NodeMcuCommands {
 				`if ${firstCall} then _r_B={}end;local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};_r_B[#_r_B+1]=d;uart.write(0,"kxyJ\\r\\n")if bw>=${chunkSize} then uart.on("data")uart.write(0,"QKiw\\r\\n")end end,0)uart.write(0,"Ready\\r\\n")`,
 
 			runChunk:
-				'uart.write(0,".\\r\\n")local f,ce=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then local ok,e=pcall(f)if not ok then uart.write(0,"Execution error:\\r\\n",e.."\\r\\n")end else uart.write(0,"Compilation error:\\r\\n",ce.."\\r\\n")end;_r_B=nil',
+				'uart.write(0,".\\r\\n")local f,c=loadstring(table.concat(_r_B))if type(f)=="function"then tmr.create():alarm(100,0,function()local x,e=pcall(f)if not x then uart.write(0,"\\r\\nE: ",e.."\\r\\n")end end)else uart.write(0,"CE: "..c.."\\r\\n")end;_r_B=nil',
 
 			formatEsp: 'file.format()',
 
