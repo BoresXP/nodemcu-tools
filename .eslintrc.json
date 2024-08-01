@@ -159,7 +159,7 @@
 		"@typescript-eslint/explicit-module-boundary-types": "off", // Require explicit return and argument types on exported functions' and classes' public class methods
 		"@typescript-eslint/interface-name-prefix": "off",
 		"@typescript-eslint/restrict-template-expressions": "off",
-		"@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_$" }],
+		"@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_$", "caughtErrorsIgnorePattern": "^ignore" }],
 		"@typescript-eslint/no-invalid-this": "error", // disallow this keywords outside of classes or class-like objects
 
 		"react/no-access-state-in-setstate": "error", // Prevent using this.state inside this.setState

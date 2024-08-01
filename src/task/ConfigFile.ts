@@ -101,7 +101,7 @@ async function isExists(f: string, revealMessage = true): Promise<boolean> {
 	try {
 		await workspace.fs.stat(Uri.file(f))
 		return true
-	} catch (err) {
+	} catch (ignoreErr) {
 		if (revealMessage) {
 			outChannel.appendLine(`No such file or directory '${f}'`)
 			outChannel.show(true)
@@ -116,7 +116,7 @@ async function createDirectory(folder: string): Promise<boolean> {
 		outChannel.appendLine(`The '${folder}' directory was created successfully.`)
 		outChannel.show(true)
 		return true
-	} catch (err) {
+	} catch (ignoreErr) {
 		return false
 	}
 }
