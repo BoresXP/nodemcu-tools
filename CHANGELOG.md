@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.0] - 2024-08-02
+
  ⚠️  **Breaking changes**
 
 - Default value for "Include path" in the config file has been removed. You'll have to specify a list of glob patterns that match files to be included in LFS image yourself. For example, './lfs/\*lua' to include all *.lua* files under the **./lfs** folder.
