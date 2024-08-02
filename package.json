@@ -340,7 +340,7 @@
 				},
 				"nodemcu-tools.connectionDelay": {
 					"type": "number",
-					"minimum": 0,
+					"minimum": 100,
 					"maximum": 1000,
 					"default": 0,
 					"description": "Connection delay (in milliseconds) between opening the serial device and starting the communication.'"

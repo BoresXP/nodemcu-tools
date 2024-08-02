@@ -28,6 +28,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		getModel: 'uart.write(0,tostring(node.chipmodel and node.chipmodel()).."\\r\\n")',
 		checkEncoder: 'uart.write(0,tostring(encoder and encoder.fromBase64).."\\r\\n")',
 		getUartType: 'uart.write(0,tostring(node.info and node.info("build_config")["esp_console"]).."\\r\\n")',
+		echo: 'uart.write(0,"echo1337\\r\\n")',
 	}
 	private static readonly _colorMap: [string, IToTerminalData['color']][] = [
 		['31', 'red'],
@@ -111,6 +112,12 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		}
 
 		return reply ?? ''
+	}
+
+	public async checkGarbageInUart(): Promise<boolean> {
+		await this.waitToBeReady()
+		const responceEcho = await this.executeSingleLineCommand(NodeMcu._luaCommands.echo)
+		return responceEcho.trimEnd() !== 'echo1337'
 	}
 
 	public async delayConnection(delay: number): Promise<void> {

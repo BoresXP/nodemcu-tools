@@ -45,7 +45,7 @@ export const initialSettings: ISettings = {
 	minifyEnabled: false,
 	overwriteSnippets: true,
 	deviceFilterActive: true,
-	connectionDelay: 0,
+	connectionDelay: 100,
 }
 
 export const initialState: IState = {
