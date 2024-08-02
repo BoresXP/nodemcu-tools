@@ -13,14 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added support for new esp32 feature - **node.info()**.
+
 - Added the feature of creating *resource.lua* file to use it with [file_lfs](https://nodemcu.readthedocs.io/en/release/lua-modules/file_lfs/#file-lfs-module) module.
 
-New option **resourceDir** in the config file specifies the folder containing the files to be included in resource.lua. (e.g. ./resource)
-The created *resource.lua* will be emitted to *OutDir* folder and automatically included in the LFS image build.
+  New option **resourceDir** in the config file specifies the folder containing the files to be included in resource.lua. (e.g. ./resource)
+  The created *resource.lua* will be emitted to *OutDir* folder and automatically included in the LFS image build.
 
-- Added support for new esp32 feature - node.info().
-
-- Added new **connectionDelay** parameter - connection delay (in milliseconds) between opening the serial device and starting the communication.
+- Added new **connectionDelay** setting - connection delay (in milliseconds) between opening the serial device and starting the communication.  
+This parameter is intended to fix Reset-on-Connect Issue. See [Fixing Reset-on-Connect Issue](https://github.com/AndiDittrich/NodeMCU-Tool/blob/master/docs/Reset_on_Connect.md)
 
 ### Changed
 
