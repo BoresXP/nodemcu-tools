@@ -1,4 +1,4 @@
-import { ExtensionContext, Uri, commands, tasks, window } from 'vscode'
+import { ExtensionContext, Uri, commands, tasks, window, workspace } from 'vscode'
 
 import DeviceTreeItem from './tree/DeviceTreeItem'
 import DeviceTreeProvider from './tree/DeviceTreeProvider'
@@ -11,6 +11,10 @@ import TerminalView from './terminal/TerminalView'
 // your extension is activated the very first time the command is executed
 export function activate(context: ExtensionContext): void {
 	try {
+		if (!workspace.workspaceFolders) {
+			return
+		}
+
 		const treeProvider = new DeviceTreeProvider()
 		const treeView = window.createTreeView('nodemcu-tools.devices', { treeDataProvider: treeProvider })
 
