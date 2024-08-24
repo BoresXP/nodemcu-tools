@@ -419,7 +419,7 @@
 		"eslint-plugin-promise": "^7.0.0",
 		"eslint-plugin-react": "^7.35.0",
 		"eslint-plugin-react-hooks": "^4.6.2",
-		"eslint-plugin-sonarjs": "^1.0.4",
+		"eslint-plugin-sonarjs": "^2.0.2",
 		"eslint-webpack-plugin": "^4.2.0",
 		"fork-ts-checker-webpack-plugin": "^9.0.2",
 		"json-minimizer-webpack-plugin": "^5.0.0",
