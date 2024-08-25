@@ -49,6 +49,7 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 				await device.waitToBeReady()
 
 				const files = await device.commands.files()
+				// eslint-disable-next-line sonarjs/no-misleading-array-reverse
 				return files.sort((f1, f2) => (f1.name > f2.name ? 1 : -1)).map(f => new FileTreeItem(f.name, f.size, element))
 			}
 		} catch (ex) {

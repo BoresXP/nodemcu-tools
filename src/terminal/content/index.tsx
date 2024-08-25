@@ -12,6 +12,9 @@ import { isTerminalLine } from '../messages/TerminalLine'
 createRoot(document.getElementById('root')!).render(<App />)
 
 window.addEventListener('message', evt => {
+	if (!evt.origin.startsWith('vscode-webview:')) {
+		return
+	}
 	const message = evt.data as IMessage
 	if (isTerminalLine(message)) {
 		Events.terminalLineAdd({ text: message.text, lineColor: message.textColor })

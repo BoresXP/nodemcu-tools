@@ -20,7 +20,7 @@ import { makeResource } from './MakeResource'
 import path from 'path'
 
 export default class NodemcuTaskProvider implements TaskProvider {
-	static taskType = 'NodeMCU'
+	static readonly taskType = 'NodeMCU'
 	private _config: IConfiguration | undefined
 	private _tasks: Task[] | undefined = void 0
 	private _processExitCode: number | undefined

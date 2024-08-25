@@ -69,8 +69,10 @@ export default class NodemcuTools {
 		await device.connect()
 
 		const isGarbageInUart = await device.checkGarbageInUart()
+		// getConfiguration always returns 'delay' value is 0, if 'delay' is not set to > 100 explicitly
+		// initialSetting is not used, as delay is not undefined
 		let delay = workspace.getConfiguration().get('nodemcu-tools.connectionDelay', initialSettings.connectionDelay)
-		if (delay || isGarbageInUart) {
+		if (isGarbageInUart || delay) {
 			if (delay === 0) {
 				delay = initialSettings.connectionDelay
 			}

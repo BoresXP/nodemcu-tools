@@ -154,14 +154,14 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		await this.waitToBeReady()
 		// esp32 chipid (hex with '0x' prefix). Only available on the base ESP32 model; esp32xx returns nil
 		const responseID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
-		const esp32ID = responseID.trimEnd().match(/^0x\w+/)
+		const esp32ID = /^0x\w+/.exec(responseID.trimEnd())
 
 		// The commit 'Actually honour Kconfig line-endings settings.' https://github.com/nodemcu/nodemcu-firmware/commit/918f75310e98aea2ea908f9256c435f1be50de53
 		// requires changing the communication protocol between esp32 and the extension.
 		// Now we have to use uart.start/stop and handle default lf/lf line endings instead of crlf/cr
 		// Use node.model() to distinguish the outdated esp32 firmware. The chip model is a string, e.g. "esp32c3" or "esp32"
 		const responseModel = await this.executeSingleLineCommand(NodeMcu._luaCommands.getModel)
-		const espModel = responseModel.trimEnd().match(/^esp32.?.?/)
+		const espModel = /^esp32.?.?/.exec(responseModel.trimEnd())
 		this._espInfo.isNewEsp32fw = espModel !== null
 
 		if (espModel) {
@@ -340,8 +340,8 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			return { color: 'blue', data }
 		}
 
-		// eslint-disable-next-line no-control-regex
-		const matches = data.match(/^\x1b\[\d?;?(\d\d)m(.+)\x1b\[0m(.*)\r*\n/)
+		// eslint-disable-next-line no-control-regex, sonarjs/sonar-no-control-regex
+		const matches = /^\x1b\[\d?;?(\d\d)m(.+)\x1b\[0m(.*)\r*\n/.exec(data)
 		if (matches) {
 			for (const fgColor of NodeMcu._colorMap) {
 				if (matches[1] === fgColor[0]) {

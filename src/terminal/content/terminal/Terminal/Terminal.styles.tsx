@@ -17,27 +17,21 @@ export const TerminalLine = styled.div<{ $lineColor: TerminalLineColor }>`
 		switch (props.$lineColor) {
 			case 'red': {
 				return '#cd0000'
-				break
 			}
 			case 'green': {
 				return '#00cd00'
-				break
 			}
 			case 'yellow': {
 				return '#cdcd00'
-				break
 			}
 			case 'blue': {
 				return '#569cd6'
-				break
 			}
 			case 'magenta': {
 				return '#cd00cd'
-				break
 			}
 			case 'cyan': {
 				return '#00cdcd'
-				break
 			}
 			default: {
 				return 'inherit'

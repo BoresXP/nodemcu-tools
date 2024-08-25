@@ -7,6 +7,8 @@ import NodemcuTaskProvider from './task/NodemcuTaskProvider'
 import NodemcuTools from './NodemcuTools'
 import TerminalView from './terminal/TerminalView'
 
+type RegisterCommand = Record<string, (...args: any[]) => Promise<void> | void>
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: ExtensionContext): void {
@@ -28,7 +30,6 @@ export function activate(context: ExtensionContext): void {
 
 		const tools = new NodemcuTools()
 
-		type RegisterCommand = Record<string, (...args: any[]) => Promise<void> | void>
 		const nodeMCUcommands: RegisterCommand = {
 			'nodemcu-tools.connect': async (item: DeviceTreeItem) => {
 				let device
