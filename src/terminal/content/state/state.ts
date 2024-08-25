@@ -16,15 +16,15 @@ export interface ISettings {
 }
 
 export interface IDeviceInfo {
-	numberType?: string
-	heapFree?: number
-	ssl?: boolean
-	modules?: string
-	fsTotal?: number
-	fsUsed?: number
-	chipArch?: string
-	chipModel?: string
-	chipID?: string
+	numberType: string
+	freeHeap: number
+	ssl: boolean
+	modules: string
+	fsTotal: number
+	fsUsed: number
+	chipArch: string
+	chipModel: string
+	chipID: string
 }
 
 export interface IState {
@@ -56,5 +56,15 @@ export const initialState: IState = {
 	currentCommandText: '',
 	isDeviceBusy: true,
 	settings: initialSettings,
-	deviceInfo: {},
+	deviceInfo: {
+		numberType: '',
+		freeHeap: 0,
+		ssl: false,
+		modules: '',
+		fsTotal: 0,
+		fsUsed: 0,
+		chipArch: '',
+		chipModel: '',
+		chipID: '',
+	},
 }

@@ -1,22 +1,11 @@
 import NodeMcu, { IEspInfo } from './NodeMcu'
 
+import { IDeviceInfo } from '../terminal/content/state/state'
 import NodeMcuSerial from './NodeMcuSerial'
 
 export interface IDeviceFileInfo {
 	name: string
 	size: number
-}
-
-export interface IDeviceInfo {
-	numberType: string
-	freeHeap: number
-	ssl: boolean
-	modules: string
-	fsTotal: number
-	fsUsed: number
-	chipArch: string
-	chipModel: string
-	chipID: string
 }
 
 export default class NodeMcuCommands {
@@ -291,9 +280,9 @@ export default class NodeMcuCommands {
 		const fsInfoArray = fsInfo.split(';', 3).map(fsInfoStr => parseInt(fsInfoStr, 10))
 
 		return {
-			freeHeap: parseInt(freeHeap, 10),
 			// eslint-disable-next-line @typescript-eslint/dot-notation
 			numberType: infoParams['number_type'] || 'unknown',
+			freeHeap: parseInt(freeHeap, 10),
 			// eslint-disable-next-line @typescript-eslint/dot-notation
 			ssl: infoParams['ssl'] === 'true',
 			modules: infoParams.modules,

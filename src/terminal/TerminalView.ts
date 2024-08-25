@@ -2,7 +2,7 @@ import { ExtensionContext, Uri, ViewColumn, WebviewPanel, commands, window, work
 
 import IMessage from './messages/IMessage'
 import { INodeMcu } from '../nodemcu'
-import { deviceInfo } from './messages/DeviceInfo'
+import { deviceInfoView } from './messages/DeviceInfo'
 import { deviceState } from './messages/DeviceState'
 import { initialSettings } from './content/state/state'
 import { isDeviceInfoRequest } from './messages/DeviceInfoRequest'
@@ -57,17 +57,7 @@ export default class TerminalView {
 	private async updateDeviceInfo(): Promise<void> {
 		const info = await this._device.commands.getDeviceInfo()
 		await this._webViewPanel.webview.postMessage(
-			deviceInfo(
-				info.numberType,
-				info.freeHeap,
-				info.ssl,
-				info.modules,
-				info.fsTotal,
-				info.fsUsed,
-				info.chipArch,
-				info.chipModel,
-				info.chipID,
-			),
+			deviceInfoView(info),
 		)
 	}
 

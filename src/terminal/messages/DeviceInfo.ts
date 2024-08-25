@@ -6,29 +6,19 @@ export interface IDeviceInfo extends IMessage {
 	info: IDeviceInfoData
 }
 
-export function deviceInfo(
-	numberType: string,
-	heapFree: number,
-	ssl: boolean,
-	modules: string,
-	fsTotal: number,
-	fsUsed: number,
-	chipArch: string,
-	chipModel: string,
-	chipID: string
-): IDeviceInfo {
+export function deviceInfoView(infoData: IDeviceInfoData): IDeviceInfo {
 	return {
 		type: 'deviceInfo',
 		info: {
-			numberType,
-			heapFree,
-			ssl,
-			modules,
-			fsTotal,
-			fsUsed,
-			chipArch,
-			chipModel,
-			chipID,
+			numberType: infoData.numberType,
+			freeHeap: infoData.freeHeap,
+			ssl: infoData.ssl,
+			modules: infoData.modules,
+			fsTotal: infoData.fsTotal,
+			fsUsed: infoData.fsUsed,
+			chipArch: infoData.chipArch,
+			chipModel: infoData.chipModel,
+			chipID: infoData.chipID,
 		},
 	}
 }

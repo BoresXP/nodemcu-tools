@@ -16,8 +16,8 @@ const StatusBar: React.FC = () => {
 
 	return (
 		<StatusBarStyled>
-			{typeof info.heapFree !== 'undefined' ? (
-				<StatusBarItem text={info.heapFree.toLocaleString()} tooltip="Free heap (bytes)" onClick={onItemClick} />
+			{typeof info.freeHeap !== 'undefined' ? (
+				<StatusBarItem text={info.freeHeap.toLocaleString()} tooltip="Free heap (bytes)" onClick={onItemClick} />
 			) : null}
 			{info.numberType ? <StatusBarItem text={info.numberType} tooltip="Number type" /> : null}
 			{info.ssl ? <StatusBarItem text="ssl" /> : null}
