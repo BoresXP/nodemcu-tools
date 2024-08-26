@@ -4,6 +4,15 @@ import { displayError, getOutputChannel } from './OutputChannel'
 import { IConfiguration } from './INodemcuTask'
 import path from 'path'
 
+type ValidationMethod = Record<string, () => void | Promise<void>>
+
+class ValidationError extends Error {
+	constructor(message: string) {
+		super(message)
+		this.name = 'ValidationError'
+	}
+}
+
 let outChannel: OutputChannel
 
 export async function getConfig(
@@ -14,7 +23,11 @@ export async function getConfig(
 	outChannel = getOutputChannel()
 	await commands.executeCommand('setContext', 'nodemcu-tools:isConfig', false)
 
-	if (!(await isExists(configFileName, revealMessage))) {
+	if (!(await isExists(configFileName))) {
+		if (revealMessage) {
+			outChannel.appendLine(`No config file '${configFileName}'`)
+			outChannel.show(true)
+		}
 		return void 0
 	}
 
@@ -30,93 +43,89 @@ export async function getConfig(
 		const data = await workspace.fs.readFile(Uri.file(configFileName))
 		const userConfig = JSON.parse(Buffer.from(data).toString('utf8')) as IConfiguration
 
-		for (const prop in userConfig) {
-			if (prop in config && userConfig[prop]) {
-				config[prop] = userConfig[prop]
-			}
-
-			switch (prop) {
-				case 'compilerExecutable':
-					if (config.compilerExecutable.trimEnd() === '') {
-						await displayError(new Error('No path to the luac.cross'))
-						return void 0
-					}
-					break
-				case 'outDir': {
-					if (config.outDir.trimEnd() === '') {
-						await displayError(new Error(`Invalid folder name for '${prop}'`))
-						return void 0
-					}
-					break
-				}
-				case 'outFile':
-					if (config.outFile.trimEnd() === '') {
-						await displayError(new Error(`Invalid file name for '${prop}'`))
-						return void 0
-					}
-					break
-				case 'include':
-					for (const pattern of config.include) {
-						const pathToCheck = path.dirname(path.resolve(rootFolder, pattern))
-						if (!(await isExists(pathToCheck))) {
-							await displayError(new Error(`Include path '${pathToCheck}' is not found.`))
-							return void 0
-						}
-					}
-					break
-				case 'resourceDir':
-					if (config.resourceDir.trimEnd() === '') {
-						await displayError(new Error(`Invalid folder name for '${prop}'`))
-						return void 0
-					}
-					if (!(await isExists(path.join(rootFolder, config.resourceDir)))) {
-						await displayError(new Error(`Path to the resource folder '${config.resourceDir}' is not found.`))
-						return void 0
-					}
-					break
-				default:
-					await displayError(new Error(`Unknown property '${prop}' in config file`))
-					break
-			}
-
-			if (!(await isExists(path.join(rootFolder, config.outDir)))) {
-				try {
-					await createDirectory(path.join(rootFolder, config.outDir))
-				} catch {
-					await displayError(new Error(`Can not create the directory '${config.outDir}'`))
-					return void 0
-				}
-			}
+		for (const option in userConfig) {
+			await validateOption(userConfig, option, rootFolder)
+			config[option] = userConfig[option]
 		}
 	} catch (error) {
-		await window.showErrorMessage(`Failed to parse ".nodemcutools". ${error}`)
+		if (error instanceof ValidationError) {
+			await window.showErrorMessage(`Failed to parse ".nodemcutools". ${error.message}`)
+			return void 0
+		}
+		await displayError(error as Error)
 		return void 0
 	}
 
+	await createDirectory(path.join(rootFolder, config.outDir))
 	await commands.executeCommand('setContext', 'nodemcu-tools:isConfig', true)
 	return config
 }
 
-async function isExists(f: string, revealMessage = true): Promise<boolean> {
+async function isExists(f: string): Promise<boolean> {
 	try {
 		await workspace.fs.stat(Uri.file(f))
 		return true
-	} catch (ignoreErr) {
-		if (revealMessage) {
-			outChannel.appendLine(`No such file or directory '${f}'`)
-			outChannel.show(true)
-		}
+	} catch {
 		return false
 	}
 }
 
-async function createDirectory(folder: string): Promise<boolean> {
+async function createDirectory(folder: string): Promise<void> {
+	if (await isExists(folder)) {
+		return
+	}
+
 	try {
 		await workspace.fs.createDirectory(Uri.file(folder))
 		outChannel.appendLine(`The '${folder}' directory was created successfully.`)
 		outChannel.show(true)
-		return true
-	} catch (ignoreErr) {
-		return false
+	} catch {
+		await displayError(new Error(`Can not create the directory '${folder}'`))
+	}
+}
+
+async function validateOption(userConfig: IConfiguration, option: string, rootFolder: string): Promise<void> {
+	let errMessage: string = ''
+
+	const validate: ValidationMethod = {
+		compilerExecutable: () => {
+			if (userConfig.compilerExecutable.trimEnd() === '') {
+				errMessage = 'No path to the luac.cross'
+			}
+		},
+		include: async () => {
+			for (const pattern of userConfig.include) {
+				const pathToCheck = path.dirname(path.resolve(rootFolder, pattern))
+				if (!(await isExists(pathToCheck))) {
+					errMessage = `Include path '${pathToCheck}' is not found.`
+				}
+			}
+		},
+		outDir: () => {
+			if (userConfig.outDir.trimEnd() === '') {
+				errMessage = `Invalid folder name for '${option}'`
+			}
+		},
+		outFile: () => {
+			if (userConfig.outFile.trimEnd() === '') {
+				errMessage = `Invalid file name for '${option}'`
+			}
+		},
+		resourceDir: async () => {
+			if (userConfig.resourceDir.trimEnd() === '') {
+				errMessage = `Invalid folder name for '${option}'`
+			}
+			if (!(await isExists(path.join(rootFolder, userConfig.resourceDir)))) {
+				errMessage = `Path to the resource folder '${userConfig.resourceDir}' is not found.`
+			}
+		},
+		default: () => {
+			errMessage = `Unknown property '${option}' in config file`
+		},
+	}
+
+	await (validate[option] ?? validate['default'])()
+	if (errMessage) {
+		throw new ValidationError(errMessage)
 	}
 }
