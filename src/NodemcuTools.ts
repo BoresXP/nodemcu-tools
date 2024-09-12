@@ -13,7 +13,7 @@ import {
 } from 'vscode'
 import { INodeMcu, NodeMcuRepository } from './nodemcu'
 
-import { INodemcuTaskDefinition } from './task/INodemcuTask'
+import { NodemcuTaskDefinition } from './task/INodemcuTask'
 import NodemcuTaskProvider from './task/NodemcuTaskProvider'
 import { initialSettings } from './terminal/content/state/state'
 import luamin from 'luamin'
@@ -168,7 +168,7 @@ export default class NodemcuTools {
 		const [fileBasename] = file.path.split('/').slice(-1)
 		const [fileBasenameNoExtension] = fileBasename.split('.').slice(-2)
 
-		const nodemcuTaskDefinition: INodemcuTaskDefinition = {
+		const nodemcuTaskDefinition: NodemcuTaskDefinition = {
 			type: NodemcuTaskProvider.taskType,
 			nodemcuTaskName: upload ? 'compileFileAndUpload' : 'crossCompile',
 			compilerExecutable: config.compilerExecutable,

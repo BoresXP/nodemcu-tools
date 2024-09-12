@@ -18,16 +18,12 @@ let outChannel: OutputChannel
 export async function getConfig(
 	rootFolder: string,
 	configFileName: string,
-	revealMessage = true,
 ): Promise<IConfiguration | undefined> {
 	outChannel = getOutputChannel()
 	await commands.executeCommand('setContext', 'nodemcu-tools:isConfig', false)
 
 	if (!(await isExists(configFileName))) {
-		if (revealMessage) {
-			outChannel.appendLine(`No config file '${configFileName}'`)
-			outChannel.show(true)
-		}
+		outChannel.appendLine(`No config file '${configFileName}'`)
 		return void 0
 	}
 

@@ -1,11 +1,7 @@
 import { TaskDefinition } from 'vscode'
 
-export interface INodemcuTaskDefinition extends TaskDefinition {
+interface INodemcuTaskDefinition extends TaskDefinition {
 	nodemcuTaskName: string
-	compilerExecutable: string
-	include?: string[]
-	outDir?: string
-	outFile?: string
 }
 
 export interface IConfiguration {
@@ -16,3 +12,6 @@ export interface IConfiguration {
 	outFile: string
 	resourceDir: string
 }
+
+export type NodemcuTaskDefinition = INodemcuTaskDefinition &
+	Pick<IConfiguration, 'compilerExecutable' | 'include' | 'outDir' | 'outFile'>

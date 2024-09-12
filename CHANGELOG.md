@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Automatically rebuild tasks if the configuration file has been changed
+- Do not show unnecessary `No config file '.nodemcutools'` message.
+
+### Changed
+
+- Update dependencies
+
 ## [4.3.0] - 2024-08-02
 
  ⚠️  **Breaking changes**

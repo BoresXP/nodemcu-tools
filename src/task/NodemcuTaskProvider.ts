@@ -1,5 +1,5 @@
-import { IConfiguration, INodemcuTaskDefinition } from './INodemcuTask'
 import {
+	FileSystemWatcher,
 	ShellExecution,
 	Task,
 	TaskEndEvent,
@@ -12,6 +12,7 @@ import {
 	tasks,
 	workspace,
 } from 'vscode'
+import { IConfiguration, NodemcuTaskDefinition } from './INodemcuTask'
 
 import { NodeMcuRepository } from '../nodemcu'
 import { displayError } from './OutputChannel'
@@ -26,6 +27,7 @@ export default class NodemcuTaskProvider implements TaskProvider {
 	private _processExitCode: number | undefined
 	private readonly _configFile: string
 	private readonly _rootFolder: string
+	private _resourceFolderWatcher: FileSystemWatcher | undefined = void 0
 
 	constructor() {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -34,10 +36,7 @@ export default class NodemcuTaskProvider implements TaskProvider {
 
 		const fileWatcher = workspace.createFileSystemWatcher(this._configFile)
 		fileWatcher.onDidChange(() => this.rebuildConfig())
-		fileWatcher.onDidCreate(() => {
-			this._tasks = void 0
-			this._config = void 0
-		})
+		fileWatcher.onDidCreate(() => this.rebuildConfig())
 		fileWatcher.onDidDelete(() => this.rebuildConfig())
 
 		tasks.onDidEndTaskProcess(event => (this._processExitCode = event.exitCode))
@@ -49,7 +48,9 @@ export default class NodemcuTaskProvider implements TaskProvider {
 	}
 
 	public async init(): Promise<void> {
-		this._config = await getConfig(this._rootFolder, this._configFile, false)
+		this._config = await getConfig(this._rootFolder, this._configFile)
+		this.setResourceWatcher()
+		await this.rebuildResource()
 	}
 
 	public resolveTask(_task: Task): Task | undefined {
@@ -65,30 +66,8 @@ export default class NodemcuTaskProvider implements TaskProvider {
 	}
 
 	private async getTasks(): Promise<Task[] | undefined> {
-		if (!this._rootFolder) {
+		if (!this._rootFolder || !this._config) {
 			return void 0
-		}
-
-		const nodemcuTasks: Task[] = []
-		this._config = await getConfig(this._rootFolder, this._configFile)
-		if (!this._config) {
-			return nodemcuTasks
-		}
-
-		if (this._config.resourceDir) {
-			const resourceFolderWatcher = workspace.createFileSystemWatcher(path.join(this._rootFolder, this._config.resourceDir) + '/**')
-			resourceFolderWatcher.onDidChange(() => this.rebuildResource(this._config!))
-			resourceFolderWatcher.onDidCreate(() => this.rebuildResource(this._config!))
-			resourceFolderWatcher.onDidDelete(() => this.rebuildResource(this._config!))
-
-			const resourceFile = await makeResource(this._config)
-			// add resource.lua in LFS img
-			if (resourceFile) {
-				const relativeResourceFilePath = workspace.asRelativePath(resourceFile)
-				if (!(this._config.include.includes(relativeResourceFilePath))) {
-					this._config.include.push(relativeResourceFilePath)
-				}
-			}
 		}
 
 		const filesLFS = this._config.include.join(' ')
@@ -100,18 +79,18 @@ export default class NodemcuTaskProvider implements TaskProvider {
 			['buildLFSandUploadSerial', 'Build LFS and upload to device via serial port'],
 			['buildLFS', 'Build LFS on host machine'],
 		]
+		const taskConfig = {
+			compilerExecutable: this._config.compilerExecutable,
+			include: this._config.include,
+			outDir: this._config.outDir,
+			outFile: this._config.outFile,
+			type: NodemcuTaskProvider.taskType,
+		}
+		const nodemcuTasks: Task[] = []
 
 		listTasks.forEach(nextTask => {
-			if (!this._config) {
-				return nodemcuTasks
-			}
-
-			const nodemcuTaskDefinition: INodemcuTaskDefinition = {
-				compilerExecutable: this._config.compilerExecutable,
-				include: this._config.include,
-				outDir: this._config.outDir,
-				outFile: this._config.outFile,
-				type: NodemcuTaskProvider.taskType,
+			const nodemcuTaskDefinition: NodemcuTaskDefinition = {
+				...taskConfig,
 				nodemcuTaskName: nextTask[0],
 			}
 
@@ -133,13 +112,41 @@ export default class NodemcuTaskProvider implements TaskProvider {
 		return nodemcuTasks
 	}
 
-	private async rebuildConfig(): Promise<void> {
-		this._tasks = void 0
-		this._config = await getConfig(this._rootFolder, this._configFile)
+	private setResourceWatcher(): void {
+		if (this._config?.resourceDir) {
+			this._resourceFolderWatcher = workspace.createFileSystemWatcher(
+				path.join(this._rootFolder, this._config.resourceDir) + '/**',
+			)
+			this._resourceFolderWatcher.onDidChange(() => this.rebuildResource())
+			this._resourceFolderWatcher.onDidCreate(() => this.rebuildResource())
+			this._resourceFolderWatcher.onDidDelete(() => this.rebuildResource())
+		}
 	}
 
-	private async rebuildResource(config: IConfiguration): Promise<void> {
-		await makeResource(config)
+	private async rebuildConfig(): Promise<void> {
+		this._tasks = void 0
+		if (this._resourceFolderWatcher) {
+			this._resourceFolderWatcher.dispose()
+		}
+		this._config = await getConfig(this._rootFolder, this._configFile)
+		if (this._config) {
+			this.setResourceWatcher()
+			await this.rebuildResource()
+			await this.provideTasks()
+		}
+	}
+
+	private async rebuildResource(): Promise<void> {
+		if (this._config?.resourceDir) {
+			const resourceFile = await makeResource(this._config)
+			// add resource.lua to LFS image build
+			if (resourceFile) {
+				const relativeResourceFilePath = workspace.asRelativePath(resourceFile)
+				if (!this._config.include.includes(relativeResourceFilePath)) {
+					this._config.include.push(relativeResourceFilePath)
+				}
+			}
+		}
 	}
 
 	private async endTaskHandler(event: TaskEndEvent): Promise<void> {
@@ -152,11 +159,7 @@ export default class NodemcuTaskProvider implements TaskProvider {
 			return
 		}
 
-		const fileToUpload = Uri.joinPath(
-			Uri.file(this._rootFolder),
-			taskDefinition.outDir as string,
-			taskDefinition.outFile as string,
-		)
+		const fileToUpload = Uri.joinPath(Uri.file(this._rootFolder), taskDefinition.outDir, taskDefinition.outFile)
 
 		switch (taskDefinition.nodemcuTaskName) {
 			case 'buildLFSandUploadSerial':
