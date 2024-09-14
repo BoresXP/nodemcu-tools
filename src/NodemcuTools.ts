@@ -98,7 +98,8 @@ export default class NodemcuTools {
 			return void 0
 		}
 
-		for (const [name, type] of await workspace.fs.readDirectory(folder)) {
+		const dirEntries = await workspace.fs.readDirectory(folder)
+		for (const [name, type] of dirEntries) {
 			if (type === FileType.File) {
 				const filePath = posix.join(folder.path, name)
 				const deviceFileName = withPath ? filePath.split('/').slice(-2).join('/') : filePath.split('/').slice(-1)[0]

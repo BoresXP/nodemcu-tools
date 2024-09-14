@@ -1,7 +1,7 @@
 import { HoverTooltipGLobalClass, StatusBarItemStyled } from './StatusBarItem.styles'
 import React, { useMemo } from 'react'
 
-export interface IStatusBarModulesItemProps {
+interface IStatusBarModulesItemProps {
 	modules: string
 	chipArch: string
 }

@@ -1,6 +1,6 @@
 import IMessage from './IMessage'
 
-export interface IFormatRequest extends IMessage {
+interface IFormatRequest extends IMessage {
 	type: 'formatRequest'
 }
 

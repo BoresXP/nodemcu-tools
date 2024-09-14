@@ -1,6 +1,6 @@
 import { ITerminalSettings, initialTerminalSettings } from '../../../settings'
 
-export type TerminalLineColor = 'default' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan'
+import { TerminalLineColor } from '../../messages/TerminalLine'
 
 export interface ITerminalLine {
 	text: string

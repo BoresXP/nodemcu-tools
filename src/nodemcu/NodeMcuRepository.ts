@@ -11,7 +11,7 @@ export interface SerialPortInfo {
 	vendorId?: string
 }
 
-export interface DisconnectInfo {
+interface DisconnectInfo {
 	path: string
 	error?: ErrorDisconnect
 }

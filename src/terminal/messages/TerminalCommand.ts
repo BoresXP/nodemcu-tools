@@ -1,6 +1,6 @@
 import IMessage from './IMessage'
 
-export interface ITerminalCommand extends IMessage {
+interface ITerminalCommand extends IMessage {
 	type: 'terminalCommand'
 	text: string
 }

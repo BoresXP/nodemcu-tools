@@ -1,6 +1,6 @@
 import IMessage from './IMessage'
 
-export interface IDeviceInfoRequest extends IMessage {
+interface IDeviceInfoRequest extends IMessage {
 	type: 'deviceInfoRequest'
 }
 

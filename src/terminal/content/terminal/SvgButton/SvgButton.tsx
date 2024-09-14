@@ -1,7 +1,7 @@
 import React from 'react'
 import { SvgButtonStyled } from './SvgButton.styles'
 
-export interface ISvgButtonProps {
+interface ISvgButtonProps {
 	tooltip: string
 	svgName: string
 	onClick?: () => void

@@ -1,7 +1,8 @@
 import IMessage from './IMessage'
-import { TerminalLineColor } from '../content/state/state'
 
-export interface ITerminalLine extends IMessage {
+export type TerminalLineColor = 'default' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan'
+
+interface ITerminalLine extends IMessage {
 	type: 'terminalLine'
 	textColor: TerminalLineColor
 	text: string

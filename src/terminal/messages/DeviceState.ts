@@ -1,6 +1,6 @@
 import IMessage from './IMessage'
 
-export interface IDeviceState extends IMessage {
+interface IDeviceState extends IMessage {
 	type: 'deviceState'
 	isBusy: boolean
 }

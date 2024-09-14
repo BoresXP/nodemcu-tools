@@ -1,7 +1,7 @@
 import { IDeviceInfo as IDeviceInfoData } from '../content/state/state'
 import IMessage from './IMessage'
 
-export interface IDeviceInfo extends IMessage {
+interface IDeviceInfo extends IMessage {
 	type: 'deviceInfo'
 	info: IDeviceInfoData
 }
