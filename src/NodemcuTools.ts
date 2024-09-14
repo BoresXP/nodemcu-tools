@@ -76,7 +76,7 @@ export default class NodemcuTools {
 			if (delay === 0) {
 				delay = initialSettings.connectionDelay
 			}
-			await device.delayConnection(delay!)
+			await device.delayConnection(delay)
 		}
 		await device.fetchEspInfo()
 		await commands.executeCommand('setContext', 'nodemcu-tools:isConnected', true)

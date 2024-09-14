@@ -9,7 +9,7 @@ import { isDeviceState } from '../messages/DeviceState'
 import { isSetConfiguration } from '../messages/SetConfiguration'
 import { isTerminalLine } from '../messages/TerminalLine'
 
-createRoot(document.getElementById('root')!).render(<App />)
+createRoot(document.getElementById('root') as HTMLElement).render(<App />)
 
 window.addEventListener('message', evt => {
 	if (!evt.origin.startsWith('vscode-webview:')) {

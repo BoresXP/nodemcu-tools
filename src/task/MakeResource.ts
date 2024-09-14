@@ -5,6 +5,7 @@ import { IConfiguration } from './INodemcuTask'
 import { displayError } from './OutputChannel'
 
 export async function makeResource(config: IConfiguration): Promise<Uri | undefined> {
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const [rootFolder] = workspace.workspaceFolders!
 	const fileToWrite = Uri.joinPath(rootFolder.uri, config.outDir, 'resource.lua')
 	const resourceFolder = Uri.joinPath(rootFolder.uri, config.resourceDir)

@@ -114,6 +114,7 @@
 		"@stylistic/indent": ["error", "tab", { "SwitchCase": 1 }], // Enforce consistent indentation
 		"@stylistic/quotes": ["error", "single", { "avoidEscape": true }], // Enforce the consistent use of either backticks, double, or single quotes
 		"@stylistic/func-call-spacing": ["error", "never"], // Require or disallow spacing between function identifiers and their invocations
+		"@typescript-eslint/no-non-null-assertion": "error", //Disallow non-null assertions using the ! postfix operator
 		"@typescript-eslint/no-useless-constructor": "error", // Disallow unnecessary constructors
 		"@typescript-eslint/prefer-for-of": "warn", // Prefer a ‘for-of’ loop over a standard ‘for’ loop if the index is only used to access the array being iterated
 		"@typescript-eslint/no-unnecessary-type-arguments": "warn", // Warns if an explicitly specified type argument is the default for that type parameter
