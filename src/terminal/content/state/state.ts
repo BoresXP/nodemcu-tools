@@ -1,18 +1,10 @@
+import { ITerminalSettings, initialTerminalSettings } from '../../../settings'
+
 export type TerminalLineColor = 'default' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan'
 
 export interface ITerminalLine {
 	text: string
 	lineColor: TerminalLineColor
-}
-
-export interface ISettings {
-	scrollbackMaxLines: number
-	historyMaxLines: number
-	snippets: Record<string, string>
-	minifyEnabled?: boolean
-	overwriteSnippets?: boolean
-	deviceFilterActive?: boolean
-	connectionDelay?: number
 }
 
 export interface IDeviceInfo {
@@ -34,18 +26,8 @@ export interface IState {
 	currentHistoryIndex: number
 	currentCommandText: string
 	isDeviceBusy: boolean
-	settings: ISettings
+	terminalSettings: ITerminalSettings
 	deviceInfo: IDeviceInfo
-}
-
-export const initialSettings: ISettings = {
-	scrollbackMaxLines: 300,
-	historyMaxLines: 30,
-	snippets: {},
-	minifyEnabled: false,
-	overwriteSnippets: true,
-	deviceFilterActive: true,
-	connectionDelay: 100,
 }
 
 export const initialState: IState = {
@@ -55,7 +37,7 @@ export const initialState: IState = {
 	currentHistoryIndex: 1,
 	currentCommandText: '',
 	isDeviceBusy: true,
-	settings: initialSettings,
+	terminalSettings: initialTerminalSettings,
 	deviceInfo: {
 		numberType: '',
 		freeHeap: 0,

@@ -10,11 +10,11 @@ const savedState = vscode.getState() as IState
 export const rootStore = createStore<IState>(savedState ?? initialState)
 	.on(Events.setSettings, (state, params) => ({
 		...state,
-		settings: params,
+		terminalSettings: params,
 	}))
 	.on(Events.terminalLineAdd, (state, params) => {
 		let newLines = state.terminalLines.concat(params)
-		newLines = newLines.slice(Math.max(newLines.length - state.settings.scrollbackMaxLines, 0))
+		newLines = newLines.slice(Math.max(newLines.length - state.terminalSettings.scrollbackMaxLines, 0))
 
 		return {
 			...state,
@@ -31,7 +31,7 @@ export const rootStore = createStore<IState>(savedState ?? initialState)
 		let newCommands = state.terminalCommands
 		if (newCommands.length === 0 || newCommands[newCommands.length - 1] !== params) {
 			newCommands = state.terminalCommands.concat(params)
-			newCommands = newCommands.slice(Math.max(newCommands.length - state.settings.historyMaxLines, 0))
+			newCommands = newCommands.slice(Math.max(newCommands.length - state.terminalSettings.historyMaxLines, 0))
 		}
 
 		return {
@@ -84,5 +84,5 @@ rootStore.watch(state => vscode.setState(state))
 export const terminalLinesStore = rootStore.map(s => s.terminalLines)
 
 export const snippetsStore = rootStore.map(s =>
-	Object.keys(s.settings.snippets).map(k => ({ name: k, command: s.settings.snippets[k] })),
+	Object.keys(s.terminalSettings.snippets).map(k => ({ name: k, command: s.terminalSettings.snippets[k] })),
 )

@@ -1,10 +1,10 @@
 import { ExtensionContext, Uri, ViewColumn, WebviewPanel, commands, window, workspace } from 'vscode'
+import { initialSettings, initialTerminalSettings } from '../settings'
 
 import IMessage from './messages/IMessage'
 import { INodeMcu } from '../nodemcu'
 import { deviceInfoView } from './messages/DeviceInfo'
 import { deviceState } from './messages/DeviceState'
-import { initialSettings } from './content/state/state'
 import { isDeviceInfoRequest } from './messages/DeviceInfoRequest'
 import { isFormatRequest } from './messages/FormatRequest'
 import { isTerminalCommand } from './messages/TerminalCommand'
@@ -82,12 +82,12 @@ export default class TerminalView {
 		const configuration = workspace.getConfiguration('nodemcu-tools')
 		const snippetsInspection = configuration.inspect<Record<string, string>>('snippets')
 		const snippetsInWorkspace = snippetsInspection?.workspaceValue
-		const commonSnippets = configuration.get('snippets', initialSettings.snippets)
+		const commonSnippets = configuration.get('snippets', initialTerminalSettings.snippets)
 
 		await this._webViewPanel.webview.postMessage(
 			setConfiguration(
-				configuration.get('terminal.scrollbackSize', initialSettings.scrollbackMaxLines),
-				configuration.get('terminal.commandHistorySize', initialSettings.historyMaxLines),
+				configuration.get('terminal.scrollbackSize', initialTerminalSettings.scrollbackMaxLines),
+				configuration.get('terminal.commandHistorySize', initialTerminalSettings.historyMaxLines),
 				configuration.get('overwriteSnippets', initialSettings.overwriteSnippets)
 					? snippetsInWorkspace ?? commonSnippets
 					: { ...commonSnippets, ...snippetsInWorkspace },

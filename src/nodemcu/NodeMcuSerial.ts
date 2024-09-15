@@ -2,7 +2,7 @@ import { EventEmitter, Event as VsEvent, workspace } from 'vscode'
 import { ReadlineParser, SerialPort } from 'serialport'
 
 import { PortInfo } from '@serialport/bindings-cpp'
-import { initialSettings } from '../terminal/content/state/state'
+import { initialSettings } from '../settings'
 
 export interface ErrorDisconnect extends Error {
 	disconnected?: boolean

@@ -11,7 +11,7 @@ export const getTerminalLines = (state: IState): ITerminalLine[] => state.termin
 
 export const getTerminalAutoscrollEnabled = (state: IState): boolean => state.terminalAutoscrollEnabled
 
-export const getSnippets = (state: IState): Record<string, string> => state.settings.snippets
+export const getSnippets = (state: IState): Record<string, string> => state.terminalSettings.snippets
 
 export const getDeviceBusy = (state: IState): boolean => state.isDeviceBusy
 

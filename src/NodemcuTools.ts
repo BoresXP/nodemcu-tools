@@ -15,7 +15,7 @@ import { INodeMcu, NodeMcuRepository } from './nodemcu'
 
 import { NodemcuTaskDefinition } from './task/INodemcuTask'
 import NodemcuTaskProvider from './task/NodemcuTaskProvider'
-import { initialSettings } from './terminal/content/state/state'
+import { initialSettings } from './settings'
 import luamin from 'luamin'
 import { posix } from 'path'
 

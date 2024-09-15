@@ -1,5 +1,6 @@
-import { IDeviceInfo, ISettings, ITerminalLine } from './state'
+import { IDeviceInfo, ITerminalLine } from './state'
 
+import { ITerminalSettings } from '../../../settings'
 import { createEvent } from 'effector'
 
 export const terminalLineAdd = createEvent<ITerminalLine>()
@@ -18,6 +19,6 @@ export const terminalCurrentCommandText = createEvent<string>()
 
 export const terminalAutoscrollSet = createEvent<boolean>()
 
-export const setSettings = createEvent<ISettings>()
+export const setSettings = createEvent<ITerminalSettings>()
 
 export const setDeviceInfo = createEvent<IDeviceInfo>()

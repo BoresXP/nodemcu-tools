@@ -1,9 +1,9 @@
 import IMessage from './IMessage'
-import { ISettings } from '../content/state/state'
+import { ITerminalSettings } from '../../settings'
 
 export interface ISetConfiguration extends IMessage {
 	type: 'setConfiguration'
-	configuration: ISettings
+	configuration: ITerminalSettings
 }
 
 export function setConfiguration(
