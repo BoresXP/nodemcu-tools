@@ -1,9 +1,1 @@
-<svg id="level-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-  <defs>
-    <style>.canvas{fill: none; opacity: 0;}.light-gray-10{fill: #C5C5C5; opacity: 0.1;}.light-gray{fill: #C5C5C5; opacity: 1;}</style>
-  </defs>
-  <title>RunOutline</title>
-  <path class="canvas" d="M16,16H0V0H16Z" />
-  <path class="light-gray-10" d="M12.5,7.471l-9,6v-12Z" />
-  <path class="light-gray" d="M3.777,1.084,3,1.5v12l.777.416,9-6V7.084ZM4,12.565V2.435L11.6,7.5Z" />
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M12.5 7.471l-9 6v-12z" fill="#c5c5c5" opacity=".1"/><path d="M3.777 1.084L3 1.5v12l.777.416 9-6v-.832zM4 12.565V2.435L11.6 7.5z" fill="#c5c5c5"/></svg>
