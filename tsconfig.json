@@ -1,19 +1,16 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es2018",
+		"module": "Node16",
+		"target": "ES2022",
 		"outDir": "out",
 		"lib": [
-			"es2018"
+			"ES2023"
 		],
 		"sourceMap": true,
 		"strict": true,
 		"removeComments": true,
 		"esModuleInterop": true,
-		"ignoreDeprecations": "5.0",
-		"importsNotUsedAsValues": "preserve",
-		"allowSyntheticDefaultImports": true,
-		"moduleResolution": "Node"
+		"moduleResolution": "Node16"
 	},
 	"exclude": [
 		"node_modules",
