@@ -20,6 +20,7 @@ export interface IEspInfo {
 	isNewEsp32fw: boolean
 	isUART: boolean
 	hasEncoder: boolean
+	hasIOmodule: boolean
 }
 
 export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
@@ -29,6 +30,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		checkEncoder: 'uart.write(0,tostring(encoder and encoder.fromBase64).."\\r\\n")',
 		getUartType: 'uart.write(0,tostring(node.info and node.info("build_config")["esp_console"]).."\\r\\n")',
 		echo: 'uart.write(0,"echo1337\\r\\n")',
+		checkIOmodule: 'uart.write(0,tostring(io).."\\r\\n")',
 	}
 	private static readonly _colorMap: [string, IToTerminalData['color']][] = [
 		['31', 'red'],
@@ -59,6 +61,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		isNewEsp32fw: false,
 		isUART: true,
 		hasEncoder: false,
+		hasIOmodule: true,
 	}
 
 	constructor(path: string) {
@@ -190,6 +193,10 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 		const responseEncoder = await this.executeSingleLineCommand(NodeMcu._luaCommands.checkEncoder)
 		this._espInfo.hasEncoder = responseEncoder.trimEnd() !== 'nil'
+
+		// The dev-esp32-idf3-final branch firmware uses nodemcu `file` module instead of Lua io.
+		const responseIO = await this.executeSingleLineCommand(NodeMcu._luaCommands.checkIOmodule)
+		this._espInfo.hasIOmodule = responseIO.trimEnd() !== 'nil'
 	}
 
 	public waitToBeReady(): Promise<void> {

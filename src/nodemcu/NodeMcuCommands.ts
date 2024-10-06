@@ -69,15 +69,24 @@ export default class NodeMcuCommands {
 			fileSetLfs: (name: string) => `node.LFS.reload("${name}")uart.write(0,"Done\\n")`,
 
 			writeFileHelper: (name: string, fileSize: number, blockSize: number, mode: string) =>
-				`__f=io.open("${name}","${mode}")local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};__f:write(d)uart.write(0,"kxyJ\\n")if bw>=${fileSize} then uart.on("data")__f:close()__f=nil;uart.write(0,"QKiw\\n")end end,0)uart.write(0,"Ready\\n")`,
+				this._espInfo.hasIOmodule
+					? `__f=io.open("${name}","${mode}")local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};__f:write(d)uart.write(0,"kxyJ\\n")if bw>=${fileSize} then uart.on("data")__f:close()__f=nil;uart.write(0,"QKiw\\n")end end,0)uart.write(0,"Ready\\n")`
+					: `__f=file.open("${name}","${mode}")local bw=0;uart.on("data",${blockSize},function(d)bw=bw+${blockSize};__f:write(d)uart.write(0,"kxyJ\\n")if bw>=${fileSize} then uart.on("data")__f:close()__f=nil;uart.write(0,"QKiw\\n")end end,0)uart.write(0,"Ready\\n")`,
 
-			createEmptyFile: (name: string) => `io.open("${name}","w")io.close()uart.write(0,"Ready\\n")`,
+			createEmptyFile: (name: string) =>
+				this._espInfo.hasIOmodule
+					? `io.open("${name}","w")io.close()uart.write(0,"Ready\\n")`
+					: `file.open("${name}","w")file.close()uart.write(0,"Ready\\n")`,
 
 			readFileHelper: (name: string) =>
-				`local fh=io.input("${name}")uart.on("data",0,function(d)while true do local b=fh:read(${NodeMcuSerial.maxLineLength})if b==nil then uart.on("data")fh:close()break end;uart.write(0,b)tmr.wdclr()end end,0)uart.write(0,"Ready\\n")`,
+				this._espInfo.hasIOmodule
+					? `local fh=io.input("${name}")uart.on("data",0,function(d)while true do local b=fh:read(${NodeMcuSerial.maxLineLength})if b==nil then uart.on("data")fh:close()break end;uart.write(0,b)tmr.wdclr()end end,0)uart.write(0,"Ready\\n")`
+					: `local fh=file.open("${name}")uart.on("data",0,function(d)while true do local b=fh:read(${NodeMcuSerial.maxLineLength})if b==nil then uart.on("data")fh:close()break end;uart.write(0,b)end end,0)uart.write(0,"Ready\\n")`,
 
 			getFileSize: (name: string) =>
-				`local fh=io.open("${name}","r")local s=fh:seek("end")fh:close()uart.write(0,s.."\\n")`,
+				this._espInfo.hasIOmodule
+					? `local fh=io.open("${name}","r")local s=fh:seek("end")fh:close()uart.write(0,s.."\\n")`
+					: `local fh=file.open("${name}","r")local s=fh:seek("end")fh:close()uart.write(0,s.."\\n")`,
 
 			getFreeHeap: 'uart.write(0,tostring(node.heap()).."\\n")',
 
