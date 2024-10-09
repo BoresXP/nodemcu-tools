@@ -18,6 +18,7 @@ export default abstract class NodeMcuSerial {
 		'10C4', // NodeMCU v1.1 - CP2102 Adapter | 0x10c4  Cygnal Integrated Products, Inc
 		'1A86', // NodeMCU v3 - CH340G Adapter | 0x1A86 Nanjing QinHeng Electronics Co., Ltd.
 		'0403', // FTDI232 adapter Product ID 6001
+		'303A', // Espressif chips Product ID 1001
 	]
 
 	private readonly _port: SerialPort
