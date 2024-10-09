@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.0] - 2024-10-10
+
+### Added
+
+- Added support for esp32 firmware compiled from the stale dev-esp32-idf3-final branch
+- Added 'Espressif' to known vendorIDs list
+
 ## [4.3.1] - 2024-09-21
 
 ### Fixed
