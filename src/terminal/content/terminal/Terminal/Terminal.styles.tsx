@@ -1,4 +1,4 @@
-import { TerminalLineColor } from '../../../content/state/state'
+import { TerminalLineColor } from '../../../messages/TerminalLine'
 import styled from 'styled-components'
 
 export const TerminalStyled = styled.div`
@@ -37,6 +37,5 @@ export const TerminalLine = styled.div<{ $lineColor: TerminalLineColor }>`
 				return 'inherit'
 			}
 		}
-	}
-};
+	}};
 `
