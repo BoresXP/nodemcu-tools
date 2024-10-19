@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added support for esp32 `console` module
+
 ## [4.4.0] - 2024-10-10
 
 ### Added

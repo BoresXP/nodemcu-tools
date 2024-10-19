@@ -17,20 +17,16 @@ export interface IEspInfo {
 	espArch: string
 	espID: string
 	espModel: string
-	isNewEsp32fw: boolean
-	isUART: boolean
-	hasEncoder: boolean
-	hasIOmodule: boolean
+	isMultiConsole: boolean
+	hasConsoleModule: boolean
 }
 
 export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	private static readonly _luaCommands = {
-		getChipID: 'uart.write(0,tostring(node.chipid and node.chipid()).."\\r\\n")',
-		getModel: 'uart.write(0,tostring(node.chipmodel and node.chipmodel()).."\\r\\n")',
-		checkEncoder: 'uart.write(0,tostring(encoder and encoder.fromBase64).."\\r\\n")',
-		getUartType: 'uart.write(0,tostring(node.info and node.info("build_config")["esp_console"]).."\\r\\n")',
-		echo: 'uart.write(0,"echo1337\\r\\n")',
-		checkIOmodule: 'uart.write(0,tostring(io).."\\r\\n")',
+		getChipID: 'print(tostring(node.chipid and node.chipid()))',
+		getModel: 'print(tostring(node.chipmodel and node.chipmodel()))',
+		echo: 'print("echo1337")',
+		checkConsoleModule: 'print(tostring(console))',
 	}
 	private static readonly _colorMap: [string, IToTerminalData['color']][] = [
 		['31', 'red'],
@@ -58,10 +54,8 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		espArch: '',
 		espID: '',
 		espModel: '',
-		isNewEsp32fw: false,
-		isUART: true,
-		hasEncoder: false,
-		hasIOmodule: true,
+		isMultiConsole: false,
+		hasConsoleModule: false,
 	}
 
 	constructor(path: string) {
@@ -69,10 +63,6 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		this._unsubscribeOnData = this.onData(data => this.handleData(data))
 		this.onConnect(() => this.handleConnect())
 		this.onDisconnect(err => this.handleDisconnect(err))
-	}
-
-	public get espInfo(): IEspInfo {
-		return this._espInfo
 	}
 
 	public get isBusy(): boolean {
@@ -93,7 +83,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 	public get commands(): NodeMcuCommands {
 		if (!this._commands) {
-			this._commands = new NodeMcuCommands(this)
+			this._commands = new NodeMcuCommands(this, this._espInfo)
 		}
 
 		return this._commands
@@ -155,17 +145,27 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 	public async fetchEspInfo(): Promise<void> {
 		await this.waitToBeReady()
-		// esp32 chipid (hex with '0x' prefix). Only available on the base ESP32 model; esp32xx returns nil
-		const responseID = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
-		const esp32ID = /^0x\w+/.exec(responseID.trimEnd())
+		let response
 
-		// The commit 'Actually honour Kconfig line-endings settings.' https://github.com/nodemcu/nodemcu-firmware/commit/918f75310e98aea2ea908f9256c435f1be50de53
-		// requires changing the communication protocol between esp32 and the extension.
+		// esp8266 chipid is string '12345678'.
+		// esp32 chipid is string (hex with '0x' prefix). esp32 chipID only
+		// available on the base ESP32 model; esp32xx returns nil
+		response = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
+		const chipID = response.trimEnd()
+		const esp32ID = /^0x\w+/.exec(chipID)
+
+		// PR #3646 includes reworked console support, to now also work with USB Serial JTAG consoles and USB CDC consoles
 		// Now we have to use uart.start/stop and handle default lf/lf line endings instead of crlf/cr
-		// Use node.model() to distinguish the outdated esp32 firmware. The chip model is a string, e.g. "esp32c3" or "esp32"
-		const responseModel = await this.executeSingleLineCommand(NodeMcu._luaCommands.getModel)
-		const espModel = /^esp32.?.?/.exec(responseModel.trimEnd())
-		this._espInfo.isNewEsp32fw = espModel !== null
+		// node.model() is used to distinguish the outdated esp32 firmware.
+		// The chip model is a string, e.g. "esp32c3" or "esp32"
+		response = await this.executeSingleLineCommand(NodeMcu._luaCommands.getModel)
+		const espModel = /^esp32.?.?/.exec(response.trimEnd())
+		this._espInfo.isMultiConsole = espModel !== null
+
+		// PR #3666 moves the system console handling into its own module (console)
+		// console.write() .on() .mode() are used instead of uart...()
+		response = await this.executeSingleLineCommand(NodeMcu._luaCommands.checkConsoleModule)
+		this._espInfo.hasConsoleModule = response.trimEnd() !== 'nil'
 
 		if (espModel) {
 			[this._espInfo.espModel] = espModel
@@ -178,25 +178,8 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		} else {
 			this._espInfo.espModel = 'esp8266'
 			this._espInfo.espArch = 'esp8266'
-			this._espInfo.espID = responseID.trimEnd()
+			this._espInfo.espID = chipID
 		}
-
-		// isUART on esp8266 and esp32 is always true
-		// isUART on esp32xx depends on settings:
-		// CONSOLE_UART_DEFAULT || CONSOLE_UART_CUSTOM: true
-		// CONSOLE_USB_CDC || CONSOLE_USB_SERIAL_JTAG: false
-		this._espInfo.isUART = true
-		if (this._espInfo.espModel !== 'esp8266' && this._espInfo.espModel !== 'esp32') {
-			const responseUart = await this.executeSingleLineCommand(NodeMcu._luaCommands.getUartType)
-			this._espInfo.isUART = responseUart.trimEnd() === 'uart'
-		}
-
-		const responseEncoder = await this.executeSingleLineCommand(NodeMcu._luaCommands.checkEncoder)
-		this._espInfo.hasEncoder = responseEncoder.trimEnd() !== 'nil'
-
-		// The dev-esp32-idf3-final branch firmware uses nodemcu `file` module instead of Lua io.
-		const responseIO = await this.executeSingleLineCommand(NodeMcu._luaCommands.checkIOmodule)
-		this._espInfo.hasIOmodule = responseIO.trimEnd() !== 'nil'
 	}
 
 	public waitToBeReady(): Promise<void> {
