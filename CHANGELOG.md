@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added support for esp32 `console` module
 
+
+### Fixed
+
+- Fixed file downloading in edge case for legacy esp32 firmware.
+
 ## [4.4.0] - 2024-10-10
 
 ### Added
