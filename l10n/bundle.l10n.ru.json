@@ -50,5 +50,7 @@
   "Can not open file \"{0}\"": "Не могу открыть файл \"{0}\"",
   "Device is connected! Disconnect first.": "ESP подключено! Сначала отсоединитесь.",
   "The \"flash\" or \"chipModel\" setting is missing in the settings.json file.": "Отсутствует параметр \"flash\" или \"chipModel\" в файле settings.json",
-  "No connected devices": "Нет присоединённых устройств"
+  "No connected devices": "Нет присоединённых устройств",
+  "The code chunk is not selected": "Не выделен фрагмент кода",
+  "The snippet is too long: {0} chars. Max 254 characters is allowed": "Сниппет слишком длинный: {0} символа. Максимально 254 символа"
 }

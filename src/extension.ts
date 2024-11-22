@@ -1,4 +1,5 @@
 import {
+	EndOfLine,
 	ExtensionContext,
 	StatusBarAlignment,
 	StatusBarItem,
@@ -11,6 +12,7 @@ import {
 	workspace,
 } from 'vscode'
 
+import AuxTools from './tools/AuxTools'
 import ConfigFile from './task/ConfigFile'
 import DeviceTreeItem from './tree/DeviceTreeItem'
 import DeviceTreeProvider from './tree/DeviceTreeProvider'
@@ -233,6 +235,25 @@ export function activate(context: ExtensionContext): void {
 				if (deviceFileName) {
 					treeProvider.refresh()
 				}
+			},
+
+			'nodemcu-tools.createSnippet': () => {
+				const editor = window.activeTextEditor
+				if (!editor) {
+					return void 0
+				}
+
+				const block = editor.document.getText(editor.selection)
+				const text = AuxTools.convertIntoSnippet(block)
+				if (!text) {
+					return void 0
+				}
+
+				const delimeter = editor.document.eol === EndOfLine.LF ? '\n\n' : '\r\n\r\n'
+				const endPosition = editor.selection.end
+				editor.edit(editBuilder => {
+					editBuilder.insert(endPosition, `${delimeter}${text}${delimeter}"name": "${text}"${delimeter}`)
+				})
 			},
 		}
 

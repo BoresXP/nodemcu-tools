@@ -200,6 +200,11 @@
 				"command": "nodemcu-tools.uploadFolderFile",
 				"title": "%nodemcu-tools.uploadFolderFile.title%",
 				"category": "NodeMCU"
+			},
+			{
+				"command": "nodemcu-tools.createSnippet",
+				"title": "%nodemcu-tools.createSnippet.title%",
+				"category": "NodeMCU"
 			}
 		],
 		"menus": {
