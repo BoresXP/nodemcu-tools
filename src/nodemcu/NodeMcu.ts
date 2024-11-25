@@ -331,7 +331,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		}
 
 		// eslint-disable-next-line no-control-regex, sonarjs/sonar-no-control-regex
-		const matches = /^\x1b\[\d?;?(\d\d)m(.+)\x1b\[0m(.*)\r*\n/.exec(data)
+		const matches = /^>? ?\x1b\[\d?;?(\d\d)m(.+)\x1b\[0m(.*)\r*\n/.exec(data)
 		if (matches) {
 			for (const fgColor of NodeMcu._colorMap) {
 				if (matches[1] === fgColor[0]) {
