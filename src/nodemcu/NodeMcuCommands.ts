@@ -3,7 +3,7 @@ import NodeMcu, { IEspInfo } from './NodeMcu'
 import { IDeviceInfo } from '../terminal/content/state/state'
 import NodeMcuSerial from './NodeMcuSerial'
 
-interface IDeviceFileInfo {
+export interface IDeviceFileInfo {
 	name: string
 	size: number
 }

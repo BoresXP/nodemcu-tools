@@ -5,14 +5,14 @@ export default class DeviceTreeItem extends TreeItem {
 	public readonly path: string
 
 	constructor(portInfo: SerialPortInfo) {
-		super(
-			portInfo.path,
-			NodeMcuRepository.isConnected(portInfo.path) ? TreeItemCollapsibleState.Expanded : void 0)
+		super(portInfo.path, NodeMcuRepository.isConnected(portInfo.path) ? TreeItemCollapsibleState.Expanded : void 0)
 
 		this.path = portInfo.path
 
 		this.id = `nodemcu-device-${portInfo.path}`
-		this.tooltip = `Manufacturer: ${portInfo.manufacturer ?? ''}\r\nProductID: ${portInfo.productId ?? ''}\r\nVendorID: ${portInfo.vendorId ?? ''}`
+		this.tooltip = `Manufacturer: ${portInfo.manufacturer ?? ''}\r\nProductID: ${
+			portInfo.productId ?? ''
+		}\r\nVendorID: ${portInfo.vendorId ?? ''}`
 
 		this.contextValue = 'nodemcu-device'
 		if (NodeMcuRepository.isConnected(portInfo.path)) {

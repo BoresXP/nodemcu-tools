@@ -1,13 +1,15 @@
 import DeviceTreeItem, { isDeviceTreeItem } from './DeviceTreeItem'
 import { EventEmitter, TreeDataProvider, TreeItem, Event as VsEvent, window } from 'vscode'
 import FileTreeItem, { isFileTreeItem } from './FileTreeItem'
-
+import FolderTreeItem, { isFolderTreeItem } from './FolderTreeItem'
+import { IDeviceFileInfo } from '../nodemcu/NodeMcuCommands'
 import NodeMcuRepository from '../nodemcu/NodeMcuRepository'
 
 export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData = new EventEmitter<undefined>()
 
 	private _deviceItems: DeviceTreeItem[] | undefined = void 0
+	private readonly _files: { [devicePath: string]: IDeviceFileInfo[] } = {}
 
 	constructor() {
 		NodeMcuRepository.onDisconnect(() => this.refresh())
@@ -29,7 +31,7 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 		if (isDeviceTreeItem(element)) {
 			return void 0
 		}
-		if (isFileTreeItem(element)) {
+		if (isFolderTreeItem(element) || isFileTreeItem(element)) {
 			return element.parent
 		}
 
@@ -44,13 +46,17 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 				this._deviceItems = ports.map(p => new DeviceTreeItem(p))
 				return this._deviceItems
 			}
+
 			if (isDeviceTreeItem(element) && NodeMcuRepository.isConnected(element.path)) {
 				const device = NodeMcuRepository.getOrCreate(element.path)
 				await device.waitToBeReady()
 
-				const files = await device.commands.files()
-				// eslint-disable-next-line sonarjs/no-misleading-array-reverse
-				return files.sort((f1, f2) => (f1.name > f2.name ? 1 : -1)).map(f => new FileTreeItem(f.name, f.size, element))
+				this._files[element.path] = await device.commands.files()
+				return this.getTopLevelTreeItems(element)
+			}
+
+			if (isFolderTreeItem(element)) {
+				return this.getFolderTreeItems(element)
 			}
 		} catch (ex) {
 			console.error(ex) // eslint-disable-line no-console
@@ -60,11 +66,37 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 		return void 0
 	}
 
-	public itemByPath(path: string): DeviceTreeItem | undefined {
-		if (!this._deviceItems) {
-			return void 0
+	private getTopLevelTreeItems(element: DeviceTreeItem): TreeItem[] {
+		const folderNames: string[] = []
+		const folderItems: FolderTreeItem[] = []
+		const fileItems: FileTreeItem[] = []
+
+		for (const f of this._files[element.path]) {
+			const isFolder = f.name.includes('/')
+			if (isFolder) {
+				const [folderName] = f.name.split('/')
+				if (!folderNames.includes(folderName)) {
+					folderNames.push(folderName)
+					folderItems.push(new FolderTreeItem(folderName, element))
+				}
+			} else {
+				fileItems.push(new FileTreeItem(f.name, f.size, element))
+			}
 		}
 
-		return this._deviceItems.find(d => d.path === path)
+		fileItems.sort((f1, f2) => (f1.name > f2.name ? 1 : -1))
+		folderItems.sort((f1, f2) => (f1.name > f2.name ? 1 : -1))
+		return folderItems.concat(fileItems)
+	}
+
+	private getFolderTreeItems(element: FolderTreeItem): FileTreeItem[] {
+		const filesUnderFolder = []
+		for (const f of this._files[element.path]) {
+			const [folderName] = f.name.split('/')
+			if (element.name === folderName) {
+				filesUnderFolder.push(new FileTreeItem(f.name, f.size, element))
+			}
+		}
+		return filesUnderFolder.sort((f1, f2) => (f1.name > f2.name ? 1 : -1))
 	}
 }

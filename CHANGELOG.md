@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+ ### Added
+
+ - Reveals `foldername/filename.ext` as a tree in the 'Device Tree View'. Only one nesting level is allowed.
+
 ## [4.5.0] - 2024-12-10
 
 - Added support for esp32 `console` module
