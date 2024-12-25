@@ -429,7 +429,7 @@
 		"ts-node": "^10.9.2",
 		"typescript": "^5.5.4",
 		"webpack": "^5.97.1",
-		"webpack-cli": "^5.1.4"
+		"webpack-cli": "^6.0.1"
 	},
 	"dependencies": {
 		"@serialport/bindings-cpp": "^13.0.1",
