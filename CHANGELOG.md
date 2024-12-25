@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+ ⚠️  **BREAKING CHANGE**
+
+- Bump the minimum NodeJS version to v20.18.1 - which aligns with `serialport` v13's minimum.
+
  ### Added
 
  - Reveals `foldername/filename.ext` as a tree in the 'Device Tree View'. Only one nesting level is allowed.
+
+ ### Changed
+
+- Update dependencies
 
 ## [4.5.0] - 2024-12-10
 
