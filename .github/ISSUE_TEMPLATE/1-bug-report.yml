@@ -1,0 +1,41 @@
+name: "Bug report"
+description: Create a report to help us improve
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue.
+
+        This issue tracker is for bugs and issues found within nodemcu-tools.
+        Please fill in as much of the form below as you're able.
+  - type: input
+    attributes:
+      label: nodemcu-tools Version
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: VS Code Info
+      description: Main Menu > Help > About
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Hardware
+      description: Describe which ESP8266/ESP32 device you use and document any special hardware setup required to reproduce the problem.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Actual behavior
+      description: If possible please provide textual output instead of screenshots.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: If possible please provide textual output instead of screenshots.
+  - type: textarea
+    attributes:
+      label: Additional information
+      description: Tell us anything else you think we should know.

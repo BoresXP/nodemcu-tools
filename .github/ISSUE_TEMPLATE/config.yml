@@ -1,0 +1,7 @@
+blank_issues_enabled: false
+contact_links:
+  - name: nodemcu-tools
+    url: https://github.com/BoresXP/nodemcu-tools
+    about: >
+      For info and issues about the nodemcu-tools, check out its GitHub
+      repository.
