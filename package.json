@@ -404,8 +404,8 @@
 	"devDependencies": {
 		"@stylistic/eslint-plugin": "^2.12.1",
 		"@types/node": "^20.17.10",
-		"@types/react": "^18.3.12",
-		"@types/react-dom": "^18.3.1",
+		"@types/react": "^19.0.2",
+		"@types/react-dom": "^19.0.2",
 		"@types/vscode": "^1.74.0",
 		"@types/webpack": "^5.28.5",
 		"@typescript-eslint/eslint-plugin": "^8.18.2",
@@ -417,7 +417,7 @@
 		"eslint-plugin-import": "^2.31.0",
 		"eslint-plugin-optimize-regex": "^1.2.1",
 		"eslint-plugin-promise": "^7.2.1",
-		"eslint-plugin-react": "^7.37.2",
+		"eslint-plugin-react": "^7.37.3",
 		"eslint-plugin-react-hooks": "^5.1.0",
 		"eslint-plugin-sonarjs": "^2.0.4",
 		"eslint-webpack-plugin": "^4.2.0",
@@ -434,10 +434,10 @@
 	"dependencies": {
 		"@serialport/bindings-cpp": "^13.0.1",
 		"effector": "^23.2.3",
-		"effector-react": "^23.2.1",
+		"effector-react": "^23.3.0",
 		"luamin": "github:FATH-Mechatronics/luamin#d735925",
-		"react": "^18.3.1",
-		"react-dom": "^18.3.1",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
 		"react-tooltip": "^5.28.0",
 		"serialport": "^13.0.0",
 		"styled-components": "^6.1.13"
