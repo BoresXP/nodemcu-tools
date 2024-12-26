@@ -46,7 +46,8 @@
 						"selector": "import",
 						"format": ["PascalCase", "camelCase"]
 					}
-				] // Enforces naming conventions for everything across a codebase
+				], // Enforces naming conventions for everything across a codebase
+				"import-x/no-named-as-default": "off" // Forbid use of exported name as identifier of default export.
 			}
 		}
 	]
