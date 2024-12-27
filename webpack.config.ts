@@ -40,6 +40,7 @@ const commonConfig: webpack.Configuration = {
 		}),
 		new ESLintWebpackPlugin({
 			files: './src/**/*.{ts,tsx}',
+			configType: 'flat',
 		}),
 		new CopyPlugin({
 			patterns: [

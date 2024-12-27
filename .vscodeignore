@@ -3,8 +3,7 @@ src/**
 .gitignore
 tsconfig.json
 webpack.config.ts
-.eslintrc.json
-.eslintignore
+eslint.config.mjs
 out/*.map
 **/*.ts
 node_modules
