@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.6.0] - 2024-12-27
+
  ⚠️  **BREAKING CHANGE**
 
 - Bump the minimum NodeJS version to v20.18.1 - which aligns with `serialport` v13's minimum.
