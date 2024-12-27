@@ -9,7 +9,7 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 	private readonly _onDidChangeTreeData = new EventEmitter<undefined>()
 
 	private _deviceItems: DeviceTreeItem[] | undefined = void 0
-	private readonly _files: { [devicePath: string]: IDeviceFileInfo[] } = {}
+	private readonly _files: Record<string, IDeviceFileInfo[]> = {}
 
 	constructor() {
 		NodeMcuRepository.onDisconnect(() => this.refresh())

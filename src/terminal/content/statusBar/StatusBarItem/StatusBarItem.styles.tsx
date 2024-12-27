@@ -9,7 +9,6 @@ export const StatusBarItemStyled = styled.div`
 	}
 `
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const HoverTooltipGLobalClass = createGlobalStyle`
 .nodemcu-tools-modules-tooltip {
 	background-color: var(--vscode-badge-background);

@@ -9,6 +9,7 @@ import { isDeviceState } from '../messages/DeviceState'
 import { isSetConfiguration } from '../messages/SetConfiguration'
 import { isTerminalLine } from '../messages/TerminalLine'
 
+// eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
 createRoot(document.getElementById('root') as HTMLElement).render(<App />)
 
 window.addEventListener('message', evt => {

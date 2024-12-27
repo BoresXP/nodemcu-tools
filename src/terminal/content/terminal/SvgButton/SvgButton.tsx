@@ -9,7 +9,13 @@ interface ISvgButtonProps {
 }
 
 const SvgButton: React.FC<ISvgButtonProps> = ({ tooltip, svgName, onClick, disabled }) => (
-	<SvgButtonStyled onClick={onClick} disabled={disabled} data-tooltip-id="main-tooltip" data-tooltip-place={'left'} data-tooltip-content={tooltip} >
+	<SvgButtonStyled
+		onClick={onClick}
+		disabled={disabled}
+		data-tooltip-id="main-tooltip"
+		data-tooltip-place={'left'}
+		data-tooltip-content={tooltip}
+	>
 		<svg>
 			<use href={svgName} />
 		</svg>

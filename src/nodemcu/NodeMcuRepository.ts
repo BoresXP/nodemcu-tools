@@ -70,5 +70,4 @@ export default class NodeMcuRepository {
 
 		return false
 	}
-
 }

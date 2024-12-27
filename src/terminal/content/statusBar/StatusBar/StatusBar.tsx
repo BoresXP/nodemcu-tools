@@ -30,7 +30,7 @@ const StatusBar: React.FC = () => {
 					onClick={onItemClick}
 				/>
 			) : null}
-			{(info.modules && info.chipArch) ? <StatusBarModulesItem modules={info.modules} chipArch={info.chipArch} /> : null}
+			{info.modules && info.chipArch ? <StatusBarModulesItem modules={info.modules} chipArch={info.chipArch} /> : null}
 			{info.chipModel ? <StatusBarItem text={info.chipModel} tooltip={`chipID: ${info.chipID}`} /> : null}
 		</StatusBarStyled>
 	)

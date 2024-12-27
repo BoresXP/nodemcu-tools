@@ -25,10 +25,7 @@ const StatusBarModulesItem: React.FC<IStatusBarModulesItemProps> = ({ modules, c
 	return (
 		<>
 			<HoverTooltipGLobalClass />
-			<StatusBarItemStyled
-				data-tooltip-id="modules-tooltip"
-				data-tooltip-html={modulesWithLinks}
-			>
+			<StatusBarItemStyled data-tooltip-id="modules-tooltip" data-tooltip-html={modulesWithLinks}>
 				{'modules'}
 			</StatusBarItemStyled>
 		</>

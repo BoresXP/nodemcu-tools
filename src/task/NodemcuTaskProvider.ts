@@ -159,7 +159,11 @@ export default class NodemcuTaskProvider implements TaskProvider {
 			return
 		}
 
-		const fileToUpload = Uri.joinPath(Uri.file(this._rootFolder), taskDefinition.outDir, taskDefinition.outFile)
+		const fileToUpload = Uri.joinPath(
+			Uri.file(this._rootFolder),
+			taskDefinition.outDir as string,
+			taskDefinition.outFile as string,
+		)
 
 		switch (taskDefinition.nodemcuTaskName) {
 			case 'buildLFSandUploadSerial':

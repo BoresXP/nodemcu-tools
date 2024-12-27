@@ -12,25 +12,15 @@ const App: React.FC = () => (
 		<TerminalContainer />
 		<SnippetsContainer />
 		<StatusBar />
-		<Tooltip
-			id="main-tooltip"
-			disableStyleInjection={true}
-			delayShow={500}
-			className='nodemcu-tools-tooltip'
-		/>
-		<Tooltip
-			id='snippet-tooltip'
-			disableStyleInjection={true}
-			delayShow={2000}
-			className='nodemcu-tools-tooltip'
-		/>
+		<Tooltip id="main-tooltip" disableStyleInjection={true} delayShow={500} className="nodemcu-tools-tooltip" />
+		<Tooltip id="snippet-tooltip" disableStyleInjection={true} delayShow={2000} className="nodemcu-tools-tooltip" />
 		<Tooltip
 			id="modules-tooltip"
 			disableStyleInjection={true}
 			delayShow={500}
 			delayHide={500}
 			clickable={true}
-			className='nodemcu-tools-modules-tooltip'
+			className="nodemcu-tools-modules-tooltip"
 		/>
 
 		<svg display="none">
@@ -46,7 +36,8 @@ const App: React.FC = () => (
 				<path d="M244.9 0c-9.5 0-17.1 7.7-17.1 17.2v312.3l-77.6-77.6c-6.7-6.7-17.6-6.7-24.3 0-6.7 6.7-6.7 17.6 0 24.3l106.9 106.9c3.2 3.2 7.6 5 12.1 5 4.6 0 8.9-1.8 12.1-5l106.9-107c6.7-6.7 6.7-17.6 0-24.3s-17.6-6.7-24.3 0L262 329.4V17.2c.1-9.5-7.6-17.2-17.1-17.2zM455.8 472.6c0-9.5-7.7-17.2-17.2-17.2H51.1c-9.5 0-17.2 7.7-17.2 17.2s7.7 17.1 17.2 17.1h387.6c9.501.1 17.1-7.6 17.1-17.1z" />
 			</symbol>
 			<symbol viewBox="0 0 254.833 254.833" id="svg-folder-delete">
-				<path d="M32.648,62.917l9.928-23.656c1.065-3.652,4.619-6.344,8.827-6.344h73.694c4.207,0,7.761,2.691,8.826,6.344l9.927,23.656
+				<path
+					d="M32.648,62.917l9.928-23.656c1.065-3.652,4.619-6.344,8.827-6.344h73.694c4.207,0,7.761,2.691,8.826,6.344l9.927,23.656
 				H32.648z M212.833,137.917c23.159,0,42,18.841,42,42s-18.841,42-42,42s-42-18.841-42-42S189.674,137.917,212.833,137.917z
 	 			M220.198,162.946l-6.365,6.365l-6.365-6.365c-2.928-2.928-7.677-2.929-10.606,0.001c-2.929,2.929-2.929,7.678,0.001,10.606
 				l6.364,6.363l-6.364,6.363c-2.93,2.929-2.93,7.678-0.001,10.606c1.465,1.465,3.384,2.197,5.304,2.197
@@ -54,7 +45,8 @@ const App: React.FC = () => (
 				c2.929-2.929,2.929-7.678-0.001-10.606l-6.364-6.363l6.364-6.363c2.93-2.929,2.93-7.678,0.001-10.606
 				S223.127,160.017,220.198,162.946z M155.833,179.917c0-31.43,25.404-57,56.833-57c5.736,0,11.334,0.86,16.334,2.444V84.667
 				c0-3.728-2.689-6.75-6.417-6.75H7.083C3.355,77.917,0,80.939,0,84.667v120.5c0,3.728,3.355,6.75,7.083,6.75H165.69
-				C159.473,202.787,155.833,191.77,155.833,179.917z"/>
+				C159.473,202.787,155.833,191.77,155.833,179.917z"
+				/>
 			</symbol>
 		</svg>
 	</Page>

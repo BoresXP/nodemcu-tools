@@ -28,6 +28,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		echo: 'print("echo1337")',
 		checkConsoleModule: 'print(tostring(console))',
 	}
+
 	private static readonly _colorMap: [string, IToTerminalData['color']][] = [
 		['31', 'red'],
 		['32', 'green'],
@@ -36,6 +37,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		['35', 'magenta'],
 		['36', 'cyan'],
 	]
+
 	private _commandTimeout = 15000 // msec
 
 	private readonly _evtToTerminal = new EventEmitter<IToTerminalData>()
@@ -303,7 +305,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 				} catch (ex) {
 					clearTimeout(timeoutId)
 					unsubscribeAndClear()
-					reject(ex)
+					reject(ex as Error)
 				}
 			}
 
@@ -330,7 +332,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			return { color: 'blue', data }
 		}
 
-		// eslint-disable-next-line no-control-regex, sonarjs/sonar-no-control-regex
+		// eslint-disable-next-line no-control-regex, sonarjs/no-control-regex
 		const matches = /^>? ?\x1b\[\d?;?(\d\d)m(.+)\x1b\[0m(.*)\r*\n/.exec(data)
 		if (matches) {
 			for (const fgColor of NodeMcu._colorMap) {

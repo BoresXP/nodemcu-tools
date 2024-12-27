@@ -116,7 +116,6 @@ export default abstract class NodeMcuSerial {
 				reject(new Error(`Data is too long: ${data.length} chars`))
 			}
 
-			// eslint-disable-next-line sonarjs/no-identical-functions
 			this._port.write(data, err => {
 				if (err) {
 					reject(err)

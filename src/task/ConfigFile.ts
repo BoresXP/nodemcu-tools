@@ -15,10 +15,7 @@ class ValidationError extends Error {
 
 let outChannel: OutputChannel
 
-export async function getConfig(
-	rootFolder: string,
-	configFileName: string,
-): Promise<IConfiguration | undefined> {
+export async function getConfig(rootFolder: string, configFileName: string): Promise<IConfiguration | undefined> {
 	outChannel = getOutputChannel()
 	await commands.executeCommand('setContext', 'nodemcu-tools:isConfig', false)
 
@@ -81,7 +78,7 @@ async function createDirectory(folder: string): Promise<void> {
 }
 
 async function validateOption(userConfig: IConfiguration, option: string, rootFolder: string): Promise<void> {
-	let errMessage: string = ''
+	let errMessage = ''
 
 	const validate: ValidationMethod = {
 		compilerExecutable: () => {
@@ -120,7 +117,7 @@ async function validateOption(userConfig: IConfiguration, option: string, rootFo
 		},
 	}
 
-	await (validate[option] ?? validate['default'])()
+	await (validate[option] ?? validate.default)()
 	if (errMessage) {
 		throw new ValidationError(errMessage)
 	}
