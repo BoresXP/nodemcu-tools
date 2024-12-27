@@ -1,6 +1,6 @@
 Extension brings NodeMCU device interaction to Visual Studio Code.
 
-![build](https://img.shields.io/github/actions/workflow/status/BoresXP/nodemcu-tools/.github%2Fworkflows%2Fci.yml)
+![CI pipeline](https://github.com/BoresXP/nodemcu-tools/actions/workflows/ci.yml/badge.svg)
 
 ## Features
 
