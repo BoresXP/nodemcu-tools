@@ -73,7 +73,7 @@ export default ts.config(
 			'@stylistic/no-extra-semi': 'warn', // Require or disallow semicolons instead of ASI
 			'@stylistic/semi': ['error', 'never'], // Require or disallow semicolons instead of ASI
 			'@stylistic/no-tabs': ['error', { allowIndentationTabs: true }], // This rule looks for tabs anywhere inside a file: code, comments or anything else.
-			'@stylistic/indent': ['error', 'tab'], // Enforce consistent indentation
+			'@stylistic/indent': ['error', 'tab', { SwitchCase: 1 }], // Enforce consistent indentation
 			'@stylistic/indent-binary-ops': ['error', 'tab'], // Indentation for binary operators in multiline expressions.
 			'@stylistic/jsx-indent-props': [1, 'tab'], // Enforce props indentation in JSX.
 			'@stylistic/brace-style': ['error', '1tbs'], // Enforce consistent brace style for blocks
@@ -84,6 +84,9 @@ export default ts.config(
 				'error',
 				{ props: 'ignore', children: 'always', propElementValues: 'always' },
 			], // Disallow unnecessary JSX expressions when literals alone are sufficient or enforce JSX expressions on literals in JSX children or attributes.
+			'@stylistic/member-delimiter-style': ['error', { multiline: { delimiter: 'none' } }], // Require a specific member delimiter style for interfaces and type literals
+			'@stylistic/quotes': ['error', 'single', { avoidEscape: true }], // Enforce the consistent use of either backticks, double, or single quotes
+			'@stylistic/func-call-spacing': ['error', 'never'], // Require or disallow spacing between function identifiers and their invocations
 
 			'import-x/no-named-as-default': 'off', // Forbid use of exported name as identifier of default export.
 
@@ -168,14 +171,7 @@ export default ts.config(
 
 			'optimize-regex/optimize-regex': 'warn', // Optimize regex literals
 
-			// '@stylistic/no-extra-semi': 'warn', // Require or disallow semicolons instead of ASI
-			// '@stylistic/semi': ['error', 'never'], // Require or disallow semicolons instead of ASI
-			// '@stylistic/member-delimiter-style': ['error', { multiline: { delimiter: 'none' } }], // Require a specific member delimiter style for interfaces and type literals
 			'@typescript-eslint/member-ordering': 'warn', // Require a consistent member declaration order
-			// '@stylistic/brace-style': ['error', '1tbs'], // Enforce consistent brace style for blocks
-			// '@stylistic/indent': ['error', 'tab', { SwitchCase: 1 }], // Enforce consistent indentation
-			// '@stylistic/quotes': ['error', 'single', { avoidEscape: true }], // Enforce the consistent use of either backticks, double, or single quotes
-			// '@stylistic/func-call-spacing': ['error', 'never'], // Require or disallow spacing between function identifiers and their invocations
 			'@typescript-eslint/no-non-null-assertion': 'error', //Disallow non-null assertions using the ! postfix operator
 			'@typescript-eslint/no-useless-constructor': 'error', // Disallow unnecessary constructors
 			'@typescript-eslint/prefer-for-of': 'warn', // Prefer a ‘for-of’ loop over a standard ‘for’ loop if the index is only used to access the array being iterated
