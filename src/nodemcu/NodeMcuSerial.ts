@@ -28,7 +28,7 @@ export default abstract class NodeMcuSerial {
 	private readonly _evtOpened = new EventEmitter<void>()
 
 	protected constructor(path: string) {
-		this._port = new SerialPort({ path, autoOpen: false, baudRate: 115200 })
+		this._port = new SerialPort({ path, autoOpen: false, baudRate: 9600 })
 	}
 
 	public get isConnected(): boolean {
@@ -73,6 +73,7 @@ export default abstract class NodeMcuSerial {
 				if (err) {
 					reject(err)
 				} else {
+					this._port.update({ baudRate: 115200 })
 					parser.on('data', data => this.onDataHandler(data as Buffer))
 					this._port.on('data', data => this.onDataRawHandler(data as Buffer))
 					this._port.on('close', (errDiconnect: ErrorDisconnect) => this._evtClosed.fire(errDiconnect))
