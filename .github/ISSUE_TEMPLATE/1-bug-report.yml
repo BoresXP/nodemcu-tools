@@ -15,14 +15,20 @@ body:
       required: true
   - type: input
     attributes:
-      label: VS Code Info
-      description: Main Menu > Help > About
+      label: Hardware
+      description: Describe which ESP8266/ESP32 device you use.
     validations:
       required: true
-  - type: input
+  - type: textarea
     attributes:
-      label: Hardware
-      description: Describe which ESP8266/ESP32 device you use and document any special hardware setup required to reproduce the problem.
+      label: Environment information
+      description: In VS Code, click **Help** in the *Menu Bar*, and then click **About**. Click **Copy** button and paste the information here.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Extension Log
+      description: To view the extension logs press `ctrl/cmd+shift+p` > Developer\:Toggle Developer Tools > Console
     validations:
       required: true
   - type: textarea
