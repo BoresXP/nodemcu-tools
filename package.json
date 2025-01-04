@@ -240,7 +240,7 @@
 					"command": "nodemcu-tools.compileFileUpload",
 					"alt": "nodemcu-tools.crossCompile",
 					"group": "nodemcu-tools@30",
-					"when": "nodemcu-tools:isConnected && nodemcu-tools:isConfig"
+					"when": "nodemcu-tools:isConnected && nodemcu-tools:hasConfig"
 				}
 			],
 			"view/title": [

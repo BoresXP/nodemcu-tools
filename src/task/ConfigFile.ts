@@ -17,7 +17,7 @@ let outChannel: OutputChannel
 
 export async function getConfig(rootFolder: string, configFileName: string): Promise<IConfiguration | undefined> {
 	outChannel = getOutputChannel()
-	await commands.executeCommand('setContext', 'nodemcu-tools:isConfig', false)
+	await commands.executeCommand('setContext', 'nodemcu-tools:hasConfig', false)
 
 	if (!(await isExists(configFileName))) {
 		outChannel.appendLine(`No config file '${configFileName}'`)
@@ -50,7 +50,7 @@ export async function getConfig(rootFolder: string, configFileName: string): Pro
 	}
 
 	await createDirectory(path.join(rootFolder, config.outDir))
-	await commands.executeCommand('setContext', 'nodemcu-tools:isConfig', true)
+	await commands.executeCommand('setContext', 'nodemcu-tools:hasConfig', true)
 	return config
 }
 
