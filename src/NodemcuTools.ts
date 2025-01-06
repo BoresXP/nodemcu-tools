@@ -43,6 +43,7 @@ export default class NodemcuTools {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
 		const fileName = deviceFileName ?? file.path.split('/').slice(-1)[0]
+		const [fileExt] = fileName.split('.').slice(-1)
 		await window.withProgress(
 			{
 				location: ProgressLocation.Notification,
@@ -51,7 +52,26 @@ export default class NodemcuTools {
 			},
 			async progress => {
 				const fileData = await workspace.fs.readFile(file)
-				const fileBuff = Buffer.from(fileData)
+				let fileBuff = Buffer.from(fileData)
+
+				if (fileExt === 'json') {
+					const minifyJSONenabled = workspace
+						.getConfiguration()
+						.get('nodemcu-tools.minifyJSON.enabled', initialSettings.minifyJSONenabled)
+					if (minifyJSONenabled) {
+						try {
+							const jsonString = fileData.toString()
+							const jsonContent = JSON.stringify(JSON.parse(jsonString) as string)
+							fileBuff = Buffer.from(jsonContent)
+						} catch (error) {
+							if (error instanceof Error) {
+								window.showWarningMessage(`Invalid JSON file: ${error.message}`)
+							}
+
+							return void 0
+						}
+					}
+				}
 
 				let prevPercent = 0
 				await device.commands.upload(fileBuff, fileName, percent => {

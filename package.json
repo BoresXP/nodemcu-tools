@@ -328,6 +328,11 @@
 					"default": false,
 					"description": "Controls whether the Lua code should be minified before upload with 'sendLine' and 'sendBlock' commands."
 				},
+				"nodemcu-tools.minifyJSON.enabled": {
+					"type": "boolean",
+					"default": true,
+					"description": "Controls whether a JSON file should be minified before uploading to the device."
+				},
 				"nodemcu-tools.overwriteSnippets": {
 					"type": "boolean",
 					"default": true,

@@ -85,6 +85,7 @@ _(ALT commands are available by pressing ALT key when opening menu); on Linux yo
 * **Snippets:** snippets are buttons at the bottom of main window (3). These are just commands to run on device. You can configure it yourself with this setting. Setting itself is an object with each property representing one snippet: name is shown on a button, value is command text. You can set different snippets for each workspace. Workspace snippets _overrides_ ones set in user settings and defaults. With this behavior you can remove some default snippets. 
   * **overwriteSnippets** Controls whether snippets in workspace should overwrite ones in user settings and defaults.
 * **minify.enabled**  Controls whether the Lua code should be minified before upload with 'sendLine' and 'sendBlock' commands.
+* **minifyJSON.enabled** Controls whether a JSON file should be minified before uploading to the device.
 * **deviceFilterActive** Controls whether device filter is active - only known NodeMCU devices (USB vendor-id) will be listed.
 
 ## What's New / Change Log

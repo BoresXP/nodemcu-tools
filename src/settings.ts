@@ -6,6 +6,7 @@ export interface ITerminalSettings {
 
 interface ISettings {
 	minifyEnabled: boolean
+	minifyJSONenabled: boolean
 	overwriteSnippets: boolean
 	deviceFilterActive: boolean
 	connectionDelay: number
@@ -19,6 +20,7 @@ export const initialTerminalSettings: ITerminalSettings = {
 
 export const initialSettings: ISettings = {
 	minifyEnabled: false,
+	minifyJSONenabled: true,
 	overwriteSnippets: true,
 	deviceFilterActive: true,
 	connectionDelay: 100,
