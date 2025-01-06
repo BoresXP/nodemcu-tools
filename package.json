@@ -323,7 +323,7 @@
 					},
 					"description": "Command snippets"
 				},
-				"nodemcu-tools.minify.enabled": {
+				"nodemcu-tools.minifyLua.enabled": {
 					"type": "boolean",
 					"default": false,
 					"description": "Controls whether the Lua code should be minified before upload with 'sendLine' and 'sendBlock' commands."

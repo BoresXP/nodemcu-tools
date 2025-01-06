@@ -298,7 +298,7 @@ export default class NodemcuTools {
 
 		const minifyEnabled = workspace
 			.getConfiguration()
-			.get('nodemcu-tools.minify.enabled', initialSettings.minifyEnabled)
+			.get('nodemcu-tools.minifyLua.enabled', initialSettings.minifyLuaEnabled)
 
 		if (minifyEnabled) {
 			try {
@@ -323,7 +323,7 @@ export default class NodemcuTools {
 
 		const minifyEnabled = workspace
 			.getConfiguration()
-			.get('nodemcu-tools.minify.enabled', initialSettings.minifyEnabled)
+			.get('nodemcu-tools.minifyLua.enabled', initialSettings.minifyLuaEnabled)
 
 		if (minifyEnabled) {
 			try {

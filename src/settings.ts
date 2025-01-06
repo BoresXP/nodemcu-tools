@@ -5,7 +5,7 @@ export interface ITerminalSettings {
 }
 
 interface ISettings {
-	minifyEnabled: boolean
+	minifyLuaEnabled: boolean
 	minifyJSONenabled: boolean
 	overwriteSnippets: boolean
 	deviceFilterActive: boolean
@@ -19,7 +19,7 @@ export const initialTerminalSettings: ITerminalSettings = {
 }
 
 export const initialSettings: ISettings = {
-	minifyEnabled: false,
+	minifyLuaEnabled: false,
 	minifyJSONenabled: true,
 	overwriteSnippets: true,
 	deviceFilterActive: true,
