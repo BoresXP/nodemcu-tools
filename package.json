@@ -330,7 +330,7 @@
 				},
 				"nodemcu-tools.minifyJSON.enabled": {
 					"type": "boolean",
-					"default": true,
+					"default": false,
 					"description": "Controls whether a JSON file should be minified before uploading to the device."
 				},
 				"nodemcu-tools.overwriteSnippets": {

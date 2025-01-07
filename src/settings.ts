@@ -20,7 +20,7 @@ export const initialTerminalSettings: ITerminalSettings = {
 
 export const initialSettings: ISettings = {
 	minifyLuaEnabled: false,
-	minifyJSONenabled: true,
+	minifyJSONenabled: false,
 	overwriteSnippets: true,
 	deviceFilterActive: true,
 	connectionDelay: 100,
