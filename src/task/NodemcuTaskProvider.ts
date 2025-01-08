@@ -1,4 +1,5 @@
 import {
+	EventEmitter,
 	FileSystemWatcher,
 	ShellExecution,
 	Task,
@@ -28,6 +29,8 @@ export default class NodemcuTaskProvider implements TaskProvider {
 	private readonly _configFile: string
 	private readonly _rootFolder: string
 	private _resourceFolderWatcher: FileSystemWatcher | undefined = void 0
+	private readonly _evtResource = new EventEmitter<void>()
+	private _fireSoonHandle?: NodeJS.Timeout
 
 	constructor() {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -117,10 +120,22 @@ export default class NodemcuTaskProvider implements TaskProvider {
 			this._resourceFolderWatcher = workspace.createFileSystemWatcher(
 				path.join(this._rootFolder, this._config.resourceDir) + '/**',
 			)
-			this._resourceFolderWatcher.onDidChange(() => this.rebuildResource())
-			this._resourceFolderWatcher.onDidCreate(() => this.rebuildResource())
-			this._resourceFolderWatcher.onDidDelete(() => this.rebuildResource())
+			this._resourceFolderWatcher.onDidChange(() => this.fireSoon())
+			this._resourceFolderWatcher.onDidCreate(() => this.fireSoon())
+			this._resourceFolderWatcher.onDidDelete(() => this.fireSoon())
+
+			this._evtResource.event(() => this.rebuildResource())
 		}
+	}
+
+	private fireSoon(): void {
+		if (this._fireSoonHandle) {
+			clearTimeout(this._fireSoonHandle)
+		}
+
+		this._fireSoonHandle = setTimeout(() => {
+			this._evtResource.fire()
+		}, 250)
 	}
 
 	private async rebuildConfig(): Promise<void> {
