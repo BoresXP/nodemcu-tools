@@ -12,9 +12,9 @@ import {
 	workspace,
 } from 'vscode'
 import { INodeMcu, NodeMcuRepository } from './nodemcu'
+import NodemcuTaskProvider, { NodemcuTaskDefinition } from './task/NodemcuTaskProvider'
 
-import { NodemcuTaskDefinition } from './task/INodemcuTask'
-import NodemcuTaskProvider from './task/NodemcuTaskProvider'
+import ConfigFile from './task/ConfigFile'
 import { initialSettings } from './settings'
 import luamin from 'luamin'
 import { posix } from 'path'
@@ -181,7 +181,7 @@ export default class NodemcuTools {
 		upload: boolean,
 	): Promise<string | undefined> {
 		const devicePath = await NodemcuTools.selectConnectedDevice()
-		const config = taskProvider.actualConfig
+		const config = ConfigFile.actualConfig
 		if (!devicePath || !config) {
 			return void 0
 		}

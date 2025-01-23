@@ -1,124 +1,182 @@
-import { OutputChannel, Uri, commands, window, workspace } from 'vscode'
-import { displayError, getOutputChannel } from './OutputChannel'
+import { EventEmitter, Uri, Event as VsEvent, commands, window, workspace } from 'vscode'
 
-import { IConfiguration } from './INodemcuTask'
+import { getOutputChannel } from './OutputChannel'
+import { makeResourceInit } from './MakeResource'
 import path from 'path'
 
-type ValidationMethod = Record<string, () => void | Promise<void>>
+type IConfigFile = Record<string, string | string[]>
+type ValidationMethod = Record<string, () => undefined | string | Promise<undefined | string>>
 
-class ValidationError extends Error {
-	constructor(message: string) {
-		super(message)
-		this.name = 'ValidationError'
-	}
+export interface IConfig {
+	compilerExecutable: string
+	include: string[]
+	outDir: string
+	outFile: string
+	resourceDir: string | undefined
 }
 
-let outChannel: OutputChannel
-
-export async function getConfig(rootFolder: string, configFileName: string): Promise<IConfiguration | undefined> {
-	outChannel = getOutputChannel()
-	await commands.executeCommand('setContext', 'nodemcu-tools:hasConfig', false)
-
-	if (!(await isExists(configFileName))) {
-		outChannel.appendLine(`No config file '${configFileName}'`)
-		return void 0
-	}
-
-	const config: IConfiguration = {
+export default class ConfigFile {
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	private static readonly _rootFolder = workspace.workspaceFolders![0].uri
+	private static readonly _evtConfigChange = new EventEmitter<IConfig | undefined>()
+	private static readonly _outChannel = getOutputChannel()
+	private static _fireSoonHandle: NodeJS.Timeout
+	private static _config: IConfig = {
 		compilerExecutable: '',
 		include: [],
 		outDir: 'out',
 		outFile: 'lfs.img',
-		resourceDir: '',
+		resourceDir: void 0,
 	}
 
-	try {
-		const data = await workspace.fs.readFile(Uri.file(configFileName))
-		const userConfig = JSON.parse(Buffer.from(data).toString('utf8')) as IConfiguration
+	public static get actualConfig(): IConfig | undefined {
+		return this._config
+	}
 
-		for (const option in userConfig) {
-			await validateOption(userConfig, option, rootFolder)
-			config[option] = userConfig[option]
+	public static get onConfigChange(): VsEvent<IConfig | undefined> {
+		return this._evtConfigChange.event
+	}
+
+	public static async isExists(f: Uri): Promise<boolean> {
+		try {
+			await workspace.fs.stat(f)
+			return true
+		} catch {
+			return false
 		}
-	} catch (error) {
-		if (error instanceof ValidationError) {
-			await window.showErrorMessage(`Failed to parse ".nodemcutools". ${error.message}`)
+	}
+
+	public static async initConfig(): Promise<void> {
+		makeResourceInit()
+
+		const configFileName = path.join(this._rootFolder.fsPath, '.nodemcutools')
+		const fileWatcher = workspace.createFileSystemWatcher(configFileName)
+		fileWatcher.onDidChange(configFile => this.fireSoon(configFile))
+		fileWatcher.onDidCreate(configFile => this.fireSoon(configFile))
+		fileWatcher.onDidDelete(configFile => this.fireSoon(configFile))
+
+		await this.rebuildConfig(Uri.file(configFileName))
+	}
+
+	private static fireSoon(configFile: Uri): void {
+		if (this._fireSoonHandle) {
+			clearTimeout(this._fireSoonHandle)
+		}
+
+		this._fireSoonHandle = setTimeout(() => {
+			void (async () => await this.rebuildConfig(configFile))()
+		}, 150)
+	}
+
+	private static async rebuildConfig(configFile: Uri): Promise<void> {
+		await commands.executeCommand('setContext', 'nodemcu-tools:hasConfig', false)
+		const configContent = await this.getConfig(configFile)
+		if (configContent) {
+			const outDir = Uri.joinPath(this._rootFolder, this._config.outDir)
+			if (!(await this.isExists(outDir))) {
+				await this.createDirectory(outDir)
+			}
+
+			await commands.executeCommand('setContext', 'nodemcu-tools:hasConfig', true)
+		}
+
+		this._evtConfigChange.fire(configContent)
+	}
+
+	private static async getConfig(configFile: Uri): Promise<IConfig | undefined> {
+		if (!(await this.isExists(configFile))) {
+			this._outChannel.appendLine(`'${configFile}' config file does not exist`)
 			return void 0
 		}
-		await displayError(error as Error)
-		return void 0
-	}
 
-	await createDirectory(path.join(rootFolder, config.outDir))
-	await commands.executeCommand('setContext', 'nodemcu-tools:hasConfig', true)
-	return config
-}
+		this._config = {
+			compilerExecutable: '',
+			include: [],
+			outDir: 'out',
+			outFile: 'lfs.img',
+			resourceDir: void 0,
+		}
+		try {
+			const data = await workspace.fs.readFile(configFile)
+			const userConfig = JSON.parse(Buffer.from(data).toString('utf8')) as IConfigFile
 
-async function isExists(f: string): Promise<boolean> {
-	try {
-		await workspace.fs.stat(Uri.file(f))
-		return true
-	} catch {
-		return false
-	}
-}
-
-async function createDirectory(folder: string): Promise<void> {
-	if (await isExists(folder)) {
-		return
-	}
-
-	try {
-		await workspace.fs.createDirectory(Uri.file(folder))
-		outChannel.appendLine(`The '${folder}' directory was created successfully.`)
-		outChannel.show(true)
-	} catch {
-		await displayError(new Error(`Can not create the directory '${folder}'`))
-	}
-}
-
-async function validateOption(userConfig: IConfiguration, option: string, rootFolder: string): Promise<void> {
-	let errMessage = ''
-
-	const validate: ValidationMethod = {
-		compilerExecutable: () => {
-			if (userConfig.compilerExecutable.trimEnd() === '') {
-				errMessage = 'No path to the luac.cross'
+			if (!('compilerExecutable' in userConfig && 'include' in userConfig)) {
+				throw new Error('Mandatory option is missed')
 			}
-		},
-		include: async () => {
-			for (const pattern of userConfig.include) {
-				const pathToCheck = path.dirname(path.resolve(rootFolder, pattern))
-				if (!(await isExists(pathToCheck))) {
-					errMessage = `Include path '${pathToCheck}' is not found.`
+
+			for (const [option, optionValue] of Object.entries(userConfig)) {
+				const errorMessage = await this.validateOption(option, optionValue)
+				if (errorMessage) {
+					throw new Error(errorMessage)
 				}
+				this._config[option as keyof IConfig] = optionValue as never
 			}
-		},
-		outDir: () => {
-			if (userConfig.outDir.trimEnd() === '') {
-				errMessage = `Invalid folder name for '${option}'`
+		} catch (err) {
+			if (err instanceof Error) {
+				this._outChannel.appendLine(`Failed to parse ".nodemcutools". ${err.message}`)
+				window.showWarningMessage(`Failed to parse ".nodemcutools". ${err.message}`)
+				return void 0
 			}
-		},
-		outFile: () => {
-			if (userConfig.outFile.trimEnd() === '') {
-				errMessage = `Invalid file name for '${option}'`
-			}
-		},
-		resourceDir: async () => {
-			if (userConfig.resourceDir.trimEnd() === '') {
-				errMessage = `Invalid folder name for '${option}'`
-			}
-			if (!(await isExists(path.join(rootFolder, userConfig.resourceDir)))) {
-				errMessage = `Path to the resource folder '${userConfig.resourceDir}' is not found.`
-			}
-		},
-		default: () => {
-			errMessage = `Unknown property '${option}' in config file`
-		},
+		}
+
+		this._outChannel.appendLine('The config file is OK.')
+		return this._config
 	}
 
-	await (validate[option] ?? validate.default)()
-	if (errMessage) {
-		throw new ValidationError(errMessage)
+	private static async validateOption(opt: string, optVal: string | string[]): Promise<string | undefined> {
+		const validate: ValidationMethod = {
+			compilerExecutable: () => {
+				if (typeof optVal !== 'string' || optVal.trimEnd() === '') {
+					return 'No path to the luac.cross'
+				}
+			},
+			include: async () => {
+				if (typeof optVal !== 'object') {
+					return 'The "Include" property type must be an array of strings.'
+				}
+				for (const pattern of optVal) {
+					let pathToCheck
+					if (path.isAbsolute(pattern)) {
+						pathToCheck = Uri.file(pattern)
+					} else {
+						pathToCheck = Uri.file(path.dirname(path.resolve(this._rootFolder.fsPath, pattern)))
+					}
+					if (!(await this.isExists(pathToCheck))) {
+						return `Include path '${pathToCheck.path}' does not exist.`
+					}
+				}
+			},
+			outDir: () => {
+				if (typeof optVal !== 'string' || optVal.trimEnd() === '') {
+					return `Invalid folder name for '${opt}.'`
+				}
+			},
+			outFile: () => {
+				if (typeof optVal !== 'string' || optVal.trimEnd() === '') {
+					return `Invalid file name for '${opt}'.`
+				}
+			},
+			resourceDir: async () => {
+				if (typeof optVal !== 'string' || optVal.trimEnd() === '') {
+					return `Invalid folder name for '${opt}'.`
+				}
+				const resourceFolder = Uri.joinPath(this._rootFolder, optVal)
+				if (!(await ConfigFile.isExists(resourceFolder))) {
+					return `Path to the resource folder '${resourceFolder.path}' was not found.`
+				}
+			},
+			default: () => `Configuration has an unknown property '${opt}'.`,
+		}
+
+		return await (validate[opt] ?? validate.default)()
+	}
+
+	private static async createDirectory(folder: Uri): Promise<void> {
+		try {
+			await workspace.fs.createDirectory(folder)
+			this._outChannel.appendLine(`The '${folder.path}' directory was created successfully.`)
+		} catch {
+			await window.showErrorMessage(`Can not create the directory '${folder.path}'`)
+		}
 	}
 }

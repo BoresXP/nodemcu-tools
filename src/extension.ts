@@ -1,5 +1,6 @@
 import { ExtensionContext, Uri, commands, tasks, window, workspace } from 'vscode'
 
+import ConfigFile from './task/ConfigFile'
 import DeviceTreeItem from './tree/DeviceTreeItem'
 import DeviceTreeProvider from './tree/DeviceTreeProvider'
 import FileTreeItem from './tree/FileTreeItem'
@@ -17,14 +18,15 @@ export function activate(context: ExtensionContext): void {
 			return
 		}
 
+		void (async () => {
+			await ConfigFile.initConfig()
+		})()
+
 		const treeProvider = new DeviceTreeProvider()
 		const treeView = window.createTreeView('nodemcu-tools.devices', { treeDataProvider: treeProvider })
 
 		const nodemcuTaskProvider = new NodemcuTaskProvider()
 		const taskProvider = tasks.registerTaskProvider(NodemcuTaskProvider.taskType, nodemcuTaskProvider)
-		void (async () => {
-			await nodemcuTaskProvider.init()
-		})()
 
 		context.subscriptions.push(treeView, taskProvider)
 
