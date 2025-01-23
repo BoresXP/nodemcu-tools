@@ -107,7 +107,6 @@ export default ts.config(
 			'no-new': 'error', // disallow new operators outside of assignments or comparisons
 			'no-new-func': 'error', // disallow new operators with the Function object
 			'no-new-wrappers': 'error', // disallow new operators with the String, Number, and Boolean objects
-			'no-return-await': 'error', // disallow unnecessary return await
 			'no-self-compare': 'error', // disallow comparisons where both sides are exactly the same
 			'no-sequences': 'error', // disallow comma operators
 			'no-throw-literal': 'error', // disallow throwing literals as exceptions
