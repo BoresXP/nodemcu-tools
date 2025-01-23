@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+TODO bump version to 5.0.0
+
+ ⚠️  **BREAKING CHANGE**
+
+- Change name of `minify.enabled` setting to `minifyLua.enabled`
+
+### Added
+
+- minify JSON file before uploading to the device. New `minifyJSON.enabled` setting controls whether a JSON file should be minified before uploading to the device. Default: `false`
+
+### Fixed
+
+- some esp8266 boards did not connect (on Windows) due to Error: Open (SetCommState): Unknown error code 31
+
+ ### Changed
+
+- Update dependencies
+
 ## [4.6.0] - 2024-12-27
 
  ⚠️  **BREAKING CHANGE**
