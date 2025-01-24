@@ -10,6 +10,7 @@ import {
 	TaskScope,
 	Uri,
 	commands,
+	l10n,
 	tasks,
 	workspace,
 } from 'vscode'
@@ -70,8 +71,8 @@ export default class NodemcuTaskProvider implements TaskProvider {
 			: this._config.include.join(' ')
 
 		const listTasks = [
-			['buildLFSandUploadSerial', 'Build LFS and upload to device via serial port'],
-			['buildLFS', 'Build LFS on host machine'],
+			['buildLFSandUploadSerial', l10n.t('Build LFS and upload to device via serial port')],
+			['buildLFS', l10n.t('Build LFS on host machine')],
 		]
 		const taskConfig = {
 			compilerExecutable: this._config.compilerExecutable,

@@ -7,6 +7,7 @@ import {
 	TaskScope,
 	Uri,
 	commands,
+	l10n,
 	tasks,
 	window,
 	workspace,
@@ -48,7 +49,7 @@ export default class NodemcuTools {
 			{
 				location: ProgressLocation.Notification,
 				cancellable: false,
-				title: `Uploading ${fileName} to NodeMCU@${devicePath}`,
+				title: l10n.t('Uploading {0} to NodeMCU@{1}', fileName, devicePath),
 			},
 			async progress => {
 				const fileData = await workspace.fs.readFile(file)
@@ -65,7 +66,7 @@ export default class NodemcuTools {
 							fileBuff = Buffer.from(jsonContent)
 						} catch (error) {
 							if (error instanceof Error) {
-								window.showWarningMessage(`Invalid JSON file: ${error.message}`)
+								window.showWarningMessage(l10n.t('Invalid JSON file: {0}', error.message))
 							}
 
 							return void 0
@@ -127,7 +128,7 @@ export default class NodemcuTools {
 
 				const fileName = await NodemcuTools.uploadFileInternal(devicePath, file, deviceFileName)
 				if (!fileName) {
-					throw new Error(`Error uploading ${filePath}`)
+					throw new Error(l10n.t('Error uploading {0}', filePath))
 				}
 			}
 		}
@@ -154,7 +155,7 @@ export default class NodemcuTools {
 			const [pathEnd] = file.path.split('/').slice(-1)
 			const fileName = await NodemcuTools.uploadFileInternal(devicePath, file)
 			if (!fileName) {
-				throw new Error(`Error uploading ${pathEnd}`)
+				throw new Error(l10n.t('Error uploading {0}', pathEnd))
 			}
 		}
 
@@ -269,7 +270,7 @@ export default class NodemcuTools {
 			{
 				location: ProgressLocation.Notification,
 				cancellable: false,
-				title: `Downloading ${deviceFileName} from NodeMCU@${devicePath}`,
+				title: l10n.t('Downloading {0} from NodeMCU@{1}', deviceFileName, devicePath),
 			},
 			async progress => {
 				let prevPercent = 0

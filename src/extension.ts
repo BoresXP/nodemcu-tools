@@ -1,4 +1,4 @@
-import { ExtensionContext, Uri, commands, tasks, window, workspace } from 'vscode'
+import { ExtensionContext, Uri, commands, l10n, tasks, window, workspace } from 'vscode'
 
 import ConfigFile from './task/ConfigFile'
 import DeviceTreeItem from './tree/DeviceTreeItem'
@@ -87,7 +87,7 @@ export function activate(context: ExtensionContext): void {
 			},
 
 			'nodemcu-tools.uploadFileAs': async (file: Uri) => {
-				const newName = await renameFile(file, 'File will be saved under this name on device')
+				const newName = await renameFile(file, l10n.t('File will be saved under this name on device'))
 				if (!newName) {
 					return
 				}
@@ -128,7 +128,7 @@ export function activate(context: ExtensionContext): void {
 			},
 
 			'nodemcu-tools.uploadFileSetLfsAs': async (file: Uri) => {
-				const newName = await renameFile(file, 'File will be saved under this name on device')
+				const newName = await renameFile(file, l10n.t('File will be saved under this name on device'))
 				if (!newName) {
 					return
 				}
@@ -149,7 +149,7 @@ export function activate(context: ExtensionContext): void {
 
 			'nodemcu-tools.downloadFile': async (item: FileTreeItem) => tools.downloadFile(item.parent.path, item.name),
 			'nodemcu-tools.downloadFileAs': async (item: FileTreeItem) => {
-				const newName = await renameFile(item.name, 'File will be saved under this name on host machine')
+				const newName = await renameFile(item.name, l10n.t('File will be saved under this name on host machine'))
 				if (!newName) {
 					return
 				}
@@ -191,7 +191,9 @@ export function activate(context: ExtensionContext): void {
 		}
 	} catch (ex) {
 		console.error(ex) // eslint-disable-line no-console
-		void window.showErrorMessage(`Error in nodemcu-tools: ${ex}`)
+		if (ex instanceof Error) {
+			void window.showErrorMessage(l10n.t('Error in nodemcu-tools: {0}', ex))
+		}
 	}
 }
 

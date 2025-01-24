@@ -6,6 +6,7 @@ import {
 	RelativePattern,
 	Uri,
 	Event as VsEvent,
+	l10n,
 	window,
 	workspace,
 } from 'vscode'
@@ -81,7 +82,7 @@ async function makeResource(config: ResourceConfig): Promise<string | undefined>
 
 	try {
 		if (!(await ConfigFile.isExists(Uri.joinPath(resourceFolder)))) {
-			outChannel.appendLine(`Path to the resource folder '${resourceFolder.path}' was not found.`)
+			outChannel.appendLine(l10n.t('Path to the resource folder "{0}" was not found.', resourceFolder.path))
 			return void 0
 		}
 		const fileNames = await getFilesListFromFolder(resourceFolder)
@@ -108,7 +109,7 @@ async function getFilesListFromFolder(nextFolder: Uri, depth = 1, files: string[
 			await getFilesListFromFolder(Uri.joinPath(nextFolder, name), ++depth, files)
 			depth--
 		} else if (type === FileType.SymbolicLink) {
-			await window.showErrorMessage('Symbolic links in the resource folder are not supported')
+			await window.showErrorMessage(l10n.t('Symbolic links in the resource folder are not supported'))
 		}
 	}
 

@@ -1,4 +1,4 @@
-import { ExtensionContext, Uri, ViewColumn, WebviewPanel, commands, window, workspace } from 'vscode'
+import { ExtensionContext, Uri, ViewColumn, WebviewPanel, commands, l10n, window, workspace } from 'vscode'
 import { initialSettings, initialTerminalSettings } from '../settings'
 
 import IMessage from './messages/IMessage'
@@ -97,17 +97,17 @@ export default class TerminalView {
 
 	private async handleFormatRequest(): Promise<void> {
 		const answer = await window.showWarningMessage(
-			'Do you really want to format the filesystem and delete all files?',
-			{ modal: true, detail: 'Formatting the file system will take around ~30s' },
+			l10n.t('Do you really want to format the filesystem and delete all files?'),
+			{ modal: true, detail: l10n.t('Formatting the file system will take around ~30s') },
 			'Abort',
 			'Format ESP',
 		)
 
 		if (answer === 'Format ESP') {
 			this._device.commandTimeout = 30000
-			await this._webViewPanel.webview.postMessage(terminalLine('cyan', 'Formatting...'))
+			await this._webViewPanel.webview.postMessage(terminalLine('cyan', l10n.t('Formatting...')))
 			await this._device.commands.formatEsp()
-			await this._webViewPanel.webview.postMessage(terminalLine('cyan', 'Format done.'))
+			await this._webViewPanel.webview.postMessage(terminalLine('cyan', l10n.t('Format done.')))
 			await commands.executeCommand('nodemcu-tools.refreshTreeView')
 			this._device.commandTimeout = 15000
 		}

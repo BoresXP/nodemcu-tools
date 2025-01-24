@@ -1,4 +1,4 @@
-import { Disposable, EventEmitter, Event as VsEvent, window } from 'vscode'
+import { Disposable, EventEmitter, Event as VsEvent, l10n, window } from 'vscode'
 
 import INodeMcu from './INodeMcu'
 import IToTerminalData from './IToTerminalData'
@@ -288,7 +288,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		this._currentCommand = new Promise((resolve, reject) => {
 			const timeoutId = setTimeout(() => {
 				unsubscribeAndClear()
-				reject(new Error('Command execution timeout'))
+				reject(new Error(l10n.t('Command execution timeout')))
 			}, this._commandTimeout)
 
 			const handleCommand = (data: string): void => {

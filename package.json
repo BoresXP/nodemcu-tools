@@ -42,21 +42,22 @@
 	],
 	"icon": "./resources/icon.png",
 	"main": "./out/extension.js",
+	"l10n": "./l10n",
 	"contributes": {
 		"commands": [
 			{
 				"command": "nodemcu-tools.connect",
-				"title": "Connect",
+				"title": "%nodemcu-tools.connect.title%",
 				"category": "NodeMCU"
 			},
 			{
 				"command": "nodemcu-tools.disconnect",
-				"title": "Disonnect",
+				"title": "%nodemcu-tools.disconnect.title%",
 				"category": "NodeMCU"
 			},
 			{
 				"command": "nodemcu-tools.refreshTreeView",
-				"title": "Refresh",
+				"title": "%nodemcu-tools.refreshTreeView.title%",
 				"category": "NodeMCU",
 				"icon": {
 					"light": "resources/light/refresh.svg",
@@ -65,18 +66,18 @@
 			},
 			{
 				"command": "nodemcu-tools.deleteFile",
-				"title": "Delete",
+				"title": "%nodemcu-tools.deleteFile.title%",
 				"category": "NodeMCU"
 			},
 			{
 				"command": "nodemcu-tools.compileFile",
-				"title": "Compile",
+				"title": "%nodemcu-tools.compileFile.title%",
 				"category": "NodeMCU",
 				"enablement": "viewItem == nodemcu-file-lua"
 			},
 			{
 				"command": "nodemcu-tools.runFile",
-				"title": "Run",
+				"title": "%nodemcu-tools.runFile.title%",
 				"category": "NodeMCU",
 				"enablement": "viewItem =~ /^nodemcu-file-(lua|lc)$/",
 				"icon": {
@@ -86,83 +87,83 @@
 			},
 			{
 				"command": "nodemcu-tools.uploadActiveFile",
-				"title": "Upload active file to device",
+				"title": "%nodemcu-tools.uploadActiveFile.title%",
 				"category": "NodeMCU",
 				"enablement": "editorTextFocus"
 			},
 			{
 				"command": "nodemcu-tools.uploadFile",
-				"title": "Upload File(s) to device",
+				"title": "%nodemcu-tools.uploadFile.title%",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder"
 			},
 			{
 				"command": "nodemcu-tools.uploadFolderRename",
-				"title": "Upload Folder to device",
+				"title": "%nodemcu-tools.uploadFolderRename.title%",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && explorerResourceIsFolder"
 			},
 			{
 				"command": "nodemcu-tools.uploadFolder",
-				"title": "Upload files under folder to device",
+				"title": "%nodemcu-tools.uploadFolder.title%",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && explorerResourceIsFolder"
 			},
 			{
 				"command": "nodemcu-tools.uploadFileAs",
-				"title": "Upload to device...",
+				"title": "%nodemcu-tools.uploadFileAs.title%",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder"
 			},
 			{
 				"command": "nodemcu-tools.uploadFileCompile",
-				"title": "Upload to device and compile",
+				"title": "%nodemcu-tools.uploadFileCompile.title%",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .lua"
 			},
 			{
 				"command": "nodemcu-tools.compileFileUpload",
-				"title": "Compile and upload to device",
+				"title": "%nodemcu-tools.compileFileUpload.title%",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .lua"
 			},
 			{
 				"command": "nodemcu-tools.crossCompile",
-				"title": "Compile",
+				"title": "%nodemcu-tools.crossCompile.title%",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .lua"
 			},
 			{
 				"command": "nodemcu-tools.downloadFile",
-				"title": "Download",
+				"title": "%nodemcu-tools.downloadFile.title%",
 				"category": "NodeMCU"
 			},
 			{
 				"command": "nodemcu-tools.downloadFileAs",
-				"title": "Download...",
+				"title": "%nodemcu-tools.downloadFileAs.title%",
 				"category": "NodeMCU"
 			},
 			{
 				"command": "nodemcu-tools.uploadFileRun",
-				"title": "Run on device",
+				"title": "%nodemcu-tools.uploadFileRun.title%",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .lua"
 			},
 			{
 				"command": "nodemcu-tools.uploadFileSetLfs",
-				"title": "Upload to device and set as LFS",
+				"title": "%nodemcu-tools.uploadFileSetLfs.title%",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .img"
 			},
 			{
 				"command": "nodemcu-tools.uploadFileSetLfsAs",
-				"title": "Upload to device and set as LFS...",
+				"title": "%nodemcu-tools.uploadFileSetLfsAs.title%",
 				"category": "NodeMCU",
 				"enablement": "explorerViewletFocus && !explorerResourceIsFolder && resourceExtname == .img"
 			},
 			{
 				"command": "nodemcu-tools.sendLine",
-				"title": "Send current line to device",
+				"title": "%nodemcu-tools.sendLine.title%",
 				"category": "NodeMCU",
 				"enablement": "editorTextFocus",
 				"icon": {
@@ -172,7 +173,7 @@
 			},
 			{
 				"command": "nodemcu-tools.sendBlock",
-				"title": "Send selected block to device",
+				"title": "%nodemcu-tools.sendBlock.title%",
 				"category": "NodeMCU",
 				"enablement": "editorTextFocus && editorHasSelection == true",
 				"icon": {
@@ -293,7 +294,7 @@
 			"explorer": [
 				{
 					"id": "nodemcu-tools.devices",
-					"name": "NodeMCU Devices"
+					"name": "%nodemcu-tools.views.explorer.name%"
 				}
 			]
 		},
@@ -305,14 +306,14 @@
 					"minimum": 10,
 					"maximum": 1000,
 					"default": 300,
-					"description": "How many lines will be held in terminal. Old lines over this limit will be discarded."
+					"description": "%nodemcu-tools.terminal.scrollbackSize.description%"
 				},
 				"nodemcu-tools.terminal.commandHistorySize": {
 					"type": "number",
 					"minimum": 0,
 					"maximum": 100,
 					"default": 30,
-					"description": "How many commands will be available by pressing UP in command input field. Old commands over this limit will be discarded."
+					"description": "%nodemcu-tools.terminal.commandHistorySize.description%"
 				},
 				"nodemcu-tools.snippets": {
 					"type": "object",
@@ -321,34 +322,34 @@
 						"Heap": "=node.heap()",
 						"Globals": "local p,r,c,s=print,string.rep,0,' Regs: 'local function f(m,t)p(r('=',9)..m..r('=',9))for k,v in pairs(t)do p(k,v)c=type(k)=='number'and c+1 or c end;end;f(' _G ',_G)f(' package.loaded ',_G.package.loaded)f(s,debug.getregistry())p(s,c)collectgarbage()"
 					},
-					"description": "Command snippets"
+					"description": "%nodemcu-tools.snippets.description%"
 				},
 				"nodemcu-tools.minifyLua.enabled": {
 					"type": "boolean",
 					"default": false,
-					"description": "Controls whether the Lua code should be minified before upload with 'sendLine' and 'sendBlock' commands."
+					"description": "%nodemcu-tools.minifyLua.enabled.description%"
 				},
 				"nodemcu-tools.minifyJSON.enabled": {
 					"type": "boolean",
 					"default": false,
-					"description": "Controls whether a JSON file should be minified before uploading to the device."
+					"description": "%nodemcu-tools.minifyJSON.enabled.description%"
 				},
 				"nodemcu-tools.overwriteSnippets": {
 					"type": "boolean",
 					"default": true,
-					"description": "Controls whether snippets in workspace should overwrite ones in user settings and defaults"
+					"description": "%nodemcu-tools.overwriteSnippets.description%"
 				},
 				"nodemcu-tools.deviceFilterActive": {
 					"type": "boolean",
 					"default": true,
-					"description": "Controls whether device filter is active - only known NodeMCU devices (USB vendor-id) will be listed.'"
+					"description": "%nodemcu-tools.deviceFilterActive.description%"
 				},
 				"nodemcu-tools.connectionDelay": {
 					"type": "number",
 					"minimum": 100,
 					"maximum": 1000,
 					"default": 0,
-					"description": "Connection delay (in milliseconds) between opening the serial device and starting the communication.'"
+					"description": "%nodemcu-tools.connectionDelay.description%"
 				}
 			}
 		},

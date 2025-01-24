@@ -1,4 +1,4 @@
-import { EventEmitter, Uri, Event as VsEvent, commands, window, workspace } from 'vscode'
+import { EventEmitter, Uri, Event as VsEvent, commands, l10n, window, workspace } from 'vscode'
 
 import { getOutputChannel } from './OutputChannel'
 import { makeResourceInit } from './MakeResource'
@@ -85,7 +85,7 @@ export default class ConfigFile {
 
 	private static async getConfig(configFile: Uri): Promise<IConfig | undefined> {
 		if (!(await this.isExists(configFile))) {
-			this._outChannel.appendLine(`'${configFile}' config file does not exist`)
+			this._outChannel.appendLine(l10n.t('The {0} config file does not exist', configFile))
 			return void 0
 		}
 
@@ -101,7 +101,7 @@ export default class ConfigFile {
 			const userConfig = JSON.parse(Buffer.from(data).toString('utf8')) as IConfigFile
 
 			if (!('compilerExecutable' in userConfig && 'include' in userConfig)) {
-				throw new Error('Mandatory option is missed')
+				throw new Error(l10n.t('Mandatory option is missed'))
 			}
 
 			for (const [option, optionValue] of Object.entries(userConfig)) {
@@ -113,13 +113,13 @@ export default class ConfigFile {
 			}
 		} catch (err) {
 			if (err instanceof Error) {
-				this._outChannel.appendLine(`Failed to parse ".nodemcutools". ${err.message}`)
-				window.showWarningMessage(`Failed to parse ".nodemcutools". ${err.message}`)
+				this._outChannel.appendLine(l10n.t('Failed to parse ".nodemcutools". {0}', err.message))
+				window.showWarningMessage(l10n.t('Failed to parse ".nodemcutools". {0}', err.message))
 				return void 0
 			}
 		}
 
-		this._outChannel.appendLine('The config file is OK.')
+		this._outChannel.appendLine(l10n.t('The config file is OK.'))
 		return this._config
 	}
 
@@ -127,12 +127,12 @@ export default class ConfigFile {
 		const validate: ValidationMethod = {
 			compilerExecutable: () => {
 				if (typeof optVal !== 'string' || optVal.trimEnd() === '') {
-					return 'No path to the luac.cross'
+					return l10n.t('No path to the luac.cross')
 				}
 			},
 			include: async () => {
 				if (typeof optVal !== 'object') {
-					return 'The "Include" property type must be an array of strings.'
+					return l10n.t('The type of "Include" property must be an array of strings.')
 				}
 				for (const pattern of optVal) {
 					let pathToCheck
@@ -142,30 +142,30 @@ export default class ConfigFile {
 						pathToCheck = Uri.file(path.dirname(path.resolve(this._rootFolder.fsPath, pattern)))
 					}
 					if (!(await this.isExists(pathToCheck))) {
-						return `Include path '${pathToCheck.path}' does not exist.`
+						return l10n.t('Include path "{0}" does not exist.', pathToCheck.path)
 					}
 				}
 			},
 			outDir: () => {
 				if (typeof optVal !== 'string' || optVal.trimEnd() === '') {
-					return `Invalid folder name for '${opt}.'`
+					return l10n.t('Invalid folder name for "{0}".', opt)
 				}
 			},
 			outFile: () => {
 				if (typeof optVal !== 'string' || optVal.trimEnd() === '') {
-					return `Invalid file name for '${opt}'.`
+					return l10n.t('Invalid file name for "{0}".', opt)
 				}
 			},
 			resourceDir: async () => {
 				if (typeof optVal !== 'string' || optVal.trimEnd() === '') {
-					return `Invalid folder name for '${opt}'.`
+					return l10n.t('Invalid folder name for "{0}".', opt)
 				}
 				const resourceFolder = Uri.joinPath(this._rootFolder, optVal)
 				if (!(await ConfigFile.isExists(resourceFolder))) {
-					return `Path to the resource folder '${resourceFolder.path}' was not found.`
+					return l10n.t('Path to the resource folder "{0}" was not found.', resourceFolder.path)
 				}
 			},
-			default: () => `Configuration has an unknown property '${opt}'.`,
+			default: () => l10n.t('Configuration has an unknown property "{0}".', opt),
 		}
 
 		return await (validate[opt] ?? validate.default)()
@@ -174,9 +174,9 @@ export default class ConfigFile {
 	private static async createDirectory(folder: Uri): Promise<void> {
 		try {
 			await workspace.fs.createDirectory(folder)
-			this._outChannel.appendLine(`The '${folder.path}' directory was created successfully.`)
+			this._outChannel.appendLine(l10n.t('The {0} directory was created successfully.', folder.path))
 		} catch {
-			await window.showErrorMessage(`Can not create the directory '${folder.path}'`)
+			await window.showErrorMessage(l10n.t('Can not create the directory {0}', folder.path))
 		}
 	}
 }
