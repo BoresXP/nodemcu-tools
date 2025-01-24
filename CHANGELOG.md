@@ -15,6 +15,7 @@ TODO bump version to 5.0.0
 
 ### Added
 
+- extension localization. Russian language is now available.
 - minify JSON file before uploading to the device. New `minifyJSON.enabled` setting controls whether a JSON file should be minified before uploading to the device. Default: `false`
 
 ### Fixed
