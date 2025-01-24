@@ -428,7 +428,6 @@
 		"eslint-webpack-plugin": "^4.2.0",
 		"fork-ts-checker-webpack-plugin": "^9.0.2",
 		"globals": "^15.14.0",
-		"json-minimizer-webpack-plugin": "^5.0.0",
 		"style-loader": "^4.0.0",
 		"stylis": "^4.3.5",
 		"ts-loader": "^9.5.2",
