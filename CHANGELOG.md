@@ -21,6 +21,7 @@ TODO bump version to 5.0.0
 ### Fixed
 
 - some esp8266 boards did not connect (on Windows) due to Error: Open (SetCommState): Unknown error code 31
+- the `sendLine` command should not be active if 'editorHasSelection == true'
 
  ### Changed
 
