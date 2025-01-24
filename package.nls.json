@@ -30,5 +30,6 @@
   "nodemcu-tools.deviceFilterActive.description": "Controls whether device filter is active - only known NodeMCU devices (USB vendor-id) will be listed.",
   "nodemcu-tools.connectionDelay.description": "Connection delay (in milliseconds) between opening the serial device and starting the communication.",
 
-  "nodemcu-tools.views.explorer.name": "NodeMCU Devices"
+  "nodemcu-tools.views.explorer.name": "NodeMCU Devices",
+  "nodemcu-tools.jsonValidation.url": "./nodemcutools-schema.json"
 }

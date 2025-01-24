@@ -30,5 +30,6 @@
   "nodemcu-tools.deviceFilterActive.description": "При включенном фильтре будут отображаться только известные расширению устройства NodeMCU (USB vendor-id).",
   "nodemcu-tools.connectionDelay.description": "Задержка соединения (в миллисекундах) между открытием последовательного порта и началом установления соединения.",
 
-  "nodemcu-tools.views.explorer.name": "Устройства NodeMCU"
+  "nodemcu-tools.views.explorer.name": "Устройства NodeMCU",
+  "nodemcu-tools.jsonValidation.url": "./nodemcutools-schema.ru.json"
 }

@@ -358,7 +358,7 @@
 				"fileMatch": [
 					".nodemcutools"
 				],
-				"url": "./out/nodemcutools-schema.json"
+				"url": "%nodemcu-tools.jsonValidation.url%"
 			}
 		],
 		"taskDefinitions": [

@@ -1,0 +1,34 @@
+{
+  "title": "Конфигурация NodeMCU-tools",
+  "required": [
+    "compilerExecutable",
+    "include"
+  ],
+  "properties": {
+    "compilerExecutable": {
+      "markdownDescription": "Указывает путь к исполняемому файлу luac.cross. (например, *\"/opt/lua/esp8266/5.3/luac.cross\"*, или *\"C:\\Temp\\luac.cross.exe\"*)",
+      "type": "string"
+    },
+    "include": {
+      "markdownDescription": "Задаёт массив имён файлов или шаблонов, которые будут включены в сборку образа LFS image. (например, ./lfs/*.lua)",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "outDir": {
+      "markdownDescription": "Задаёт имя папки в которую будут складываться выходные файлы. По умолчанию **./out**",
+      "type": "string"
+    },
+      "outFile": {
+      "markdownDescription": "Задаёт имя выходного файла образа LFS. По умолчанию **lfs.img**",
+      "type": "string"
+    },
+      "resourceDir": {
+      "markdownDescription": "Задаёт имя папки, содержащей файлы, которые должны быть включены в файл resource.lua. (например, ./resource)",
+        "type": "string"
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import CopyPlugin from 'copy-webpack-plugin'
 import ESLintWebpackPlugin from 'eslint-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
-import JsonMinimizerPlugin from 'json-minimizer-webpack-plugin'
 import path from 'path'
 import webpack from 'webpack'
 
@@ -44,7 +43,6 @@ const commonConfig: webpack.Configuration = {
 		}),
 		new CopyPlugin({
 			patterns: [
-				{ from: path.resolve(__dirname, 'src/task/nodemcutools-schema.json'), to: path.resolve(__dirname, './out') },
 				{
 					from: path.resolve(__dirname, './node_modules/@serialport/bindings-cpp/prebuilds/darwin-x64+arm64'),
 					to: path.resolve(__dirname, './prebuilds/darwin-x64+arm64'),
@@ -60,9 +58,6 @@ const commonConfig: webpack.Configuration = {
 			],
 		}),
 	],
-	optimization: {
-		minimizer: [new JsonMinimizerPlugin(), '...'],
-	},
 }
 
 const config: webpack.Configuration[] = [
