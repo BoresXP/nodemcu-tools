@@ -1,4 +1,5 @@
 import * as Events from '../../state/events'
+import * as l10n from '@vscode/l10n'
 
 import {
 	BottomContainer,
@@ -71,21 +72,21 @@ const TerminalContainer: React.FC = () => {
 				<CmdLineInput onKeyUp={onKeyUp} onChange={onChange} value={cmdText} />
 			</TerminalInnerContainer>
 			<TerminalControls>
-				<SvgButton tooltip="Format ESP" svgName="#svg-folder-delete" disabled={isDeviceBusy} onClick={onFormat} />
+				<SvgButton tooltip={l10n.t('Format ESP')} svgName="#svg-folder-delete" disabled={isDeviceBusy} onClick={onFormat} />
 				<TopContainer>
 					<SvgButton
-						tooltip="Autoscroll"
+						tooltip={l10n.t('Autoscroll')}
 						svgName="#svg-download"
 						disabled={autoscrollEnabled}
 						onClick={onEnableAutoscroll}
 					/>
 				</TopContainer>
 				<MiddleContainer>
-					<SvgButton tooltip="Clear terminal" svgName="#svg-garbage" onClick={onClear} />
+					<SvgButton tooltip={l10n.t('Clear terminal')} svgName="#svg-garbage" onClick={onClear} />
 				</MiddleContainer>
 				<BottomContainer>
 					<SvgButton
-						tooltip="Send to device"
+						tooltip={l10n.t('Send to device')}
 						svgName="#svg-play-button"
 						disabled={isDeviceBusy || !cmdText}
 						onClick={onRun}

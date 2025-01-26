@@ -1,3 +1,5 @@
+import * as l10n from '@vscode/l10n'
+
 import { HoverTooltipGLobalClass, StatusBarItemStyled } from './StatusBarItem.styles'
 import React, { useMemo } from 'react'
 
@@ -26,7 +28,7 @@ const StatusBarModulesItem: React.FC<IStatusBarModulesItemProps> = ({ modules, c
 		<>
 			<HoverTooltipGLobalClass />
 			<StatusBarItemStyled data-tooltip-id="modules-tooltip" data-tooltip-html={modulesWithLinks}>
-				{'modules'}
+				{l10n.t('modules')}
 			</StatusBarItemStyled>
 		</>
 	)

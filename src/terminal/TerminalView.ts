@@ -56,14 +56,13 @@ export default class TerminalView {
 
 	private async updateDeviceInfo(): Promise<void> {
 		const info = await this._device.commands.getDeviceInfo()
-		await this._webViewPanel.webview.postMessage(
-			deviceInfoView(info),
-		)
+		await this._webViewPanel.webview.postMessage(deviceInfoView(info))
 	}
 
 	private getHtml(extensionUri: Uri): string {
 		const onDiskPath = Uri.joinPath(extensionUri, 'out', 'terminal.js')
 		const srcPath = this._webViewPanel.webview.asWebviewUri(onDiskPath)
+		const bundleUri = l10n.uri ? this._webViewPanel.webview.asWebviewUri(l10n.uri) : void 0
 
 		return `
 <!DOCTYPE html>
@@ -73,6 +72,7 @@ export default class TerminalView {
 	</head>
 	<body>
 		<div id="root"></div>
+		<script> const bundleUrl="${bundleUri}"</script>
 		<script src="${srcPath}"></script>
 	</body>
 </html>`

@@ -26,5 +26,13 @@
   "Configuration has an unknown property \"{0}\".": "Неизвестное свойство \"{0}\" в файле конфигурации",
   "The {0} directory was created successfully.": "Директория {0} была успешно создана",
   "Can not create the directory {0}": "Невозможно создать директорию {0}",
-  "Command execution timeout": "Время ожидания выполнения команды истекло"
+  "Command execution timeout": "Время ожидания выполнения команды истекло",
+  "Format ESP": "Форматировать ESP",
+  "Autoscroll": "Автопрокрутка",
+  "Clear terminal": "Очистить терминал",
+  "Send to device": "Отправить на ESP",
+  "Free heap (bytes)": "Свободная куча (в байтах)",
+  "Number type": "Тип числа",
+  "File system used": "Использование файловой системы",
+  "modules": "модули"
 }
