@@ -408,8 +408,8 @@
 		"lint": "eslint src"
 	},
 	"devDependencies": {
-		"@eslint/js": "^9.18.0",
-		"@stylistic/eslint-plugin": "^2.13.0",
+		"@eslint/js": "^9.19.0",
+		"@stylistic/eslint-plugin": "^3.0.0",
 		"@types/node": "^20.17.10",
 		"@types/react": "^19.0.8",
 		"@types/react-dom": "^19.0.3",
@@ -417,7 +417,7 @@
 		"@types/webpack": "^5.28.5",
 		"copy-webpack-plugin": "^12.0.2",
 		"css-loader": "^7.1.2",
-		"eslint": "^9.18.0",
+		"eslint": "^9.19.0",
 		"eslint-import-resolver-typescript": "^3.7.0",
 		"eslint-plugin-import-x": "^4.6.1",
 		"eslint-plugin-optimize-regex": "^1.2.1",
