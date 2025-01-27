@@ -87,6 +87,8 @@ _(ALT commands are available by pressing ALT key when opening menu); on Linux yo
 * **minifyLua.enabled**  Controls whether the Lua code should be minified before upload with 'sendLine' and 'sendBlock' commands.
 * **minifyJSON.enabled** Controls whether a JSON file should be minified before uploading to the device.
 * **deviceFilterActive** Controls whether device filter is active - only known NodeMCU devices (USB vendor-id) will be listed.
+* **connectionDelay** Connection delay (in milliseconds) between opening the serial device and starting the communication.
+* **uploadBaudrate** File upload baud rate.
 
 ## What's New / Change Log
 

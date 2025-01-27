@@ -66,6 +66,12 @@ export default abstract class NodeMcuSerial {
 			: ports.filter(p => p.vendorId ?? p.manufacturer)
 	}
 
+	public updateSerialportBaudrate(baudrate: number): Promise<void> {
+		return new Promise((resolve, reject) => {
+			this._port.update({ baudRate: baudrate }, err => (err ? reject(err) : resolve()))
+		})
+	}
+
 	public connect(): Promise<void> {
 		return new Promise((resolve, reject) => {
 			const parser = this._port.pipe(new ReadlineParser({ delimiter: '\n', includeDelimiter: true }))
@@ -111,7 +117,7 @@ export default abstract class NodeMcuSerial {
 		})
 	}
 
-	protected write(data: string): Promise<void> {
+	public write(data: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 			if (data.length > NodeMcuSerial.maxLineLength) {
 				reject(new Error(`Data is too long: ${data.length} chars`))

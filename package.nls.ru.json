@@ -29,6 +29,7 @@
   "nodemcu-tools.overwriteSnippets.description": "Определяет, должны ли сниппеты в workspace переписывать сниппеты в настройках 'user' и 'defaults'",
   "nodemcu-tools.deviceFilterActive.description": "При включенном фильтре будут отображаться только известные расширению устройства NodeMCU (USB vendor-id).",
   "nodemcu-tools.connectionDelay.description": "Задержка соединения (в миллисекундах) между открытием последовательного порта и началом установления соединения.",
+  "nodemcu-tools.uploadBaudrate.description": "Cкорость выгрузки файла",
 
   "nodemcu-tools.views.explorer.name": "Устройства NodeMCU",
   "nodemcu-tools.jsonValidation.url": "./nodemcutools-schema.ru.json"

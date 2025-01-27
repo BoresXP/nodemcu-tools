@@ -29,6 +29,7 @@
   "nodemcu-tools.overwriteSnippets.description": "Controls whether snippets in workspace should overwrite ones in user settings and defaults",
   "nodemcu-tools.deviceFilterActive.description": "Controls whether device filter is active - only known NodeMCU devices (USB vendor-id) will be listed.",
   "nodemcu-tools.connectionDelay.description": "Connection delay (in milliseconds) between opening the serial device and starting the communication.",
+  "nodemcu-tools.uploadBaudrate.description": "File upload baud rate",
 
   "nodemcu-tools.views.explorer.name": "NodeMCU Devices",
   "nodemcu-tools.jsonValidation.url": "./nodemcutools-schema.json"

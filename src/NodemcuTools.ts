@@ -55,6 +55,16 @@ export default class NodemcuTools {
 				const fileData = await workspace.fs.readFile(file)
 				let fileBuff = Buffer.from(fileData)
 
+				let isHighBaud = false
+				if (fileBuff.length > 5 * 1024) {
+					const uploadBaudrate = workspace
+						.getConfiguration()
+						.get('nodemcu-tools.uploadBaudrate', initialSettings.uploadBaudrate)
+					if (uploadBaudrate) {
+						isHighBaud = await device.changeBaud(uploadBaudrate)
+					}
+				}
+
 				if (fileExt === 'json') {
 					const minifyJSONenabled = workspace
 						.getConfiguration()
@@ -79,6 +89,10 @@ export default class NodemcuTools {
 					progress.report({ increment: percent - prevPercent })
 					prevPercent = percent
 				})
+
+				if (isHighBaud) {
+					await device.changeBaud(115200)
+				}
 			},
 		)
 

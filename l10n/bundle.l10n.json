@@ -34,3 +34,6 @@
   "Configuration has an unknown property \"{0}\".": "Configuration has an unknown property \"{0}\".",
   "The {0} directory was created successfully.": "The {0} directory was created successfully.",
   "Can not create the directory {0}": "Can not create the directory {0}",
+  "Unable to change file upload baud rate": "Unable to change file upload baud rate",
+  "Command execution timeout": "Command execution timeout"
+}

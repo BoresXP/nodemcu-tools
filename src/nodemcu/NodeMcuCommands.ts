@@ -26,6 +26,7 @@ interface ILuaCommands {
 	runChunk: string
 	formatEsp: string
 	done: string
+	setBaud: (baudrate: number) => string
 }
 
 interface ILuaCommands32legacy extends ILuaCommands {
@@ -73,6 +74,8 @@ export default class NodeMcuCommands {
 		formatEsp: 'file.format()',
 
 		done: 'uart.write(0,"Done\\r\\n")',
+
+		setBaud: (baudrate: number) => `uart.setup(0,${baudrate},8,0,1,1)\r\n`,
 	}
 
 	// commands for esp32 firmware that contains the 'console' module (UART, JTAG and CDC console)
@@ -116,6 +119,8 @@ export default class NodeMcuCommands {
 		formatEsp: 'file.format()',
 
 		done: 'print("Done")',
+
+		setBaud: () => 'print("The ESP32 console module does not support changing the baud rate")\n',
 	}
 
 	// commands for legacy esp32 firmware that does not contain the 'console' module
@@ -161,6 +166,8 @@ export default class NodeMcuCommands {
 		formatEsp: 'file.format()',
 
 		done: 'uart.write(0,"Done\\n")',
+
+		setBaud: (baudrate: number) => `uart.setup(0,${baudrate},8,0,1,1)\n`,
 
 		uartStart: 'uart.start(0)uart.write(0,".\\n")',
 
@@ -472,6 +479,12 @@ export default class NodeMcuCommands {
 		})
 
 		this._device.setBusy(false)
+	}
+
+	public async sendNewBaud(baudrate: number): Promise<void> {
+		await this.checkReady()
+		this._device.setBusy(true)
+		await this._device.write(this._luaCommands.setBaud(baudrate))
 	}
 
 	private waitDone(key: string, processCb: () => any): Promise<void> {

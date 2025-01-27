@@ -145,6 +145,38 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		this.setBusy(false)
 	}
 
+	public async changeBaud(baudrate: number): Promise<boolean> {
+		if (this._espInfo.hasConsoleModule) {
+			return false
+		}
+
+		await this.waitToBeReady()
+		await this._commands?.sendNewBaud(baudrate)
+		// Wait for the string to be sent before updating serialport's baud
+		await new Promise<void>(resolve => {
+			setTimeout(() => resolve(), 100)
+		})
+		this.setBusy(false)
+		await this.updateSerialportBaudrate(baudrate)
+
+		let needFlush = await this.checkGarbageInUart()
+		for (let i = 0; i < 3; i++) {
+			if (needFlush) {
+				needFlush = await this.checkGarbageInUart()
+			} else {
+				break
+			}
+		}
+		this.setBusy(false)
+
+		if (needFlush) {
+			window.showWarningMessage(l10n.t('Unable to change file upload baud rate'))
+			return false
+		}
+
+		return true
+	}
+
 	public async fetchEspInfo(): Promise<void> {
 		await this.waitToBeReady()
 		let response

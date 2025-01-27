@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+
+- added the ability to increase the speed of uploading files to ESP. The baud rate is set in the `uploadBaudrate` setting.
+
 ## [5.1.0] - 2025-01-26
 
 ## Added

@@ -19,4 +19,5 @@ export default interface INodeMcu {
 	fetchEspInfo: () => Promise<void>
 	delayConnection: (delay: number) => Promise<void>
 	checkGarbageInUart: () => Promise<boolean>
+	changeBaud: (baudrate: number) => Promise<boolean>
 }

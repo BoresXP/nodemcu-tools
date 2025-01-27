@@ -350,6 +350,12 @@
 					"maximum": 1000,
 					"default": 0,
 					"description": "%nodemcu-tools.connectionDelay.description%"
+				},
+				"nodemcu-tools.uploadBaudrate": {
+					"type": "number",
+					"enum": [ 230400, 460800, 921600 ],
+					"default": 0,
+					"description": "%nodemcu-tools.uploadBaudrate.description%"
 				}
 			}
 		},

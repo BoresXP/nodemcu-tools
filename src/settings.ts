@@ -4,6 +4,7 @@ interface ISettings {
 	overwriteSnippets: boolean
 	deviceFilterActive: boolean
 	connectionDelay: number
+	uploadBaudrate: number
 }
 
 export const initialSettings: ISettings = {
@@ -12,4 +13,5 @@ export const initialSettings: ISettings = {
 	overwriteSnippets: true,
 	deviceFilterActive: true,
 	connectionDelay: 100,
+	uploadBaudrate: 0,
 }
