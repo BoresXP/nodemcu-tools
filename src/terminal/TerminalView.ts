@@ -1,10 +1,11 @@
 import { ExtensionContext, Uri, ViewColumn, WebviewPanel, commands, l10n, window, workspace } from 'vscode'
-import { initialSettings, initialTerminalSettings } from '../settings'
 
 import IMessage from './messages/IMessage'
 import { INodeMcu } from '../nodemcu'
 import { deviceInfoView } from './messages/DeviceInfo'
 import { deviceState } from './messages/DeviceState'
+import { initialSettings } from '../settings'
+import { initialTerminalSettings } from './content/state/state'
 import { isDeviceInfoRequest } from './messages/DeviceInfoRequest'
 import { isFormatRequest } from './messages/FormatRequest'
 import { isTerminalCommand } from './messages/TerminalCommand'

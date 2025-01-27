@@ -1,10 +1,14 @@
-import { ITerminalSettings, initialTerminalSettings } from '../../../settings'
-
 import { TerminalLineColor } from '../../messages/TerminalLine'
 
 export interface ITerminalLine {
 	text: string
 	lineColor: TerminalLineColor
+}
+
+export interface ITerminalSettings {
+	scrollbackMaxLines: number
+	historyMaxLines: number
+	snippets: Record<string, string>
 }
 
 export interface IDeviceInfo {
@@ -28,6 +32,12 @@ export interface IState {
 	isDeviceBusy: boolean
 	terminalSettings: ITerminalSettings
 	deviceInfo: IDeviceInfo
+}
+
+export const initialTerminalSettings: ITerminalSettings = {
+	scrollbackMaxLines: 300,
+	historyMaxLines: 30,
+	snippets: {},
 }
 
 export const initialState: IState = {

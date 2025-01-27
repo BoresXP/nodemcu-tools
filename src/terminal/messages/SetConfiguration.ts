@@ -1,5 +1,5 @@
 import IMessage from './IMessage'
-import { ITerminalSettings } from '../../settings'
+import { ITerminalSettings } from '../content/state/state'
 
 interface ISetConfiguration extends IMessage {
 	type: 'setConfiguration'

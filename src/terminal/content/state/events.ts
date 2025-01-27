@@ -1,6 +1,5 @@
-import { IDeviceInfo, ITerminalLine } from './state'
+import { IDeviceInfo, ITerminalLine, ITerminalSettings } from './state'
 
-import { ITerminalSettings } from '../../../settings'
 import { createEvent } from 'effector'
 
 export const terminalLineAdd = createEvent<ITerminalLine>()
