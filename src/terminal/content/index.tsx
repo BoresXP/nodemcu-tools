@@ -16,7 +16,7 @@ declare const bundleUrl: string
 const root = createRoot(document.getElementById('root') as HTMLElement)
 
 void (async () => {
-	if (bundleUrl !== 'undefined') {
+	if (bundleUrl) {
 		await l10n.config({ uri: bundleUrl })
 	}
 	root.render(<App />)

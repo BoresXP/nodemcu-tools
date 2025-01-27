@@ -62,7 +62,7 @@ export default class TerminalView {
 	private getHtml(extensionUri: Uri): string {
 		const onDiskPath = Uri.joinPath(extensionUri, 'out', 'terminal.js')
 		const srcPath = this._webViewPanel.webview.asWebviewUri(onDiskPath)
-		const bundleUri = l10n.uri ? this._webViewPanel.webview.asWebviewUri(l10n.uri) : void 0
+		const bundleUrl = l10n.uri ? this._webViewPanel.webview.asWebviewUri(l10n.uri).toString() : ''
 
 		return `
 <!DOCTYPE html>
@@ -72,7 +72,7 @@ export default class TerminalView {
 	</head>
 	<body>
 		<div id="root"></div>
-		<script> const bundleUrl="${bundleUri}"</script>
+		<script> const bundleUrl="${bundleUrl}"</script>
 		<script src="${srcPath}"></script>
 	</body>
 </html>`
