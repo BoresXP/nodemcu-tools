@@ -16,7 +16,6 @@ import { INodeMcu, NodeMcuRepository } from './nodemcu'
 import NodemcuTaskProvider, { NodemcuTaskDefinition } from './task/NodemcuTaskProvider'
 
 import ConfigFile from './task/ConfigFile'
-import { initialSettings } from './settings'
 import luamin from 'luamin'
 import { posix } from 'path'
 
@@ -57,18 +56,14 @@ export default class NodemcuTools {
 
 				let isHighBaud = false
 				if (fileBuff.length > 5 * 1024) {
-					const uploadBaudrate = workspace
-						.getConfiguration()
-						.get('nodemcu-tools.uploadBaudrate', initialSettings.uploadBaudrate)
+					const uploadBaudrate = workspace.getConfiguration().get<number>('nodemcu-tools.uploadBaudrate')
 					if (uploadBaudrate) {
 						isHighBaud = await device.changeBaud(uploadBaudrate)
 					}
 				}
 
 				if (fileExt === 'json') {
-					const minifyJSONenabled = workspace
-						.getConfiguration()
-						.get('nodemcu-tools.minifyJSON.enabled', initialSettings.minifyJSONenabled)
+					const minifyJSONenabled = workspace.getConfiguration().get<boolean>('nodemcu-tools.minifyJSON.enabled')
 					if (minifyJSONenabled) {
 						try {
 							const jsonString = fileData.toString()
@@ -104,12 +99,11 @@ export default class NodemcuTools {
 		await device.connect()
 
 		const isGarbageInUart = await device.checkGarbageInUart()
-		// getConfiguration always returns 'delay' value is 0, if 'delay' is not set to > 100 explicitly
-		// initialSetting is not used, as delay is not undefined
-		let delay = workspace.getConfiguration().get('nodemcu-tools.connectionDelay', initialSettings.connectionDelay)
+		// default 'delay' value is 0
+		let delay = workspace.getConfiguration().get('nodemcu-tools.connectionDelay', 0)
 		if (isGarbageInUart || delay) {
 			if (delay === 0) {
-				delay = initialSettings.connectionDelay
+				delay = 100
 			}
 			await device.delayConnection(delay)
 		}
@@ -311,9 +305,7 @@ export default class NodemcuTools {
 		}
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
-		const minifyEnabled = workspace
-			.getConfiguration()
-			.get('nodemcu-tools.minifyLua.enabled', initialSettings.minifyLuaEnabled)
+		const minifyEnabled = workspace.getConfiguration().get<boolean>('nodemcu-tools.minifyLua.enabled')
 
 		try {
 			const minifiedLine = minifyEnabled ? luamin.minify(line) : line.trim()
@@ -332,9 +324,7 @@ export default class NodemcuTools {
 		}
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 
-		const minifyEnabled = workspace
-			.getConfiguration()
-			.get('nodemcu-tools.minifyLua.enabled', initialSettings.minifyLuaEnabled)
+		const minifyEnabled = workspace.getConfiguration().get<boolean>('nodemcu-tools.minifyLua.enabled')
 
 		try {
 			const minifiedBlock = minifyEnabled ? luamin.minify(block) : block.replace(/^[\t ]+/gm, '')

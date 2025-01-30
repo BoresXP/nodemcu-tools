@@ -4,7 +4,6 @@ import IMessage from './messages/IMessage'
 import { INodeMcu } from '../nodemcu'
 import { deviceInfoView } from './messages/DeviceInfo'
 import { deviceState } from './messages/DeviceState'
-import { initialSettings } from '../settings'
 import { initialTerminalSettings } from './content/state/state'
 import { isDeviceInfoRequest } from './messages/DeviceInfoRequest'
 import { isFormatRequest } from './messages/FormatRequest'
@@ -89,7 +88,7 @@ export default class TerminalView {
 			setConfiguration(
 				configuration.get('terminal.scrollbackSize', initialTerminalSettings.scrollbackMaxLines),
 				configuration.get('terminal.commandHistorySize', initialTerminalSettings.historyMaxLines),
-				configuration.get('overwriteSnippets', initialSettings.overwriteSnippets)
+				configuration.get<boolean>('overwriteSnippets')
 					? snippetsInWorkspace ?? commonSnippets
 					: { ...commonSnippets, ...snippetsInWorkspace },
 			),

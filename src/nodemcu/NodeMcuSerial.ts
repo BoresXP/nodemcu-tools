@@ -2,7 +2,6 @@ import { EventEmitter, Event as VsEvent, workspace } from 'vscode'
 import { ReadlineParser, SerialPort } from 'serialport'
 
 import { PortInfo } from '@serialport/bindings-cpp'
-import { initialSettings } from '../settings'
 
 export interface ErrorDisconnect extends Error {
 	disconnected?: boolean
@@ -59,7 +58,7 @@ export default abstract class NodeMcuSerial {
 		const ports = await SerialPort.list()
 		const deviceFilterEnabled = workspace
 			.getConfiguration()
-			.get('nodemcu-tools.deviceFilterActive', initialSettings.deviceFilterActive)
+			.get<boolean>('nodemcu-tools.deviceFilterActive')
 
 		return deviceFilterEnabled
 			? ports.filter(p => this._vendorIDs.includes(p.vendorId?.toUpperCase() ?? ''))
