@@ -52,7 +52,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 	private _commands: NodeMcuCommands | undefined
 
-	private readonly _espInfo = {
+	private readonly _espInfo: IEspInfo = {
 		espArch: '',
 		espID: '',
 		espModel: '',
@@ -206,17 +206,10 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		if (!text.endsWith('\n')) {
 			text += this._espInfo.espArch === 'esp8266' ? NodeMcuSerial.lineEnd : '\n'
 		}
+		console.log('T: ' + text) // eslint-disable-line no-console
 
 		this._lastInput = text
-
-		try {
-			await this.write(text)
-			console.log('T: ' + text) // eslint-disable-line no-console
-		} catch (err) {
-			if (err instanceof Error) {
-				await window.showWarningMessage(err.message)
-			}
-		}
+		await this.write(text)
 	}
 
 	public async executeSingleLineCommand(command: string, clearBusy = true): Promise<string> {
@@ -232,14 +225,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			return false
 		}
 
-		let reply
-		try {
-			reply = await this.executeCommand(command, replyHandler)
-		} catch (err) {
-			if (err instanceof Error) {
-				await window.showErrorMessage(`${err.message}`)
-			}
-		}
+		const reply = await this.executeCommand(command, replyHandler)
 
 		if (!wasBusy && clearBusy) {
 			this.setBusy(false)

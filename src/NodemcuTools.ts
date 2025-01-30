@@ -301,17 +301,13 @@ export default class NodemcuTools {
 			.getConfiguration()
 			.get('nodemcu-tools.minifyLua.enabled', initialSettings.minifyLuaEnabled)
 
-		if (minifyEnabled) {
-			try {
-				const minifiedLine = luamin.minify(line)
-				await device.fromTerminal(minifiedLine)
-			} catch (err) {
-				if (err instanceof Error) {
-					await window.showWarningMessage(`${err.message}`)
-				}
+		try {
+			const minifiedLine = minifyEnabled ? luamin.minify(line) : line.trim()
+			await device.fromTerminal(minifiedLine)
+		} catch (err) {
+			if (err instanceof Error) {
+				window.showWarningMessage(err.message)
 			}
-		} else {
-			await device.fromTerminal(line.trim())
 		}
 	}
 
@@ -326,18 +322,13 @@ export default class NodemcuTools {
 			.getConfiguration()
 			.get('nodemcu-tools.minifyLua.enabled', initialSettings.minifyLuaEnabled)
 
-		if (minifyEnabled) {
-			try {
-				const minifiedBlock = luamin.minify(block)
-				await device.commands.sendChunk(minifiedBlock)
-			} catch (err) {
-				if (err instanceof Error) {
-					await window.showWarningMessage(`${err.message}`)
-				}
+		try {
+			const minifiedBlock = minifyEnabled ? luamin.minify(block) : block.replace(/^[\t ]+/gm, '')
+			await device.commands.sendChunk(minifiedBlock)
+		} catch (err) {
+			if (err instanceof Error) {
+				window.showWarningMessage(err.message)
 			}
-		} else {
-			const trimmedBlock = block.replace(/^[\t ]+/gm, '')
-			await device.commands.sendChunk(trimmedBlock)
 		}
 	}
 }

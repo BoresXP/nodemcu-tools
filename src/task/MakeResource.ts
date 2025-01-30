@@ -109,7 +109,7 @@ async function getFilesListFromFolder(nextFolder: Uri, depth = 1, files: string[
 			await getFilesListFromFolder(Uri.joinPath(nextFolder, name), ++depth, files)
 			depth--
 		} else if (type === FileType.SymbolicLink) {
-			await window.showErrorMessage(l10n.t('Symbolic links in the resource folder are not supported'))
+			window.showErrorMessage(l10n.t('Symbolic links in the resource folder are not supported'))
 		}
 	}
 
