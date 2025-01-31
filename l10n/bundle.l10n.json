@@ -1,4 +1,5 @@
 {
+  "NodeMCU not responding. {0}": "NodeMCU not responding. {0}",
   "File will be saved under this name on device": "File will be saved under this name on device",
   "File will be saved under this name on host machine": "File will be saved under this name on host machine",
   "Error in nodemcu-tools: {0}": "Error in nodemcu-tools: {0}",
@@ -34,6 +35,7 @@
   "Configuration has an unknown property \"{0}\".": "Configuration has an unknown property \"{0}\".",
   "The {0} directory was created successfully.": "The {0} directory was created successfully.",
   "Can not create the directory {0}": "Can not create the directory {0}",
+  "NodeMCU Lua interpreter is not ready": "NodeMCU Lua interpreter is not ready",
   "Unable to change file upload baud rate": "Unable to change file upload baud rate",
   "Command execution timeout": "Command execution timeout"
 }

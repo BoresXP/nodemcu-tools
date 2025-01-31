@@ -38,7 +38,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		['36', 'cyan'],
 	]
 
-	private _commandTimeout = 15000 // msec
+	private _commandTimeout = 3000 // msec
 
 	private readonly _evtToTerminal = new EventEmitter<IToTerminalData>()
 	private readonly _evtClose = new EventEmitter<void>()
@@ -109,40 +109,22 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		return reply ?? ''
 	}
 
-	public async checkGarbageInUart(): Promise<boolean> {
-		await this.waitToBeReady()
-		const responceEcho = await this.executeSingleLineCommand(NodeMcu._luaCommands.echo)
-		return responceEcho.trimEnd() !== 'echo1337'
+	private static async sleep(ms: number): Promise<void> {
+		return new Promise<void>(resolve => {
+			setTimeout(() => resolve(), ms)
+		})
 	}
 
-	public async delayConnection(delay: number): Promise<void> {
-		await this.waitToBeReady()
+	public async startup(delay: number): Promise<boolean> {
+		const isSynced = await this.sync(delay)
+		if (isSynced) {
+			await this.fetchEspInfo()
+		} else {
+			window.showErrorMessage(l10n.t('NodeMCU Lua interpreter is not ready'))
+			return false
+		}
 
-		// This procedure was borrowed from https://github.com/AndiDittrich/NodeMCU-Tool/blob/master/lib/connector/connect.js
-		// delay the connection process ? may fix issues related to rebooting modules
-
-		// step 1 - sleep
-		await new Promise<void>(resolve => {
-			setTimeout(() => resolve(), delay)
-		})
-
-		// step 2 - send dummy sequence
-		await this.write('\n\n\nprint("dummy printing")\n\n\n')
-
-		// step 3 - wait 1/3 to get the dummy sequence processed
-		await new Promise<void>(resolve => {
-			setTimeout(() => resolve(), delay)
-		})
-
-		// step 4 - send second dummy sequence
-		await this.write('\n\n\nprint("dummy printing")\n\n\n')
-
-		// step 5 - wait 1/3 to get the dummy sequence processed
-		await new Promise<void>(resolve => {
-			setTimeout(() => resolve(), delay)
-		})
-
-		this.setBusy(false)
+		return true
 	}
 
 	public async changeBaud(baudrate: number): Promise<boolean> {
@@ -175,45 +157,6 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		}
 
 		return true
-	}
-
-	public async fetchEspInfo(): Promise<void> {
-		await this.waitToBeReady()
-		let response
-
-		// esp8266 chipid is string '12345678'.
-		// esp32 chipid is string (hex with '0x' prefix). esp32 chipID only
-		// available on the base ESP32 model; esp32xx returns nil
-		response = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
-		const chipID = response.trimEnd()
-		const esp32ID = /^0x\w+/.exec(chipID)
-
-		// PR #3646 includes reworked console support, to now also work with USB Serial JTAG consoles and USB CDC consoles
-		// Now we have to use uart.start/stop and handle default lf/lf line endings instead of crlf/cr
-		// node.model() is used to distinguish the outdated esp32 firmware.
-		// The chip model is a string, e.g. "esp32c3" or "esp32"
-		response = await this.executeSingleLineCommand(NodeMcu._luaCommands.getModel)
-		const espModel = /^esp32.?.?/.exec(response.trimEnd())
-		this._espInfo.isMultiConsole = espModel !== null
-
-		// PR #3666 moves the system console handling into its own module (console)
-		// console.write() .on() .mode() are used instead of uart...()
-		response = await this.executeSingleLineCommand(NodeMcu._luaCommands.checkConsoleModule)
-		this._espInfo.hasConsoleModule = response.trimEnd() !== 'nil'
-
-		if (espModel) {
-			[this._espInfo.espModel] = espModel
-			this._espInfo.espArch = 'esp32'
-			this._espInfo.espID = esp32ID ? esp32ID[0] : 'unknown'
-		} else if (esp32ID && !espModel) {
-			this._espInfo.espModel = 'esp32' // legacy esp32 firmware
-			this._espInfo.espArch = 'esp32'
-			;[this._espInfo.espID] = esp32ID
-		} else {
-			this._espInfo.espModel = 'esp8266'
-			this._espInfo.espArch = 'esp8266'
-			this._espInfo.espID = chipID
-		}
 	}
 
 	public waitToBeReady(): Promise<void> {
@@ -364,5 +307,73 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		}
 
 		return { color: 'default', data }
+	}
+
+	private async checkGarbageInUart(): Promise<boolean> {
+		await this.waitToBeReady()
+		const responceEcho = await this.executeSingleLineCommand(NodeMcu._luaCommands.echo)
+		return responceEcho.trimEnd() !== 'echo1337'
+	}
+
+	private async sync(delay: number): Promise<boolean> {
+		await this.waitToBeReady()
+
+		let isGarbageInUart = await this.checkGarbageInUart()
+		for (let i = 0; i < 3; i++) {
+			if (isGarbageInUart) {
+				if (delay) {
+					await NodeMcu.sleep(delay)
+					await this.write('\n\n\nprint("dummy printing")\n\n')
+					await NodeMcu.sleep(delay)
+				}
+				isGarbageInUart = await this.checkGarbageInUart()
+			} else {
+				break
+			}
+			if (isGarbageInUart) {
+				return false
+			}
+		}
+
+		return true
+	}
+
+	private async fetchEspInfo(): Promise<void> {
+		await this.waitToBeReady()
+		let response
+
+		// esp8266 chipid is string '12345678'.
+		// esp32 chipid is string (hex with '0x' prefix). esp32 chipID only
+		// available on the base ESP32 model; esp32xx returns nil
+		response = await this.executeSingleLineCommand(NodeMcu._luaCommands.getChipID)
+		const chipID = response.trimEnd()
+		const esp32ID = /^0x\w+/.exec(chipID)
+
+		// PR #3646 includes reworked console support, to now also work with USB Serial JTAG consoles and USB CDC consoles
+		// Now we have to use uart.start/stop and handle default lf/lf line endings instead of crlf/cr
+		// node.model() is used to distinguish the outdated esp32 firmware.
+		// The chip model is a string, e.g. "esp32c3" or "esp32"
+		response = await this.executeSingleLineCommand(NodeMcu._luaCommands.getModel)
+		const espModel = /^esp32.?.?/.exec(response.trimEnd())
+		this._espInfo.isMultiConsole = espModel !== null
+
+		// PR #3666 moves the system console handling into its own module (console)
+		// console.write() .on() .mode() are used instead of uart...()
+		response = await this.executeSingleLineCommand(NodeMcu._luaCommands.checkConsoleModule)
+		this._espInfo.hasConsoleModule = response.trimEnd() !== 'nil'
+
+		if (espModel) {
+			[this._espInfo.espModel] = espModel
+			this._espInfo.espArch = 'esp32'
+			this._espInfo.espID = esp32ID ? esp32ID[0] : 'unknown'
+		} else if (esp32ID && !espModel) {
+			this._espInfo.espModel = 'esp32' // legacy esp32 firmware
+			this._espInfo.espArch = 'esp32'
+			;[this._espInfo.espID] = esp32ID
+		} else {
+			this._espInfo.espModel = 'esp8266'
+			this._espInfo.espArch = 'esp8266'
+			this._espInfo.espID = chipID
+		}
 	}
 }

@@ -16,8 +16,6 @@ export default interface INodeMcu {
 	connect: () => Promise<void>
 	disconnect: () => Promise<void>
 	waitToBeReady: () => Promise<void>
-	fetchEspInfo: () => Promise<void>
-	delayConnection: (delay: number) => Promise<void>
-	checkGarbageInUart: () => Promise<boolean>
+	startup: (delay: number) => Promise<boolean>
 	changeBaud: (baudrate: number) => Promise<boolean>
 }

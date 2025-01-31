@@ -39,9 +39,11 @@ export function activate(context: ExtensionContext): void {
 					device = await tools.connect(item.path)
 				} catch (err) {
 					if (err instanceof Error) {
-						await window.showWarningMessage(err.message)
+						await tools.disconnect(item.path)
+						window.showErrorMessage(l10n.t('NodeMCU not responding. {0}', err.message))
 					}
 				}
+
 				if (device) {
 					const wv = TerminalView.create(context, device)
 
@@ -52,6 +54,8 @@ export function activate(context: ExtensionContext): void {
 						setTimeout(() => resolve(), 200)
 					})
 					await wv.show()
+				} else {
+					await tools.disconnect(item.path)
 				}
 			},
 

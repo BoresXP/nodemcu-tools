@@ -94,23 +94,14 @@ export default class NodemcuTools {
 		return fileName
 	}
 
-	public async connect(devicePath: string): Promise<INodeMcu> {
+	public async connect(devicePath: string): Promise<INodeMcu | undefined> {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 		await device.connect()
 
-		const isGarbageInUart = await device.checkGarbageInUart()
-		// default 'delay' value is 0
-		let delay = workspace.getConfiguration().get('nodemcu-tools.connectionDelay', 0)
-		if (isGarbageInUart || delay) {
-			if (delay === 0) {
-				delay = 100
-			}
-			await device.delayConnection(delay)
-		}
-		await device.fetchEspInfo()
 		await commands.executeCommand('setContext', 'nodemcu-tools:isConnected', true)
-
-		return device
+		const delay = workspace.getConfiguration().get('nodemcu-tools.connectionDelay', 0)
+		const isReady = await device.startup(delay)
+		return isReady ? device : void 0
 	}
 
 	public async disconnect(devicePath: string): Promise<void> {

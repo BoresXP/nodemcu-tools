@@ -1,4 +1,5 @@
 {
+  "NodeMCU not responding. {0}": "NodeMCU не отвечает. {0}",
   "File will be saved under this name on device": "Файл будет сохранён под этим именем на ESP",
   "File will be saved under this name on host machine": "Файл будет сохранён под этим именем на компьютере",
   "Error in nodemcu-tools: {0}": "Ошибка в nodemcu-tools: {0}",
@@ -34,6 +35,7 @@
   "Configuration has an unknown property \"{0}\".": "Неизвестное свойство \"{0}\" в файле конфигурации",
   "The {0} directory was created successfully.": "Директория {0} была успешно создана",
   "Can not create the directory {0}": "Невозможно создать директорию {0}",
+  "NodeMCU Lua interpreter is not ready": "Интерпретатор Lua на NodeMCU не готов к работе",
   "Unable to change file upload baud rate": "Не удалось изменить скорость выгрузки файлов",
   "Command execution timeout": "Время ожидания выполнения команды истекло"
 }
