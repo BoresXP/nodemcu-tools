@@ -3,6 +3,7 @@
   "nodemcu-tools.disconnect.title": "Disonnect",
   "nodemcu-tools.refreshTreeView.title": "Refresh",
   "nodemcu-tools.deleteFile.title": "Delete",
+  "nodemcu-tools.deleteFolder.title": "Delete folder",
   "nodemcu-tools.compileFile.title": "Compile",
   "nodemcu-tools.runFile.title": "Run",
   "nodemcu-tools.uploadActiveFile.title": "Upload active file to device",

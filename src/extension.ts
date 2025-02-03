@@ -4,6 +4,7 @@ import ConfigFile from './task/ConfigFile'
 import DeviceTreeItem from './tree/DeviceTreeItem'
 import DeviceTreeProvider from './tree/DeviceTreeProvider'
 import FileTreeItem from './tree/FileTreeItem'
+import FolderTreeItem from './tree/FolderTreeItem'
 import NodemcuTaskProvider from './task/NodemcuTaskProvider'
 import NodemcuTools from './NodemcuTools'
 import TerminalView from './terminal/TerminalView'
@@ -146,12 +147,20 @@ export function activate(context: ExtensionContext): void {
 			},
 
 			'nodemcu-tools.runFile': async (item: FileTreeItem) => tools.runFile(item.parent.path, item.name),
+
 			'nodemcu-tools.deleteFile': async (item: FileTreeItem) => {
 				await tools.deleteFile(item.parent.path, item.name)
 				treeProvider.refresh()
 			},
 
+			'nodemcu-tools.deleteFolder': async (item: FolderTreeItem) => {
+				const fileTreeItems = treeProvider.getFolderTreeItems(item)
+				await tools.deleteFolder(item.parent.path, fileTreeItems)
+				treeProvider.refresh()
+			},
+
 			'nodemcu-tools.downloadFile': async (item: FileTreeItem) => tools.downloadFile(item.parent.path, item.name),
+
 			'nodemcu-tools.downloadFileAs': async (item: FileTreeItem) => {
 				const newName = await renameFile(item.name, l10n.t('File will be saved under this name on host machine'))
 				if (!newName) {

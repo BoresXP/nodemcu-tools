@@ -3,6 +3,7 @@
   "nodemcu-tools.disconnect.title": "Отсоединиться",
   "nodemcu-tools.refreshTreeView.title": "Обновить",
   "nodemcu-tools.deleteFile.title": "Удалить",
+  "nodemcu-tools.deleteFolder.title": "Удалить папку",
   "nodemcu-tools.compileFile.title": "Скомпилировать",
   "nodemcu-tools.runFile.title": "Выполнить",
   "nodemcu-tools.uploadActiveFile.title": "Выгрузить этот файл на ESP",

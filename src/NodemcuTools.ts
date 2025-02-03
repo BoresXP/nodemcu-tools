@@ -16,6 +16,7 @@ import { INodeMcu, NodeMcuRepository } from './nodemcu'
 import NodemcuTaskProvider, { NodemcuTaskDefinition } from './task/NodemcuTaskProvider'
 
 import ConfigFile from './task/ConfigFile'
+import FileTreeItem from './tree/FileTreeItem'
 import luamin from 'luamin'
 import { posix } from 'path'
 
@@ -255,6 +256,13 @@ export default class NodemcuTools {
 	public async deleteFile(devicePath: string, deviceFileName: string): Promise<void> {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 		await device.commands.delete(deviceFileName)
+	}
+
+	public async deleteFolder(devicePath: string, deviceFolderItems: FileTreeItem[]): Promise<void> {
+		const device = NodeMcuRepository.getOrCreate(devicePath)
+		for (const fileTreeItem of deviceFolderItems) {
+			await device.commands.delete(fileTreeItem.name)
+		}
 	}
 
 	public async setFileLfs(devicePath: string, deviceFileName: string): Promise<void> {

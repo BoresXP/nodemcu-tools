@@ -70,6 +70,11 @@
 				"category": "NodeMCU"
 			},
 			{
+				"command": "nodemcu-tools.deleteFolder",
+				"title": "%nodemcu-tools.deleteFolder.title%",
+				"category": "NodeMCU"
+			},
+			{
 				"command": "nodemcu-tools.compileFile",
 				"title": "%nodemcu-tools.compileFile.title%",
 				"category": "NodeMCU",
@@ -287,6 +292,10 @@
 					"command": "nodemcu-tools.deleteFile",
 					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/",
 					"group": "nodemcu-tools@40"
+				},
+				{
+					"command": "nodemcu-tools.deleteFolder",
+					"when": "view == nodemcu-tools.devices && viewItem ==nodemcu-folder"
 				}
 			]
 		},

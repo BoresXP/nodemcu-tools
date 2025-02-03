@@ -2,6 +2,7 @@ import DeviceTreeItem, { isDeviceTreeItem } from './DeviceTreeItem'
 import { EventEmitter, TreeDataProvider, TreeItem, Event as VsEvent, window } from 'vscode'
 import FileTreeItem, { isFileTreeItem } from './FileTreeItem'
 import FolderTreeItem, { isFolderTreeItem } from './FolderTreeItem'
+
 import { IDeviceFileInfo } from '../nodemcu/NodeMcuCommands'
 import NodeMcuRepository from '../nodemcu/NodeMcuRepository'
 
@@ -66,6 +67,17 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 		return void 0
 	}
 
+	public getFolderTreeItems(element: FolderTreeItem): FileTreeItem[] {
+		const filesUnderFolder = []
+		for (const f of this._files[element.path]) {
+			const [folderName] = f.name.split('/')
+			if (element.name === folderName) {
+				filesUnderFolder.push(new FileTreeItem(f.name, f.size, element))
+			}
+		}
+		return filesUnderFolder.sort((f1, f2) => (f1.name > f2.name ? 1 : -1))
+	}
+
 	private getTopLevelTreeItems(element: DeviceTreeItem): TreeItem[] {
 		const folderNames: string[] = []
 		const folderItems: FolderTreeItem[] = []
@@ -87,16 +99,5 @@ export default class DeviceTreeProvider implements TreeDataProvider<TreeItem> {
 		fileItems.sort((f1, f2) => (f1.name > f2.name ? 1 : -1))
 		folderItems.sort((f1, f2) => (f1.name > f2.name ? 1 : -1))
 		return folderItems.concat(fileItems)
-	}
-
-	private getFolderTreeItems(element: FolderTreeItem): FileTreeItem[] {
-		const filesUnderFolder = []
-		for (const f of this._files[element.path]) {
-			const [folderName] = f.name.split('/')
-			if (element.name === folderName) {
-				filesUnderFolder.push(new FileTreeItem(f.name, f.size, element))
-			}
-		}
-		return filesUnderFolder.sort((f1, f2) => (f1.name > f2.name ? 1 : -1))
 	}
 }
