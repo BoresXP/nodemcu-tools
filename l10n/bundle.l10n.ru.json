@@ -11,6 +11,8 @@
   "Formatting the file system will take around ~30s": "Форматирование файловой системы ESP займёт приблизительно 30 сек.",
   "Formatting...": "Идёт форматирование...",
   "Format done.": "Форматирование завершено.",
+  "Format failed!": "Ошибка форматирования!",
+  "Failed to format the ESP": "Не удалось отформатировать ESP",
   "Format ESP": "Форматировать ESP",
   "Autoscroll": "Автопрокрутка",
   "Clear terminal": "Очистить терминал",

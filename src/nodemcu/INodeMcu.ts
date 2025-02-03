@@ -5,7 +5,6 @@ import { Event as VsEvent } from 'vscode'
 export default interface INodeMcu {
 	path: string
 	commands: NodeMcuCommands
-	commandTimeout: number
 
 	toTerminal: VsEvent<IToTerminalData>
 	fromTerminal: (text: string) => Promise<void>

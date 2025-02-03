@@ -104,12 +104,15 @@ export default class TerminalView {
 		)
 
 		if (answer === 'Format ESP') {
-			this._device.commandTimeout = 30000
 			await this._webViewPanel.webview.postMessage(terminalLine('cyan', l10n.t('Formatting...')))
-			await this._device.commands.formatEsp()
-			await this._webViewPanel.webview.postMessage(terminalLine('cyan', l10n.t('Format done.')))
-			await commands.executeCommand('nodemcu-tools.refreshTreeView')
-			this._device.commandTimeout = 15000
+			const isOK = await this._device.commands.formatEsp()
+			if (isOK) {
+				await this._webViewPanel.webview.postMessage(terminalLine('cyan', l10n.t('Format done.')))
+				await commands.executeCommand('nodemcu-tools.refreshTreeView')
+			} else {
+				await this._webViewPanel.webview.postMessage(terminalLine('red', l10n.t('Format failed!')))
+				await window.showErrorMessage(l10n.t('Failed to format the ESP'))
+			}
 		}
 	}
 

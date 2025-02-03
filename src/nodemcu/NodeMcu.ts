@@ -38,7 +38,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		['36', 'cyan'],
 	]
 
-	private _commandTimeout = 3000 // msec
+	private static readonly _commandTimeout = 3000 // msec
 
 	private readonly _evtToTerminal = new EventEmitter<IToTerminalData>()
 	private readonly _evtClose = new EventEmitter<void>()
@@ -89,10 +89,6 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		}
 
 		return this._commands
-	}
-
-	public set commandTimeout(msec: number) {
-		this._commandTimeout = msec
 	}
 
 	private static clearReply(reply: string | undefined): string {
@@ -239,7 +235,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 			const timeoutId = setTimeout(() => {
 				unsubscribeAndClear()
 				reject(new Error(l10n.t('Command execution timeout')))
-			}, this._commandTimeout)
+			}, NodeMcu._commandTimeout)
 
 			const handleCommand = (data: string): void => {
 				try {

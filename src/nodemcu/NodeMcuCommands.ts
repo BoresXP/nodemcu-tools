@@ -71,7 +71,7 @@ export default class NodeMcuCommands {
 		runChunk:
 			'uart.write(0,".\\r\\n")local f,c=loadstring(table.concat(_r_B))if type(f)=="function"then tmr.create():alarm(100,0,function()local x,e=pcall(f)if not x then uart.write(0,"\\r\\nE: ",e.."\\r\\n")end end)else uart.write(0,"CE: "..c.."\\r\\n")end;_r_B=nil',
 
-		formatEsp: 'file.format()',
+		formatEsp: 'file.format()\r\n',
 
 		done: 'uart.write(0,"Done\\r\\n")',
 
@@ -116,7 +116,7 @@ export default class NodeMcuCommands {
 		runChunk:
 			'print(".")local f,c=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then tmr.create():alarm(100,0,function()local x,e=pcall(f)if not x then console.write("\\nE: ",e.."\\n")end end)else console.write("\\nCE: ",c.."\\n")end;_r_B=nil',
 
-		formatEsp: 'file.format()',
+		formatEsp: 'file.format()\n',
 
 		done: 'print("Done")',
 
@@ -163,7 +163,7 @@ export default class NodeMcuCommands {
 		runChunk:
 			'uart.write(0,".\\n")local f,c=(loadstring or load)(table.concat(_r_B))if type(f)=="function"then tmr.create():alarm(100,0,function()local x,e=pcall(f)if not x then uart.write(0,"\\nE: ",e.."\\n")end end)else uart.write(0,"\\nCE: "..c.."\\n")end;_r_B=nil',
 
-		formatEsp: 'file.format()',
+		formatEsp: 'file.format()\n',
 
 		done: 'uart.write(0,"Done\\n")',
 
@@ -471,14 +471,34 @@ export default class NodeMcuCommands {
 		this._device.setBusy(false)
 	}
 
-	public async formatEsp(): Promise<void> {
+	public async formatEsp(): Promise<boolean> {
 		await this.checkReady()
+		this._device.setBusy(true)
 
-		await this.waitDone(this._mark.formatEnd, async () => {
-			await this._device.executeSingleLineCommand(this._luaCommands.formatEsp, false)
+		const waitFormatEnd = new Promise<void>((resolve, reject) => {
+			const unsubscribe = this._device.onData(line => {
+				if (line.endsWith(this._mark.formatEnd)) {
+					unsubscribe.dispose()
+					clearTimeout(timeoutID)
+					resolve()
+				}
+			})
+			const timeoutID = setTimeout(() => {
+				unsubscribe.dispose()
+				clearTimeout(timeoutID)
+				reject(new Error('Format execution timeout'))
+			}, 30000)
 		})
 
-		this._device.setBusy(false)
+		try {
+			await this._device.write(this._luaCommands.formatEsp)
+			await waitFormatEnd
+			this._device.setBusy(false)
+			return true
+		} catch {
+			this._device.setBusy(false)
+			return false
+		}
 	}
 
 	public async sendNewBaud(baudrate: number): Promise<void> {

@@ -11,6 +11,8 @@
   "Formatting the file system will take around ~30s": "Formatting the file system will take around ~30s",
   "Formatting...": "Formatting...",
   "Format done.": "Format done.",
+  "Format failed!": "Format failed!",
+  "Failed to format the ESP": "Failed to format the ESP",
   "Format ESP": "Format ESP",
   "Autoscroll": "Autoscroll",
   "Clear terminal": "Clear terminal",
