@@ -52,7 +52,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 
 	private _commands: NodeMcuCommands | undefined
 
-	private readonly _espInfo: IEspInfo = {
+	private _espInfo: IEspInfo = {
 		espArch: '',
 		espID: '',
 		espModel: '',
@@ -114,7 +114,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	public async startup(delay: number): Promise<boolean> {
 		const isSynced = await this.sync(delay)
 		if (isSynced) {
-			await this.fetchEspInfo()
+			this._espInfo = await this.fetchEspInfo()
 		} else {
 			window.showErrorMessage(l10n.t('NodeMCU Lua interpreter is not ready'))
 			return false
@@ -323,9 +323,10 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		return true
 	}
 
-	private async fetchEspInfo(): Promise<void> {
+	private async fetchEspInfo(): Promise<IEspInfo> {
 		await this.waitToBeReady()
 		let response
+		const espInfo = this._espInfo
 
 		// esp8266 chipid is string '12345678'.
 		// esp32 chipid is string (hex with '0x' prefix). esp32 chipID only
@@ -340,25 +341,27 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 		// The chip model is a string, e.g. "esp32c3" or "esp32"
 		response = await this.executeSingleLineCommand(NodeMcu._luaCommands.getModel)
 		const espModel = /^esp32.?.?/.exec(response.trimEnd())
-		this._espInfo.isMultiConsole = espModel !== null
+		espInfo.isMultiConsole = espModel !== null
 
 		// PR #3666 moves the system console handling into its own module (console)
 		// console.write() .on() .mode() are used instead of uart...()
 		response = await this.executeSingleLineCommand(NodeMcu._luaCommands.checkConsoleModule)
-		this._espInfo.hasConsoleModule = response.trimEnd() !== 'nil'
+		espInfo.hasConsoleModule = response.trimEnd() !== 'nil'
 
 		if (espModel) {
-			[this._espInfo.espModel] = espModel
-			this._espInfo.espArch = 'esp32'
-			this._espInfo.espID = esp32ID ? esp32ID[0] : 'unknown'
+			[espInfo.espModel] = espModel
+			espInfo.espArch = 'esp32'
+			espInfo.espID = esp32ID ? esp32ID[0] : 'unknown'
 		} else if (esp32ID && !espModel) {
-			this._espInfo.espModel = 'esp32' // legacy esp32 firmware
-			this._espInfo.espArch = 'esp32'
-			;[this._espInfo.espID] = esp32ID
+			espInfo.espModel = 'esp32' // legacy esp32 firmware
+			espInfo.espArch = 'esp32'
+			;[espInfo.espID] = esp32ID
 		} else {
-			this._espInfo.espModel = 'esp8266'
-			this._espInfo.espArch = 'esp8266'
-			this._espInfo.espID = chipID
+			espInfo.espModel = 'esp8266'
+			espInfo.espArch = 'esp8266'
+			espInfo.espID = chipID
 		}
+
+		return espInfo
 	}
 }

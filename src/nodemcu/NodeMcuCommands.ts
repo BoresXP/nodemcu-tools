@@ -321,10 +321,16 @@ export default class NodeMcuCommands {
 			})
 		}
 
+		const sleep = (ms: number): Promise<void> =>
+			new Promise(resolve => {
+				setTimeout(() => resolve(), ms)
+			})
+
 		progressCb?.(0)
 		await this.sendUartStart()
 		await this._device.executeSingleLineCommand(this._luaCommands.readFileHelper(fileName), false)
-		await delay(100)
+		// wait for Lua callback function to be ready
+		await sleep(100)
 
 		return new Promise(resolve => {
 			const unsubscribe = this._device.onDataRaw(async data => {
@@ -332,8 +338,10 @@ export default class NodeMcuCommands {
 				progressCb?.((retVal.length * 100) / fileSize)
 
 				if (this._espInfo.espArch === 'esp32' && !this._espInfo.isMultiConsole) {
+					// sometimes!! esp32 returns only one byte in the first chunk of response
+					// we will have to wait a little for the second byte (if any)
 					if (fileSize === 1) {
-						await delay(100)
+						await sleep(100)
 					}
 					receivedFileSize += data.filter(x => x === 10).length
 				}
@@ -369,12 +377,6 @@ export default class NodeMcuCommands {
 			})
 			void this._device.writeRaw(Buffer.alloc(1, '\0'))
 		})
-
-		async function delay(ms: number): Promise<void> {
-			return new Promise(resolve => {
-				setTimeout(() => resolve(), ms)
-			})
-		}
 	}
 
 	public async getDeviceInfo(): Promise<IDeviceInfo> {

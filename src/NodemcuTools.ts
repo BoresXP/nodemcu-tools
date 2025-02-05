@@ -152,10 +152,10 @@ export default class NodemcuTools {
 		}
 
 		for (const file of files) {
-			const [pathEnd] = file.path.split('/').slice(-1)
-			const fileName = await NodemcuTools.uploadFileInternal(devicePath, file)
-			if (!fileName) {
-				throw new Error(l10n.t('Error uploading {0}', pathEnd))
+			const [fileName] = file.path.split('/').slice(-1)
+			const ok = await NodemcuTools.uploadFileInternal(devicePath, file)
+			if (!ok) {
+				throw new Error(l10n.t('Error uploading {0}', fileName))
 			}
 		}
 

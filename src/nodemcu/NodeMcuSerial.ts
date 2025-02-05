@@ -56,9 +56,7 @@ export default abstract class NodeMcuSerial {
 
 	public static async listDevices(): Promise<PortInfo[]> {
 		const ports = await SerialPort.list()
-		const deviceFilterEnabled = workspace
-			.getConfiguration()
-			.get<boolean>('nodemcu-tools.deviceFilterActive')
+		const deviceFilterEnabled = workspace.getConfiguration().get<boolean>('nodemcu-tools.deviceFilterActive')
 
 		return deviceFilterEnabled
 			? ports.filter(p => this._vendorIDs.includes(p.vendorId?.toUpperCase() ?? ''))
