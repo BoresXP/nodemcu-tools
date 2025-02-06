@@ -355,7 +355,7 @@
 				},
 				"nodemcu-tools.connectionDelay": {
 					"type": "number",
-					"minimum": 100,
+					"minimum": 0,
 					"maximum": 1000,
 					"default": 0,
 					"description": "%nodemcu-tools.connectionDelay.description%"
