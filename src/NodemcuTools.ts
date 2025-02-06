@@ -57,8 +57,8 @@ export default class NodemcuTools {
 
 				let isHighBaud = false
 				if (fileBuff.length > 5 * 1024) {
-					const uploadBaudrate = workspace.getConfiguration().get<number>('nodemcu-tools.uploadBaudrate')
-					if (uploadBaudrate) {
+					const uploadBaudrate = workspace.getConfiguration().get('nodemcu-tools.uploadBaudrate', 115200)
+					if (uploadBaudrate !== 115200) {
 						isHighBaud = await device.changeBaud(uploadBaudrate)
 					}
 				}
