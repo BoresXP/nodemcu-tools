@@ -362,7 +362,12 @@
 				},
 				"nodemcu-tools.uploadBaudrate": {
 					"type": "number",
-					"enum": [ 115200, 230400, 460800, 921600 ],
+					"enum": [
+						115200,
+						230400,
+						460800,
+						921600
+					],
 					"default": 115200,
 					"description": "%nodemcu-tools.uploadBaudrate.description%"
 				}
@@ -455,7 +460,7 @@
 	"dependencies": {
 		"@serialport/bindings-cpp": "^13.0.1",
 		"@vscode/l10n": "^0.0.18",
-		"effector": "^23.2.3",
+		"effector": "^23.3.0",
 		"effector-react": "^23.3.0",
 		"luamin": "github:FATH-Mechatronics/luamin#d735925",
 		"react": "^19.0.0",
