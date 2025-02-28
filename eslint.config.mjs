@@ -18,7 +18,7 @@ export default ts.config(
 	js.configs.recommended,
 	ts.configs.recommendedTypeChecked,
 	ts.configs.stylisticTypeChecked,
-	stylistic.configs['recommended-flat'],
+	stylistic.configs['recommended'],
 	promise.configs['flat/recommended'],
 	sonarjs.configs.recommended,
 	importX.flatConfigs.recommended,
