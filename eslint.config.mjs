@@ -1,17 +1,16 @@
 // @ts-check
 
 import { FlatCompat } from '@eslint/eslintrc'
-
 import globals from 'globals'
-import js from '@eslint/js'
-import ts from 'typescript-eslint'
 import importX from 'eslint-plugin-import-x'
+import js from '@eslint/js'
 import optimizeRegex from 'eslint-plugin-optimize-regex'
 import promise from 'eslint-plugin-promise'
 import react from 'eslint-plugin-react'
 // import reactHooks from 'eslint-plugin-react-hooks'
 import sonarjs from 'eslint-plugin-sonarjs'
 import stylistic from '@stylistic/eslint-plugin'
+import ts from 'typescript-eslint'
 
 const compat = new FlatCompat()
 
@@ -70,7 +69,7 @@ export default ts.config(
 			},
 		},
 		rules: {
-			'@stylistic/no-extra-semi': 'warn', // Require or disallow semicolons instead of ASI
+			'@stylistic/no-extra-semi': 'off', // Require or disallow semicolons instead of ASI
 			'@stylistic/semi': ['error', 'never'], // Require or disallow semicolons instead of ASI
 			'@stylistic/no-tabs': ['error', { allowIndentationTabs: true }], // This rule looks for tabs anywhere inside a file: code, comments or anything else.
 			'@stylistic/indent': ['error', 'tab', { SwitchCase: 1 }], // Enforce consistent indentation
