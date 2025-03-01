@@ -1,18 +1,15 @@
 // @ts-check
 
-import { FlatCompat } from '@eslint/eslintrc'
 import globals from 'globals'
 import importX from 'eslint-plugin-import-x'
 import js from '@eslint/js'
 import optimizeRegex from 'eslint-plugin-optimize-regex'
 import promise from 'eslint-plugin-promise'
 import react from 'eslint-plugin-react'
-// import reactHooks from 'eslint-plugin-react-hooks'
+import reactHooks from 'eslint-plugin-react-hooks'
 import sonarjs from 'eslint-plugin-sonarjs'
 import stylistic from '@stylistic/eslint-plugin'
 import ts from 'typescript-eslint'
-
-const compat = new FlatCompat()
 
 export default ts.config(
 	js.configs.recommended,
@@ -23,7 +20,6 @@ export default ts.config(
 	sonarjs.configs.recommended,
 	importX.flatConfigs.recommended,
 	importX.flatConfigs.typescript,
-	compat.extends('plugin:react-hooks/recommended'),
 
 	{
 		ignores: ['out/*', 'eslint.config.mjs'],
@@ -37,6 +33,7 @@ export default ts.config(
 		plugins: {
 			'optimize-regex': optimizeRegex,
 			react: react,
+			"react-hooks": reactHooks,
 			'@stylistic': stylistic,
 		},
 		languageOptions: {
