@@ -82,7 +82,7 @@ export default ts.config(
 			], // Disallow unnecessary JSX expressions when literals alone are sufficient or enforce JSX expressions on literals in JSX children or attributes.
 			'@stylistic/member-delimiter-style': ['error', { multiline: { delimiter: 'none' } }], // Require a specific member delimiter style for interfaces and type literals
 			'@stylistic/quotes': ['error', 'single', { avoidEscape: true }], // Enforce the consistent use of either backticks, double, or single quotes
-			'@stylistic/func-call-spacing': ['error', 'never'], // Require or disallow spacing between function identifiers and their invocations
+			'@stylistic/function-call-spacing': ['error', 'never'], // Require or disallow spacing between function identifiers and their invocations
 
 			'import-x/no-named-as-default': 'off', // Forbid use of exported name as identifier of default export.
 
