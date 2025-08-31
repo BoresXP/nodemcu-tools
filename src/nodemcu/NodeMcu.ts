@@ -84,10 +84,7 @@ export default class NodeMcu extends NodeMcuSerial implements INodeMcu {
 	}
 
 	public get commands(): NodeMcuCommands {
-		if (!this._commands) {
-			this._commands = new NodeMcuCommands(this, this._espInfo)
-		}
-
+		this._commands ??= new NodeMcuCommands(this, this._espInfo)
 		return this._commands
 	}
 
