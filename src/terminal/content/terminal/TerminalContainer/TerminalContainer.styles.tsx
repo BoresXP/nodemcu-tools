@@ -33,8 +33,15 @@ export const CmdLineInput = styled.input`
 	}
 `
 
-export const TopContainer = styled.div`
+export const TopmostContainer = styled.div`
+	display: flex;
+	flex-direction: column;
 	margin-top: auto;
+	margin-bottom: 16px;
+	gap: 4px;
+`
+
+export const TopContainer = styled.div`
 	margin-bottom: 4px;
 `
 

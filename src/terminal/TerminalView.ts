@@ -7,6 +7,8 @@ import { deviceState } from './messages/DeviceState'
 import { initialTerminalSettings } from './content/state/state'
 import { isDeviceInfoRequest } from './messages/DeviceInfoRequest'
 import { isFormatRequest } from './messages/FormatRequest'
+import { isSendBlockRequest } from './messages/SendBlockRequest'
+import { isSendLineRequest } from './messages/SendLineRequest'
 import { isTerminalCommand } from './messages/TerminalCommand'
 import { setConfiguration } from './messages/SetConfiguration'
 import { terminalLine } from './messages/TerminalLine'
@@ -123,6 +125,10 @@ export default class TerminalView {
 			await this.updateDeviceInfo()
 		} else if (isFormatRequest(msg)) {
 			await this.handleFormatRequest()
+		} else if (isSendBlockRequest(msg)) {
+			await commands.executeCommand('nodemcu-tools.sendBlock')
+		} else if (isSendLineRequest(msg)) {
+			await commands.executeCommand('nodemcu-tools.sendLine')
 		}
 	}
 }

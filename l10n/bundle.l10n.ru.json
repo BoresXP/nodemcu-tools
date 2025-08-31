@@ -15,6 +15,8 @@
   "Failed to format the ESP": "Не удалось отформатировать ESP",
   "Format ESP": "Форматировать ESP",
   "Autoscroll": "Автопрокрутка",
+  "Send Line": "Отправить текущую строку на ESP",
+  "Send Block": "Отправить выбранный блок на ESP",
   "Clear terminal": "Очистить терминал",
   "Send to device": "Отправить на ESP",
   "modules": "модули",

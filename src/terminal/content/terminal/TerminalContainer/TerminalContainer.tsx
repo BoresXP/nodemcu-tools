@@ -9,6 +9,7 @@ import {
 	TerminalControls,
 	TerminalInnerContainer,
 	TopContainer,
+	TopmostContainer,
 } from './TerminalContainer.styles'
 import React, { useCallback } from 'react'
 import { getCurrentCommandText, getDeviceBusy, getTerminalAutoscrollEnabled, useRootStore } from '../../state/selectors'
@@ -16,6 +17,8 @@ import { getCurrentCommandText, getDeviceBusy, getTerminalAutoscrollEnabled, use
 import SvgButton from '../SvgButton/SvgButton'
 import Terminal from '../Terminal/Terminal'
 import { formatRequest } from '../../../messages/FormatRequest'
+import { sendBlockRequest } from '../../../messages/SendBlockRequest'
+import { sendLineRequest } from '../../../messages/SendLineRequest'
 import vscode from '../../state/vscode'
 
 const TerminalContainer: React.FC = () => {
@@ -64,6 +67,16 @@ const TerminalContainer: React.FC = () => {
 			vscode.postMessage(formatRequest())
 		}
 	}, [isDeviceBusy])
+	const onSendLine = useCallback(() => {
+		if (!isDeviceBusy) {
+			vscode.postMessage(sendLineRequest())
+		}
+	}, [isDeviceBusy])
+	const onSendBlock = useCallback(() => {
+		if (!isDeviceBusy) {
+			vscode.postMessage(sendBlockRequest())
+		}
+	}, [isDeviceBusy])
 
 	return (
 		<TerminalContainerStyled>
@@ -72,7 +85,26 @@ const TerminalContainer: React.FC = () => {
 				<CmdLineInput onKeyUp={onKeyUp} onChange={onChange} value={cmdText} />
 			</TerminalInnerContainer>
 			<TerminalControls>
-				<SvgButton tooltip={l10n.t('Format ESP')} svgName="#svg-folder-delete" disabled={isDeviceBusy} onClick={onFormat} />
+				<SvgButton
+					tooltip={l10n.t('Format ESP')}
+					svgName="#svg-folder-delete"
+					disabled={isDeviceBusy}
+					onClick={onFormat}
+				/>
+				<TopmostContainer>
+					<SvgButton
+						tooltip={l10n.t('Send Line')}
+						svgName="#svg-send-line"
+						disabled={isDeviceBusy}
+						onClick={onSendLine}
+					/>
+					<SvgButton
+						tooltip={l10n.t('Send Block')}
+						svgName="#svg-send-block"
+						disabled={isDeviceBusy}
+						onClick={onSendBlock}
+					/>
+				</TopmostContainer>
 				<TopContainer>
 					<SvgButton
 						tooltip={l10n.t('Autoscroll')}

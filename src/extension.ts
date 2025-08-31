@@ -1,4 +1,4 @@
-import { ExtensionContext, Uri, commands, l10n, tasks, window, workspace } from 'vscode'
+import { ExtensionContext, TextEditor, Uri, commands, l10n, tasks, window, workspace } from 'vscode'
 
 import ConfigFile from './task/ConfigFile'
 import DeviceTreeItem from './tree/DeviceTreeItem'
@@ -22,6 +22,15 @@ export function activate(context: ExtensionContext): void {
 		void (async () => {
 			await ConfigFile.initConfig()
 		})()
+
+		let luaActiveEditor: TextEditor | undefined
+		window.onDidChangeActiveTextEditor(editor => {
+			if (editor) {
+				if (editor.document.languageId === 'lua') {
+					luaActiveEditor = window.activeTextEditor
+				}
+			}
+		})
 
 		const treeProvider = new DeviceTreeProvider()
 		const treeView = window.createTreeView('nodemcu-tools.devices', { treeDataProvider: treeProvider })
@@ -171,13 +180,12 @@ export function activate(context: ExtensionContext): void {
 			},
 
 			'nodemcu-tools.sendLine': async () => {
-				const editor = window.activeTextEditor
+				const editor = luaActiveEditor
 				if (editor) {
 					const currentLine = editor.document.lineAt(editor.selection.active.line)
-					if (currentLine.isEmptyOrWhitespace) {
+					if (currentLine.isEmptyOrWhitespace || !editor.selection.isEmpty) {
 						return
 					}
-
 					await tools.sendLine(currentLine.text)
 				}
 			},
@@ -191,8 +199,11 @@ export function activate(context: ExtensionContext): void {
 			},
 
 			'nodemcu-tools.sendBlock': async () => {
-				const editor = window.activeTextEditor
+				const editor = luaActiveEditor
 				if (editor) {
+					if (editor.selection.isEmpty) {
+						return
+					}
 					const block = editor.document.getText(editor.selection)
 					await tools.sendBlock(block)
 				}
