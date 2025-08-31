@@ -450,7 +450,7 @@
 		"globals": "^16.0.0",
 		"style-loader": "^4.0.0",
 		"stylis": "^4.3.6",
-		"ts-loader": "^9.5.2",
+		"ts-loader": "^9.5.4",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.6.3",
 		"typescript-eslint": "^8.25.0",
