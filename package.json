@@ -303,7 +303,8 @@
 			"explorer": [
 				{
 					"id": "nodemcu-tools.devices",
-					"name": "%nodemcu-tools.views.explorer.name%"
+					"name": "%nodemcu-tools.views.explorer.name%",
+					"icon": "./resources/logo.svg"
 				}
 			]
 		},
