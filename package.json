@@ -170,7 +170,7 @@
 				"command": "nodemcu-tools.sendLine",
 				"title": "%nodemcu-tools.sendLine.title%",
 				"category": "NodeMCU",
-				"enablement": "editorTextFocus",
+				"enablement": "editorTextFocus && editorLangId == lua",
 				"icon": {
 					"light": "resources/light/sendLine.svg",
 					"dark": "resources/dark/sendLine.svg"
@@ -180,7 +180,7 @@
 				"command": "nodemcu-tools.sendBlock",
 				"title": "%nodemcu-tools.sendBlock.title%",
 				"category": "NodeMCU",
-				"enablement": "editorTextFocus && editorHasSelection == true",
+				"enablement": "editorTextFocus && editorLangId == lua && editorHasSelection == true",
 				"icon": {
 					"light": "resources/light/sendBlock.svg",
 					"dark": "resources/dark/sendBlock.svg"
@@ -191,12 +191,12 @@
 			"editor/title": [
 				{
 					"command": "nodemcu-tools.sendLine",
-					"when": "editorTextFocus && editorHasSelection == false && nodemcu-tools:isConnected",
+					"when": "editorTextFocus && editorLangId == lua && editorHasSelection == false && nodemcu-tools:isConnected",
 					"group": "navigation"
 				},
 				{
 					"command": "nodemcu-tools.sendBlock",
-					"when": "editorTextFocus && editorHasSelection == true && nodemcu-tools:isConnected",
+					"when": "editorTextFocus && editorLangId == lua && editorHasSelection == true && nodemcu-tools:isConnected",
 					"group": "navigation"
 				}
 			],
@@ -204,12 +204,12 @@
 				{
 					"command": "nodemcu-tools.sendLine",
 					"group": "nodemcu-tools@10",
-					"when": "editorTextFocus && editorHasSelection == false && nodemcu-tools:isConnected"
+					"when": "editorTextFocus && editorLangId == lua && editorHasSelection == false && nodemcu-tools:isConnected"
 				},
 				{
 					"command": "nodemcu-tools.sendBlock",
 					"group": "nodemcu-tools@20",
-					"when": "editorTextFocus && editorHasSelection == true && nodemcu-tools:isConnected"
+					"when": "editorTextFocus && editorLangId == lua && editorHasSelection == true && nodemcu-tools:isConnected"
 				},
 				{
 					"command": "nodemcu-tools.uploadActiveFile",
