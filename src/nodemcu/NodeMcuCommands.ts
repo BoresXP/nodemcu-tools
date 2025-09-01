@@ -434,6 +434,9 @@ export default class NodeMcuCommands {
 		await this.checkReady()
 		await this.sendUartStart()
 
+		if (minifiedBlock.endsWith(';')) {
+			minifiedBlock = minifiedBlock.slice(0, -1)
+		}
 		minifiedBlock += this._espInfo.espArch === 'esp8266' ? ';print""\r\n' : ';print""\n'
 		const data = Buffer.from(minifiedBlock)
 		let firstCall = true
