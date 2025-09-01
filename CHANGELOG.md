@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.3.0] - 2025-09-01
+
+### Added
+
+- Buttons for the 'sendLine' and 'sendBlock' commands have been added to Terminal container for convenience and quick accsess.
+- New icon specified in 'views/explorer' will be used when the title
+cannot be shown (e.g. when the view is dragged to the Activity Bar).
+
+### Fixed
+
+- In some rare cases, an error may occur when executing the 'sendBlock' command.
+
+### Changed
+
+- Update dependencies
+
 ## [5.2.0] - 2025-03-01
 
 ## Added
