@@ -37,7 +37,7 @@ export const TopmostContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	margin-top: auto;
-	margin-bottom: 16px;
+	margin-bottom: 38px;
 	gap: 4px;
 `
 
