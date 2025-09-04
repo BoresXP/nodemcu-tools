@@ -1,4 +1,15 @@
-import { ExtensionContext, TextEditor, Uri, commands, l10n, tasks, window, workspace } from 'vscode'
+import {
+	ExtensionContext,
+	StatusBarAlignment,
+	StatusBarItem,
+	TextEditor,
+	Uri,
+	commands,
+	l10n,
+	tasks,
+	window,
+	workspace,
+} from 'vscode'
 
 import ConfigFile from './task/ConfigFile'
 import DeviceTreeItem from './tree/DeviceTreeItem'
@@ -31,6 +42,9 @@ export function activate(context: ExtensionContext): void {
 				}
 			}
 		})
+
+		createStatusBarItem('$(symbol-event)', l10n.t('Flash device'), 'nodemcu-tools.flash', 49, true)
+		createStatusBarItem('$(symbol-field)', l10n.t('Erase flash'), 'nodemcu-tools.erase', 50, true)
 
 		const treeProvider = new DeviceTreeProvider()
 		const treeView = window.createTreeView('nodemcu-tools.devices', { treeDataProvider: treeProvider })
@@ -208,6 +222,10 @@ export function activate(context: ExtensionContext): void {
 					await tools.sendBlock(block)
 				}
 			},
+
+			'nodemcu-tools.flash': async () => await NodemcuTools.flashOrErase('flash'),
+
+			'nodemcu-tools.erase': async () => await NodemcuTools.flashOrErase('erase'),
 		}
 
 		for (const commandName in nodeMCUcommands) {
@@ -229,4 +247,23 @@ async function renameFile(file: string | Uri, prompt: string): Promise<string | 
 		valueSelection: [0, dotPosition > 0 ? dotPosition : oldName.length],
 		prompt,
 	})
+}
+
+function createStatusBarItem(
+	icon: string,
+	tooltip: string,
+	cmd: string,
+	priority: number,
+	showItem: boolean,
+): StatusBarItem {
+	const alignment: StatusBarAlignment = StatusBarAlignment.Left
+	const statusBarItem = window.createStatusBarItem(cmd, alignment, priority)
+	statusBarItem.name = tooltip
+	statusBarItem.text = icon
+	statusBarItem.tooltip = tooltip
+	statusBarItem.command = cmd
+	if (showItem) {
+		statusBarItem.show()
+	}
+	return statusBarItem
 }

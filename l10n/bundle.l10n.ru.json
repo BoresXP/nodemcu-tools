@@ -41,5 +41,13 @@
   "Can not create the directory {0}": "Невозможно создать директорию {0}",
   "NodeMCU Lua interpreter is not ready": "Интерпретатор Lua на NodeMCU не готов к работе",
   "Unable to change file upload baud rate": "Не удалось изменить скорость выгрузки файлов",
-  "Command execution timeout": "Время ожидания выполнения команды истекло"
+  "Command execution timeout": "Время ожидания выполнения команды истекло",
+  "Flash device": "Прошить ESP",
+  "Erase flash": "Стереть флэш",
+  "Incorrect chip model: \"{0}\"": "Неверная модель чипа: \"{0}\"",
+  "Incorrect flash target: \"{0}\"": "Неверная цель прошивки: \"{0}\"",
+  "Chip model mismatch: \"{0}\" vs \"{1}\"": "Не совпадают модели чипа: \"{0}\" vs \"{1}\"",
+  "Can not open file \"{0}\"": "Не могу открыть файл \"{0}\"",
+  "Device is connected! Disconnect first.": "ESP подключено! Сначала отсоединитесь.",
+  "The \"flash\" or \"chipModel\" setting is missing in the settings.json file.": "Отсутствует параметр \"flash\" или \"chipModel\" в файле settings.json"
 }

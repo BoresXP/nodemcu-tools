@@ -185,6 +185,16 @@
 					"light": "resources/light/sendBlock.svg",
 					"dark": "resources/dark/sendBlock.svg"
 				}
+			},
+			{
+				"command": "nodemcu-tools.flash",
+				"title": "%nodemcu-tools.flash.title%",
+				"category": "NodeMCU"
+			},
+			{
+				"command": "nodemcu-tools.erase",
+				"title": "%nodemcu-tools.erase.title%",
+				"category": "NodeMCU"
 			}
 		],
 		"menus": {
@@ -371,6 +381,75 @@
 					],
 					"default": 115200,
 					"description": "%nodemcu-tools.uploadBaudrate.description%"
+				},
+				"nodemcu-tools.flash": {
+					"type": "object",
+					"properties": {
+						"esptool": {
+							"type": "string",
+							"default": "esptool.py"
+						},
+						"firmwareDir": {
+							"type": "string",
+							"default": "bin"
+						},
+						"chipModel": {
+							"enum": [
+								"esp8266",
+								"esp32",
+								"esp32s2",
+								"esp32s3",
+								"esp32c3",
+								"esp32c2",
+								"esp32c6",
+								"esp32c5",
+								"esp32h2",
+								"esp32p4",
+								"esp32h4"
+							]
+						}
+					},
+					"if": {
+						"properties": {
+							"chipModel": {
+								"const": "esp8266"
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"target": {
+								"enum": [
+									"flash4m",
+									"flash1m-dout",
+									"flash512k"
+								],
+								"markdownDescription": "%nodemcu-tools.flash.target.description%"
+							},
+							"baud": {
+								"enum": [
+									"115200"
+								]
+							}
+						},
+						"required": [
+							"target"
+						]
+					},
+					"else": {
+						"properties": {
+							"baud": {
+								"enum": [
+									"460800"
+								]
+							}
+						}
+					},
+					"required": [
+						"chipModel",
+						"baud"
+					],
+					"description": "%nodemcu-tools.flash.description%"
 				}
 			}
 		},

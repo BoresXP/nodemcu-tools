@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `Flash device` and `Erase flash` commands.
+
 ## [5.3.1] - 2025-09-03
 
 ### Fixed

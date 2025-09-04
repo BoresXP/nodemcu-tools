@@ -41,5 +41,13 @@
   "Can not create the directory {0}": "Can not create the directory {0}",
   "NodeMCU Lua interpreter is not ready": "NodeMCU Lua interpreter is not ready",
   "Unable to change file upload baud rate": "Unable to change file upload baud rate",
-  "Command execution timeout": "Command execution timeout"
+  "Command execution timeout": "Command execution timeout",
+  "Flash device": "Flash device",
+  "Erase flash": "Erase flash",
+  "Incorrect chip model: \"{0}\"": "Incorrect chip model: \"{0}\"",
+  "Incorrect flash target: \"{0}\"": "Incorrect flash target: \"{0}\"",
+  "Chip model mismatch: \"{0}\" vs \"{1}\"": "Chip model mismatch: \"{0}\" vs \"{1}\"",
+  "Can not open file \"{0}\"": "Can not open file \"{0}\"",
+  "Device is connected! Disconnect first.": "Device is connected! Disconnect first.",
+  "The \"flash\" or \"chipModel\" setting is missing in the settings.json file.":"The \"flash\" or \"chipModel\" setting is missing in the settings.json file."
 }

@@ -17,10 +17,58 @@ import NodemcuTaskProvider, { NodemcuTaskDefinition } from './task/NodemcuTaskPr
 
 import ConfigFile from './task/ConfigFile'
 import FileTreeItem from './tree/FileTreeItem'
+import Flash from './task/Flash'
 import luamin from 'luamin'
 import { posix } from 'path'
 
 export default class NodemcuTools {
+	public static async flashOrErase(action: string): Promise<void> {
+		const path = await this.selectAttachedDevice()
+		if (!path) {
+			return void 0
+		}
+		const commandLine = await Flash.fillCommandLine(path, action)
+		if (!commandLine) {
+			return void 0
+		}
+
+		const taskName = action === 'flash' ? 'Flash device' : 'Erase flash'
+		const flashTask = new Task(
+			{ type: NodemcuTaskProvider.taskType, task: taskName },
+			TaskScope.Workspace,
+			taskName,
+			'NodeMCU',
+			new ShellExecution(commandLine),
+		)
+		flashTask.presentationOptions = { reveal: TaskRevealKind.Always, focus: true }
+
+		if (NodeMcuRepository.isConnected(path)) {
+			window.showInformationMessage(l10n.t('Device is connected! Disconnect first.'))
+		} else {
+			await tasks.executeTask(flashTask)
+		}
+	}
+
+	private static async selectAttachedDevice(): Promise<string | undefined> {
+		const ports = await NodeMcuRepository.listPorts()
+		if (!ports?.length) {
+			return void 0
+		}
+		const devicesPath = ports.map(d => d.path)
+
+		let path: string | undefined
+		if (ports.length > 1) {
+			path = await window.showQuickPick(devicesPath, { canPickMany: false })
+			if (!path) {
+				return void 0
+			}
+		} else {
+			;[path] = devicesPath
+		}
+
+		return path
+	}
+
 	private static async selectConnectedDevice(): Promise<string | undefined> {
 		const allConnected = NodeMcuRepository.allConnected.map(d => d.path)
 		let path: string | undefined
@@ -30,7 +78,7 @@ export default class NodemcuTools {
 				return void 0
 			}
 		} else {
-			[path] = allConnected
+			;[path] = allConnected
 		}
 
 		return path

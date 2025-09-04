@@ -21,6 +21,8 @@
   "nodemcu-tools.uploadFileSetLfsAs.title": "Выгрузить на ESP как LFS ...",
   "nodemcu-tools.sendLine.title": "Отправить текущую строку на ESP",
   "nodemcu-tools.sendBlock.title": "Отправить выбранный блок на ESP",
+  "nodemcu-tools.flash.title": "Прошить ESP",
+  "nodemcu-tools.erase.title": "Стереть флэш",
 
   "nodemcu-tools.terminal.scrollbackSize.description": "Количество строк, запоминаемых терминалом. Старые строки сверх лимита будут отброшены",
   "nodemcu-tools.terminal.commandHistorySize.description": "Количество запоминаемых команд, доступных для выбора стрелочками в окне ввода команд. Старые команды сверх лимита будут отброшены.",
@@ -31,6 +33,8 @@
   "nodemcu-tools.deviceFilterActive.description": "При включенном фильтре будут отображаться только известные расширению устройства NodeMCU (USB vendor-id).",
   "nodemcu-tools.connectionDelay.description": "Задержка соединения (в миллисекундах) между открытием последовательного порта и началом установления соединения.",
   "nodemcu-tools.uploadBaudrate.description": "Cкорость выгрузки файла",
+  "nodemcu-tools.flash.description": "Опции для прошивки ESP с помощью esptool",
+  "nodemcu-tools.flash.target.description": "Используйте один из следующих вариантов для прошивки:\n - flash512k - для ESP с 512kB размером флэш\n - flash1m-dout - для ESP с 1MB размером флэш и flash mode = dout (Sonoff, ESP8285)\n - flash4m - для ESP с 4MB размером флэш",
 
   "nodemcu-tools.views.explorer.name": "Устройства NodeMCU",
   "nodemcu-tools.jsonValidation.url": "./nodemcutools-schema.ru.json"
