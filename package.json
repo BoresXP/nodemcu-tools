@@ -232,31 +232,31 @@
 					"command": "nodemcu-tools.uploadFile",
 					"alt": "nodemcu-tools.uploadFileAs",
 					"group": "nodemcu-tools@10",
-					"when": "nodemcu-tools:isConnected"
+					"when": "nodemcu-tools:isConnected && !explorerResourceIsFolder"
 				},
 				{
 					"command": "nodemcu-tools.uploadFolderRename",
 					"alt": "nodemcu-tools.uploadFolder",
 					"group": "nodemcu-tools@10",
-					"when": "nodemcu-tools:isConnected"
+					"when": "nodemcu-tools:isConnected && explorerResourceIsFolder"
 				},
 				{
 					"command": "nodemcu-tools.uploadFileSetLfs",
 					"alt": "nodemcu-tools.uploadFileSetLfsAs",
 					"group": "nodemcu-tools@20",
-					"when": "nodemcu-tools:isConnected"
+					"when": "nodemcu-tools:isConnected && resourceExtname == .img"
 				},
 				{
 					"command": "nodemcu-tools.uploadFileCompile",
 					"alt": "nodemcu-tools.uploadFileRun",
 					"group": "nodemcu-tools@20",
-					"when": "nodemcu-tools:isConnected"
+					"when": "nodemcu-tools:isConnected && resourceExtname == .lua"
 				},
 				{
 					"command": "nodemcu-tools.compileFileUpload",
 					"alt": "nodemcu-tools.crossCompile",
 					"group": "nodemcu-tools@30",
-					"when": "nodemcu-tools:isConnected && nodemcu-tools:hasConfig"
+					"when": "nodemcu-tools:isConnected && nodemcu-tools:hasConfig && resourceExtname == .lua"
 				}
 			],
 			"view/title": [
@@ -285,17 +285,17 @@
 				},
 				{
 					"command": "nodemcu-tools.runFile",
-					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/",
+					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file-l[uc]a?/",
 					"group": "nodemcu-tools@20"
 				},
 				{
 					"command": "nodemcu-tools.runFile",
-					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/",
+					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file-l[uc]a?/",
 					"group": "inline"
 				},
 				{
 					"command": "nodemcu-tools.compileFile",
-					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/",
+					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file-lua/",
 					"group": "nodemcu-tools@30"
 				},
 				{
