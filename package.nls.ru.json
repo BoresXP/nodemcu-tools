@@ -23,6 +23,7 @@
   "nodemcu-tools.sendBlock.title": "Отправить выбранный блок на ESP",
   "nodemcu-tools.flash.title": "Прошить ESP",
   "nodemcu-tools.erase.title": "Стереть флэш",
+  "nodemcu-tools.uploadFolderFile.title": "Выгрузить файл в виде 'folder/file.ext'",
 
   "nodemcu-tools.terminal.scrollbackSize.description": "Количество строк, запоминаемых терминалом. Старые строки сверх лимита будут отброшены",
   "nodemcu-tools.terminal.commandHistorySize.description": "Количество запоминаемых команд, доступных для выбора стрелочками в окне ввода команд. Старые команды сверх лимита будут отброшены.",

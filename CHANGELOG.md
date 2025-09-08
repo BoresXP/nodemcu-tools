@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `Flash device` and `Erase flash` commands.
+- Add `Upload File as 'folder/file.ext'` command.
 
 ## [5.3.1] - 2025-09-03
 

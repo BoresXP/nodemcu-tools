@@ -226,6 +226,14 @@ export function activate(context: ExtensionContext): void {
 			'nodemcu-tools.flash': async () => await NodemcuTools.flashOrErase('flash'),
 
 			'nodemcu-tools.erase': async () => await NodemcuTools.flashOrErase('erase'),
+
+			'nodemcu-tools.uploadFolderFile': async (file: Uri) => {
+				const deviceFileName = await tools.uploadFolderFile(file)
+
+				if (deviceFileName) {
+					treeProvider.refresh()
+				}
+			},
 		}
 
 		for (const commandName in nodeMCUcommands) {

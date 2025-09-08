@@ -210,6 +210,16 @@ export default class NodemcuTools {
 		return 'ok_bundle'
 	}
 
+	public async uploadFolderFile(file: Uri): Promise<string | undefined> {
+		const devicePath = await NodemcuTools.selectConnectedDevice()
+		if (!devicePath) {
+			return void 0
+		}
+
+		const deviceFileName = file.path.split('/').slice(-2).join('/')
+		return NodemcuTools.uploadFileInternal(devicePath, file, deviceFileName)
+	}
+
 	public async uploadFileAndCompile(file: Uri): Promise<string | undefined> {
 		const devicePath = await NodemcuTools.selectConnectedDevice()
 		if (!devicePath) {
