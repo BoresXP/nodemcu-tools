@@ -1,7 +1,8 @@
 // @ts-check
 
+import { defineConfig } from 'eslint/config'
 import globals from 'globals'
-import importX from 'eslint-plugin-import-x'
+import { importX } from 'eslint-plugin-import-x'
 import js from '@eslint/js'
 import optimizeRegex from 'eslint-plugin-optimize-regex'
 import promise from 'eslint-plugin-promise'
@@ -11,13 +12,15 @@ import sonarjs from 'eslint-plugin-sonarjs'
 import stylistic from '@stylistic/eslint-plugin'
 import ts from 'typescript-eslint'
 
-export default ts.config(
+export default defineConfig(
 	js.configs.recommended,
 	ts.configs.recommendedTypeChecked,
 	ts.configs.stylisticTypeChecked,
 	stylistic.configs['recommended'],
+	// @ts-expect-error
 	promise.configs['flat/recommended'],
 	sonarjs.configs.recommended,
+	// @ts-expect-error
 	importX.flatConfigs.recommended,
 	importX.flatConfigs.typescript,
 
@@ -31,9 +34,10 @@ export default ts.config(
 			reportUnusedDisableDirectives: true,
 		},
 		plugins: {
+			'import-x': importX,
 			'optimize-regex': optimizeRegex,
 			react: react,
-			"react-hooks": reactHooks,
+			'react-hooks': reactHooks,
 			'@stylistic': stylistic,
 		},
 		languageOptions: {
