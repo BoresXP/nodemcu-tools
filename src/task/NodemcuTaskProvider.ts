@@ -12,6 +12,7 @@ import {
 	commands,
 	l10n,
 	tasks,
+	window,
 	workspace,
 } from 'vscode'
 
@@ -100,7 +101,7 @@ export default class NodemcuTaskProvider implements TaskProvider {
 
 	private async endTaskHandler(event: TaskEndEvent): Promise<void> {
 		const taskDefinition = event.execution.task.definition as INodemcuTaskDefinition
-		if (NodeMcuRepository.allConnected.length <= 0) {
+		if (NodeMcuRepository.allConnected.length <= 0 && taskDefinition.taskName.includes('Upload')) {
 			window.showInformationMessage(l10n.t('No connected devices'))
 			return
 		}

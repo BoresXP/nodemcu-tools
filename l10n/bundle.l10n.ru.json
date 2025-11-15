@@ -49,5 +49,6 @@
   "Chip model mismatch: \"{0}\" vs \"{1}\"": "Не совпадают модели чипа: \"{0}\" vs \"{1}\"",
   "Can not open file \"{0}\"": "Не могу открыть файл \"{0}\"",
   "Device is connected! Disconnect first.": "ESP подключено! Сначала отсоединитесь.",
-  "The \"flash\" or \"chipModel\" setting is missing in the settings.json file.": "Отсутствует параметр \"flash\" или \"chipModel\" в файле settings.json"
+  "The \"flash\" or \"chipModel\" setting is missing in the settings.json file.": "Отсутствует параметр \"flash\" или \"chipModel\" в файле settings.json",
+  "No connected devices": "Нет присоединённых устройств"
 }

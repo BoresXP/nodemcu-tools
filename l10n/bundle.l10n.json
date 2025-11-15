@@ -49,5 +49,6 @@
   "Chip model mismatch: \"{0}\" vs \"{1}\"": "Chip model mismatch: \"{0}\" vs \"{1}\"",
   "Can not open file \"{0}\"": "Can not open file \"{0}\"",
   "Device is connected! Disconnect first.": "Device is connected! Disconnect first.",
-  "The \"flash\" or \"chipModel\" setting is missing in the settings.json file.":"The \"flash\" or \"chipModel\" setting is missing in the settings.json file."
+  "The \"flash\" or \"chipModel\" setting is missing in the settings.json file.":"The \"flash\" or \"chipModel\" setting is missing in the settings.json file.",
+  "No connected devices": "No connected devices"
 }
