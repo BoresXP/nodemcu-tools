@@ -239,9 +239,8 @@ export default class NodemcuTools {
 	}
 
 	public async compileFileAndUpload(file: Uri, upload: boolean): Promise<string | undefined> {
-		const devicePath = await NodemcuTools.selectConnectedDevice()
 		const config = ConfigFile.actualConfig
-		if (!devicePath || !config) {
+		if (!config) {
 			return void 0
 		}
 

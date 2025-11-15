@@ -261,7 +261,7 @@
 					"command": "nodemcu-tools.compileFileUpload",
 					"alt": "nodemcu-tools.crossCompile",
 					"group": "nodemcu-tools@30",
-					"when": "nodemcu-tools:isConnected && nodemcu-tools:hasConfig && resourceExtname == .lua"
+					"when": "nodemcu-tools:hasConfig && resourceExtname == .lua"
 				},
 				{
 					"command": "nodemcu-tools.uploadFolderFile",
