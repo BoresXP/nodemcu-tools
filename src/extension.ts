@@ -134,14 +134,14 @@ export function activate(context: ExtensionContext): void {
 			},
 
 			'nodemcu-tools.compileFileUpload': async (file: Uri) => {
-				const deviceFileName = await tools.compileFileAndUpload(file, nodemcuTaskProvider, true)
+				const deviceFileName = await tools.compileFileAndUpload(file, true)
 				if (deviceFileName) {
 					treeProvider.refresh()
 				}
 			},
 
 			'nodemcu-tools.crossCompile': async (file: Uri) => {
-				const deviceFileName = await tools.compileFileAndUpload(file, nodemcuTaskProvider, false)
+				const deviceFileName = await tools.compileFileAndUpload(file, false)
 				if (deviceFileName) {
 					treeProvider.refresh()
 				}

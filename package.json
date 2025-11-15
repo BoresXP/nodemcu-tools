@@ -475,37 +475,15 @@
 			{
 				"type": "NodeMCU",
 				"required": [
-					"compilerExecutable",
-					"include"
+					"taskName"
 				],
 				"properties": {
-					"nodemcuTaskName": {
+					"taskName": {
 						"description": "Unique task name",
 						"type": "string"
 					},
-					"compilerExecutable": {
-						"markdownDescription": "Specifies the path to luac.cross executable. (e.g. *\"/opt/lua/esp8266/5.3/luac.cross\"* or *\"C:\\Temp\\luac.cross.exe\"*)",
-						"type": "string"
-					},
-					"include": {
-						"markdownDescription": "Specifies an array of filenames or patterns to include in the LFS image. (e.g. ./lfs/*.lua)",
-						"type": "array",
-						"items": {
-							"type": "string"
-						},
-						"minItems": 1,
-						"uniqueItems": true
-					},
-					"outDir": {
-						"markdownDescription": "Specifies an output folder for all emitted files. Default is **./out**",
-						"type": "string"
-					},
-					"outFile": {
-						"markdownDescription": "Specifies an output LFS image file name. Default is **lfs.img**",
-						"type": "string"
-					},
-					"resourceDir": {
-						"markdownDescription": "Specifies the folder containing the files to be included in resource.lua (e.g. ./resource)",
+					"file": {
+						"description": "File name to be uploaded. Can be omitted.",
 						"type": "string"
 					}
 				}

@@ -13,7 +13,7 @@ import {
 	workspace,
 } from 'vscode'
 import { INodeMcu, NodeMcuRepository } from './nodemcu'
-import NodemcuTaskProvider, { NodemcuTaskDefinition } from './task/NodemcuTaskProvider'
+import NodemcuTaskProvider, { INodemcuTaskDefinition } from './task/NodemcuTaskProvider'
 
 import ConfigFile from './task/ConfigFile'
 import FileTreeItem from './tree/FileTreeItem'
@@ -32,12 +32,16 @@ export default class NodemcuTools {
 			return void 0
 		}
 
-		const taskName = action === 'flash' ? 'Flash device' : 'Erase flash'
+		const nodemcuTaskDefinition: INodemcuTaskDefinition = {
+			type: NodemcuTaskProvider.taskType,
+			taskName: action === 'flash' ? 'flash' : 'erase',
+		}
+
 		const flashTask = new Task(
-			{ type: NodemcuTaskProvider.taskType, task: taskName },
+			nodemcuTaskDefinition,
 			TaskScope.Workspace,
-			taskName,
-			'NodeMCU',
+			action === 'flash' ? 'Flash device' : 'Erase flash',
+			NodemcuTaskProvider.taskType,
 			new ShellExecution(commandLine),
 		)
 		flashTask.presentationOptions = { reveal: TaskRevealKind.Always, focus: true }
@@ -234,11 +238,7 @@ export default class NodemcuTools {
 		return deviceFileName
 	}
 
-	public async compileFileAndUpload(
-		file: Uri,
-		taskProvider: NodemcuTaskProvider,
-		upload: boolean,
-	): Promise<string | undefined> {
+	public async compileFileAndUpload(file: Uri, upload: boolean): Promise<string | undefined> {
 		const devicePath = await NodemcuTools.selectConnectedDevice()
 		const config = ConfigFile.actualConfig
 		if (!devicePath || !config) {
@@ -247,23 +247,19 @@ export default class NodemcuTools {
 
 		const [fileBasename] = file.path.split('/').slice(-1)
 		const [fileBasenameNoExtension] = fileBasename.split('.').slice(-2)
+		const outFile = `${fileBasenameNoExtension}.lc`
+		const commandLine = `${config.compilerExecutable} -o ${config.outDir}/${outFile} -l ${file.fsPath} > ${config.outDir}/luaccross.log`
 
-		const nodemcuTaskDefinition: NodemcuTaskDefinition = {
+		const nodemcuTaskDefinition: INodemcuTaskDefinition = {
 			type: NodemcuTaskProvider.taskType,
-			nodemcuTaskName: upload ? 'compileFileAndUpload' : 'crossCompile',
-			compilerExecutable: config.compilerExecutable,
-			include: config.include,
-			outDir: config.outDir,
-			outFile: `${fileBasenameNoExtension}.lc`,
+			taskName: upload ? 'compileFileAndUpload' : 'crossCompile',
+			file: outFile,
 		}
-
-		const commandLine = `${nodemcuTaskDefinition.compilerExecutable} -o ${nodemcuTaskDefinition.outDir}/${nodemcuTaskDefinition.outFile} -l ${file.fsPath} > ${nodemcuTaskDefinition.outDir}/luaccross.log`
-
 		const nodemcuTask = new Task(
 			nodemcuTaskDefinition,
 			TaskScope.Workspace,
 			upload ? 'Compile and upload to device' : 'Compile on host machine',
-			nodemcuTaskDefinition.type,
+			NodemcuTaskProvider.taskType,
 			new ShellExecution(commandLine),
 		)
 		nodemcuTask.presentationOptions.reveal = TaskRevealKind.Silent

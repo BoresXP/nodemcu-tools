@@ -18,12 +18,10 @@ import {
 import { NodeMcuRepository } from '../nodemcu'
 import { onResourceChange } from './MakeResource'
 
-interface INodemcuTaskDefinition extends TaskDefinition {
-	nodemcuTaskName: string
+export interface INodemcuTaskDefinition extends TaskDefinition {
+	taskName: string
+	file?: string
 }
-
-export type NodemcuTaskDefinition = INodemcuTaskDefinition &
-	Pick<IConfig, 'compilerExecutable' | 'include' | 'outDir' | 'outFile'>
 
 export default class NodemcuTaskProvider implements TaskProvider {
 	static readonly taskType = 'NodeMCU'
@@ -69,33 +67,26 @@ export default class NodemcuTaskProvider implements TaskProvider {
 		const filesLFS = this._resourceFile
 			? this._config.include.join(' ') + ' ' + this._resourceFile // add resource.lua to LFS image build
 			: this._config.include.join(' ')
+		const commandLine = `${this._config.compilerExecutable} -o ${this._config.outDir}/${this._config.outFile} -f -l ${filesLFS} > ${this._config.outDir}/luaccross.log`
 
 		const listTasks = [
 			['buildLFSandUploadSerial', l10n.t('Build LFS and upload to device via serial port')],
 			['buildLFS', l10n.t('Build LFS on host machine')],
 		]
-		const taskConfig = {
-			compilerExecutable: this._config.compilerExecutable,
-			include: this._config.include,
-			outDir: this._config.outDir,
-			outFile: this._config.outFile,
-			type: NodemcuTaskProvider.taskType,
-		}
 		const nodemcuTasks: Task[] = []
 
 		listTasks.forEach(nextTask => {
-			const nodemcuTaskDefinition: NodemcuTaskDefinition = {
-				...taskConfig,
-				nodemcuTaskName: nextTask[0],
+			const nodemcuTaskDefinition: INodemcuTaskDefinition = {
+				type: NodemcuTaskProvider.taskType,
+				taskName: nextTask[0],
+				file: this._config?.outFile,
 			}
-
-			const commandLine = `${nodemcuTaskDefinition.compilerExecutable} -o ${nodemcuTaskDefinition.outDir}/${nodemcuTaskDefinition.outFile} -f -l ${filesLFS} > ${nodemcuTaskDefinition.outDir}/luaccross.log`
 
 			const nodemcuTask = new Task(
 				nodemcuTaskDefinition,
 				TaskScope.Workspace,
 				nextTask[1],
-				nodemcuTaskDefinition.type,
+				NodemcuTaskProvider.taskType,
 				new ShellExecution(commandLine),
 			)
 			nodemcuTask.group = TaskGroup.Build
@@ -108,23 +99,23 @@ export default class NodemcuTaskProvider implements TaskProvider {
 	}
 
 	private async endTaskHandler(event: TaskEndEvent): Promise<void> {
-		const taskDefinition = event.execution.task.definition as NodemcuTaskDefinition
-		if (
-			taskDefinition.type !== NodemcuTaskProvider.taskType ||
-			NodeMcuRepository.allConnected.length <= 0 ||
-			this._processExitCode !== 0
-		) {
+		const taskDefinition = event.execution.task.definition as INodemcuTaskDefinition
+		if (NodeMcuRepository.allConnected.length <= 0) {
+			window.showInformationMessage(l10n.t('No connected devices'))
+			return
+		}
+		if (taskDefinition.type !== NodemcuTaskProvider.taskType || this._processExitCode !== 0 || !this._config) {
 			return
 		}
 
 		const fileToUpload = Uri.joinPath(
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			workspace.workspaceFolders![0].uri,
-			taskDefinition.outDir,
-			taskDefinition.outFile,
+			this._config.outDir,
+			taskDefinition.file ?? this._config.outFile,
 		)
 
-		switch (taskDefinition.nodemcuTaskName) {
+		switch (taskDefinition.taskName) {
 			case 'buildLFSandUploadSerial':
 				await commands.executeCommand('nodemcu-tools.uploadFileSetLfs', fileToUpload)
 				break
