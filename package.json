@@ -533,7 +533,7 @@
 		"luamin": "github:FATH-Mechatronics/luamin#d735925",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
-		"react-tooltip": "^5.29.1",
+		"react-tooltip": "^5.30.0",
 		"serialport": "^13.0.0",
 		"styled-components": "^6.1.19"
 	}
