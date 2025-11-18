@@ -36,6 +36,7 @@
   "nodemcu-tools.uploadBaudrate.description": "File upload baud rate",
   "nodemcu-tools.flash.description": "Options for ESP flasher",
   "nodemcu-tools.flash.target.description": "use one of the following targets to flash the firmware:\n - flash512k - for ESP with 512kB flash size\n - flash1m-dout - for ESP with 1MB flash size and flash mode = dout (Sonoff, ESP8285)\n - flash4m - for ESP with 4MB flash size",
+  "nodemcu-tools.flash.legacy.description": "`true` if version of esptool < 5.0. Default `false`",
 
   "nodemcu-tools.views.explorer.name": "NodeMCU Devices",
   "nodemcu-tools.jsonValidation.url": "./nodemcutools-schema.json"

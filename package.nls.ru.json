@@ -36,6 +36,7 @@
   "nodemcu-tools.uploadBaudrate.description": "Cкорость выгрузки файла",
   "nodemcu-tools.flash.description": "Опции для прошивки ESP с помощью esptool",
   "nodemcu-tools.flash.target.description": "Используйте один из следующих вариантов для прошивки:\n - flash512k - для ESP с 512kB размером флэш\n - flash1m-dout - для ESP с 1MB размером флэш и flash mode = dout (Sonoff, ESP8285)\n - flash4m - для ESP с 4MB размером флэш",
+  "nodemcu-tools.flash.legacy.description": "`true` если версия esptool < 5.0. По умолчанию `false`",
 
   "nodemcu-tools.views.explorer.name": "Устройства NodeMCU",
   "nodemcu-tools.jsonValidation.url": "./nodemcutools-schema.ru.json"

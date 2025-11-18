@@ -397,7 +397,7 @@
 					"properties": {
 						"esptool": {
 							"type": "string",
-							"default": "esptool.py"
+							"default": "esptool"
 						},
 						"firmwareDir": {
 							"type": "string",
@@ -417,6 +417,11 @@
 								"esp32p4",
 								"esp32h4"
 							]
+						},
+						"legacy": {
+							"type": "boolean",
+							"default": false,
+							"markdownDescription": "%nodemcu-tools.flash.legacy.description%"
 						}
 					},
 					"if": {
