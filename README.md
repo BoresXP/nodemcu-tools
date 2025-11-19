@@ -57,6 +57,7 @@ _(ALT commands are available by pressing ALT key when opening menu); on Linux yo
 * [ALT] **Upload to device and set as LFS...** upload selected file on device with LFS refresh (see above) but lets you change name under which file will be saved.
 * **Upload to device and compile:** upload file to device (see above), compile it and remove source.
 * [ALT] **Run on device:** upload selected file to device, execute it with `dofile` command and immediately delete it from device. Usefull for executing long configuration scripts (for example, to reconfigure LFS and SSPIF sizes).
+* **Upload File as 'folder'/file.ext** The selected file will be written as 'upper_folder_name/file_name.ext' to ESP. Only one nesting level is allowed.
 
 ### Device context menu:
 
@@ -70,6 +71,7 @@ _(ALT commands are available by pressing ALT key when opening menu); on Linux yo
 * **Download:** download file from device to host machine. File will be saved in the root of workspace.
 * [ALT] **Download as...:** download file to host machine (see above) but lets you change name under which file will be saved.
 * [On .lua and .lc files only] **Run:** run file on device. It just executes `dofile` command which you will see in terminal (1).
+* **Delete folder** delete all files under "folder". Since the "folder" is part of file_name it will also be deleted.
 
 ### Active editor window
 
@@ -89,6 +91,7 @@ _(ALT commands are available by pressing ALT key when opening menu); on Linux yo
 * **deviceFilterActive** Controls whether device filter is active - only known NodeMCU devices (USB vendor-id) will be listed.
 * **connectionDelay** Connection delay (in milliseconds) between opening the serial device and starting the communication.
 * **uploadBaudrate** File upload baud rate.
+* **flash** An object containing parameters for flashing and erasing ESP flash. For more information, see the [wiki section](https://github.com/BoresXP/nodemcu-tools/wiki/Flash). 
 
 ## What's New / Change Log
 
@@ -100,7 +103,7 @@ Please report issues here: [bugtracker](https://github.com/BoresXP/nodemcu-tools
 
 ## Acknowledgments
 
-- Andi Dittrich for the great console app [NodeMCU-Tool](https://github.com/AndiDittrich/NodeMCU-Tool)
+- Andi Dittrich for the great console app [NodeMCU-Tool](https://github.com/NodeMCU-Tool/NodeMCU-Tool)
 - Furkan Duman for NodeMCU [extension for VSCode](https://github.com/fduman/vscode-nodemcu)
 - Icons made by [Gregor Cresnar](https://flaticon.com/authors/gregor-cresnar) from [Flaticon](https://flaticon.com)
 
