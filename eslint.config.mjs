@@ -16,9 +16,6 @@ export default defineConfig(
 	js.configs.recommended,
 	ts.configs.recommendedTypeChecked,
 	ts.configs.stylisticTypeChecked,
-	stylistic.configs['recommended'],
-	// @ts-expect-error
-	promise.configs['flat/recommended'],
 	sonarjs.configs.recommended,
 	// @ts-expect-error
 	importX.flatConfigs.recommended,
@@ -36,6 +33,7 @@ export default defineConfig(
 		plugins: {
 			'import-x': importX,
 			'optimize-regex': optimizeRegex,
+			promise: promise,
 			react: react,
 			'react-hooks': reactHooks,
 			'@stylistic': stylistic,
@@ -87,8 +85,6 @@ export default defineConfig(
 			'@stylistic/member-delimiter-style': ['error', { multiline: { delimiter: 'none' } }], // Require a specific member delimiter style for interfaces and type literals
 			'@stylistic/quotes': ['error', 'single', { avoidEscape: true }], // Enforce the consistent use of either backticks, double, or single quotes
 			'@stylistic/function-call-spacing': ['error', 'never'], // Require or disallow spacing between function identifiers and their invocations
-
-			'import-x/no-named-as-default': 'off', // Forbid use of exported name as identifier of default export.
 
 			'no-shadow': ['error', { builtinGlobals: true }], // disallow variable declarations from shadowing variables declared in the outer scope
 			'no-duplicate-imports': ['error', { includeExports: true }], // disallow duplicate module imports
@@ -296,6 +292,8 @@ export default defineConfig(
 					format: ['PascalCase', 'camelCase'],
 				},
 			], // Enforces naming conventions for everything across a codebase
+
+			'import-x/no-named-as-default': 'off', // Forbid use of exported name as identifier of default export.
 		},
 	},
 )
