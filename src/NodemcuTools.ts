@@ -15,9 +15,9 @@ import {
 import { INodeMcu, NodeMcuRepository } from './nodemcu'
 import NodemcuTaskProvider, { INodemcuTaskDefinition } from './task/NodemcuTaskProvider'
 
-import ConfigFile from './task/ConfigFile'
+import ConfigFile from './tools/ConfigFile'
 import FileTreeItem from './tree/FileTreeItem'
-import Flash from './task/Flash'
+import Flash from './tools/Flash'
 import luamin from 'luamin'
 import { posix } from 'path'
 
@@ -34,7 +34,7 @@ export default class NodemcuTools {
 
 		const nodemcuTaskDefinition: INodemcuTaskDefinition = {
 			type: NodemcuTaskProvider.taskType,
-			taskName: action === 'flash' ? 'flash' : 'erase',
+			taskName: action,
 		}
 
 		const flashTask = new Task(

@@ -1,19 +1,7 @@
-import {
-	EndOfLine,
-	ExtensionContext,
-	StatusBarAlignment,
-	StatusBarItem,
-	TextEditor,
-	Uri,
-	commands,
-	l10n,
-	tasks,
-	window,
-	workspace,
-} from 'vscode'
+import { EndOfLine, ExtensionContext, TextEditor, Uri, commands, l10n, tasks, window, workspace } from 'vscode'
 
 import AuxTools from './tools/AuxTools'
-import ConfigFile from './task/ConfigFile'
+import ConfigFile from './tools/ConfigFile'
 import DeviceTreeItem from './tree/DeviceTreeItem'
 import DeviceTreeProvider from './tree/DeviceTreeProvider'
 import FileTreeItem from './tree/FileTreeItem'
@@ -21,6 +9,7 @@ import FolderTreeItem from './tree/FolderTreeItem'
 import NodemcuTaskProvider from './task/NodemcuTaskProvider'
 import NodemcuTools from './NodemcuTools'
 import TerminalView from './terminal/TerminalView'
+import createStatusBarItems from './StatusBar'
 
 type RegisterCommand = Record<string, (...args: any[]) => Promise<void> | void>
 
@@ -45,8 +34,7 @@ export function activate(context: ExtensionContext): void {
 			}
 		})
 
-		createStatusBarItem('$(symbol-event)', l10n.t('Flash device'), 'nodemcu-tools.flash', 49, true)
-		createStatusBarItem('$(symbol-field)', l10n.t('Erase flash'), 'nodemcu-tools.erase', 50, true)
+		createStatusBarItems()
 
 		const treeProvider = new DeviceTreeProvider()
 		const treeView = window.createTreeView('nodemcu-tools.devices', { treeDataProvider: treeProvider })
@@ -276,23 +264,4 @@ async function renameFile(file: string | Uri, prompt: string): Promise<string | 
 		valueSelection: [0, dotPosition > 0 ? dotPosition : oldName.length],
 		prompt,
 	})
-}
-
-function createStatusBarItem(
-	icon: string,
-	tooltip: string,
-	cmd: string,
-	priority: number,
-	showItem: boolean,
-): StatusBarItem {
-	const alignment: StatusBarAlignment = StatusBarAlignment.Left
-	const statusBarItem = window.createStatusBarItem(cmd, alignment, priority)
-	statusBarItem.name = tooltip
-	statusBarItem.text = icon
-	statusBarItem.tooltip = tooltip
-	statusBarItem.command = cmd
-	if (showItem) {
-		statusBarItem.show()
-	}
-	return statusBarItem
 }

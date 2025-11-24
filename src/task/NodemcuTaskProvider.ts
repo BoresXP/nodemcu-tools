@@ -1,4 +1,4 @@
-import ConfigFile, { IConfig } from './ConfigFile'
+import ConfigFile, { IConfig } from '../tools/ConfigFile'
 import {
 	ShellExecution,
 	Task,
@@ -17,7 +17,7 @@ import {
 } from 'vscode'
 
 import { NodeMcuRepository } from '../nodemcu'
-import { onResourceChange } from './MakeResource'
+import { onResourceChange } from '../tools/MakeResource'
 
 export interface INodemcuTaskDefinition extends TaskDefinition {
 	taskName: string
