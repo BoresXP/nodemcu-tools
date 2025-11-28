@@ -187,8 +187,9 @@ export default class Flash {
 			return writeArgs
 		}
 
+		const fileName = `${flashConfig.firmwareDir}/flasher_args.json`
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const flashArgsFile = Uri.joinPath(workspace.workspaceFolders![0].uri, 'bin/flasher_args.json')
+		const flashArgsFile = Uri.joinPath(workspace.workspaceFolders![0].uri, fileName)
 		try {
 			const data = await workspace.fs.readFile(flashArgsFile)
 			const flasherArgs = JSON.parse(Buffer.from(data).toString('utf8')) as IFlasherArgs
