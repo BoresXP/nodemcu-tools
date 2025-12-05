@@ -43,6 +43,7 @@ interface IFlashSettings {
 	baud: string
 	target?: string
 	legacy: boolean
+	firmware?: string
 }
 interface IExtraArgs {
 	files?: string
@@ -51,7 +52,7 @@ interface IExtraArgs {
 	erase: string
 	write: string
 }
-type CommandLineArgs = IExtraArgs & Omit<IFlashSettings, 'legacy'>
+type CommandLineArgs = IExtraArgs & Omit<IFlashSettings, 'firmwareDir' | 'target' | 'legacy' | 'firmware'>
 type Write32args = Pick<CommandLineArgs, 'files' | 'writeFlashArgs'>
 type UserSettings = Partial<IFlashSettings>
 
@@ -84,6 +85,9 @@ export default class Flash {
 				window.showErrorMessage(l10n.t('Incorrect flash target: "{0}"', flashConfig.target ?? 'undefined'))
 				return void 0
 			}
+			cl.files = flashConfig.firmware
+				? `0x0 ${flashConfig.firmwareDir}/${flashConfig.firmware}`
+				: `0x0 ${flashConfig.firmwareDir}/0x00000.bin 0x10000 ${flashConfig.firmwareDir}/0x10000.bin`
 		} else {
 			const args = await this.get32args(flashConfig, action)
 			if (!args) {
@@ -93,11 +97,7 @@ export default class Flash {
 		}
 
 		if (action === 'flash') {
-			if (flashConfig.chipModel === 'esp8266') {
-				commandLine = `${cl.esptool} --chip ${cl.chipModel} --port ${path} --baud ${cl.baud} ${cl.extraEsptoolArgs} ${cl.write} ${cl.writeFlashArgs} 0x0 ${cl.firmwareDir}/0x00000.bin 0x10000 ${cl.firmwareDir}/0x10000.bin`
-			} else {
-				commandLine = `${cl.esptool} --chip ${cl.chipModel} --port ${path} --baud ${cl.baud} ${cl.extraEsptoolArgs} ${cl.write} ${cl.writeFlashArgs} ${cl.files}`
-			}
+			commandLine = `${cl.esptool} --chip ${cl.chipModel} --port ${path} --baud ${cl.baud} ${cl.extraEsptoolArgs} ${cl.write} ${cl.writeFlashArgs} ${cl.files}`
 		} else if (action === 'erase') {
 			commandLine = `${cl.esptool} --chip ${cl.chipModel} --port ${path} --baud ${cl.baud} ${cl.extraEsptoolArgs} ${cl.erase}`
 		}
@@ -154,6 +154,7 @@ export default class Flash {
 			baud: '115200',
 			target: void 0,
 			legacy: false,
+			firmware: '',
 		}
 
 		const userSettings = workspace.getConfiguration().get<UserSettings>('nodemcu-tools.flash')

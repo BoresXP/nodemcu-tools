@@ -450,6 +450,11 @@
 								"enum": [
 									"115200"
 								]
+							},
+							"firmware": {
+								"type": "string",
+								"default": "",
+								"description": "%nodemcu-tools.flash.firmware.description%"
 							}
 						},
 						"required": [
