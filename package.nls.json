@@ -25,6 +25,7 @@
   "nodemcu-tools.erase.title": "Erase flash",
   "nodemcu-tools.uploadFolderFile.title": "Upload File as 'folder/file.ext'",
   "nodemcu-tools.createSnippet.title": "Convert the selected block into a snippet",
+  "nodemcu-tools.renameFileOnDevice.title": "Rename",
 
   "nodemcu-tools.terminal.scrollbackSize.description": "How many lines will be held in terminal. Old lines over this limit will be discarded.",
   "nodemcu-tools.terminal.commandHistorySize.description": "How many commands will be available by pressing UP in command input field. Old commands over this limit will be discarded.",

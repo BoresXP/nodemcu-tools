@@ -68,6 +68,7 @@ _(ALT commands are available by pressing ALT key when opening menu); on Linux yo
 
 * [On .lua files only] **Compile**: compile selected file on device and remove source.
 * **Delete:** delete selected file on device. No recovery possible.
+* **Rename** renames a file on device.
 * **Download:** download file from device to host machine. File will be saved in the root of workspace.
 * [ALT] **Download as...:** download file to host machine (see above) but lets you change name under which file will be saved.
 * [On .lua and .lc files only] **Run:** run file on device. It just executes `dofile` command which you will see in terminal (1).

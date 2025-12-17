@@ -306,6 +306,11 @@ export default class NodemcuTools {
 		await device.commands.run(deviceFileName, deleteAfter)
 	}
 
+	public async renameFileOnDevice(devicePath: string, oldDeviceFileName: string, newDeviceFileName: string): Promise<void> {
+		const device = NodeMcuRepository.getOrCreate(devicePath)
+		await device.commands.rename(oldDeviceFileName, newDeviceFileName)
+	}
+
 	public async deleteFile(devicePath: string, deviceFileName: string): Promise<void> {
 		const device = NodeMcuRepository.getOrCreate(devicePath)
 		await device.commands.delete(deviceFileName)

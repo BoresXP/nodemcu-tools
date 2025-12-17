@@ -161,6 +161,17 @@ export function activate(context: ExtensionContext): void {
 
 			'nodemcu-tools.runFile': async (item: FileTreeItem) => tools.runFile(item.parent.path, item.name),
 
+			'nodemcu-tools.renameFileOnDevice': async (item: FileTreeItem) => {
+				const oldName = item.name
+				const newName = await renameFile(oldName, l10n.t('File will be saved under this name on device'))
+				if (!newName) {
+					return
+				}
+
+				await tools.renameFileOnDevice(item.parent.path, oldName, newName)
+				treeProvider.refresh()
+			},
+
 			'nodemcu-tools.deleteFile': async (item: FileTreeItem) => {
 				await tools.deleteFile(item.parent.path, item.name)
 				treeProvider.refresh()

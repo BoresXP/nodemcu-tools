@@ -65,6 +65,11 @@
 				}
 			},
 			{
+				"command": "nodemcu-tools.renameFileOnDevice",
+				"title": "%nodemcu-tools.renameFileOnDevice.title%",
+				"category": "NodeMCU"
+			},
+			{
 				"command": "nodemcu-tools.deleteFile",
 				"title": "%nodemcu-tools.deleteFile.title%",
 				"category": "NodeMCU"
@@ -317,6 +322,11 @@
 					"command": "nodemcu-tools.deleteFile",
 					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/",
 					"group": "nodemcu-tools@40"
+				},
+				{
+					"command": "nodemcu-tools.renameFileOnDevice",
+					"when": "view == nodemcu-tools.devices && viewItem =~ /^nodemcu-file/",
+					"group": "nodemcu-tools@50"
 				},
 				{
 					"command": "nodemcu-tools.deleteFolder",

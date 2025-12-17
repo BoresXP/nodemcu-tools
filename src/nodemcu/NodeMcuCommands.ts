@@ -11,6 +11,7 @@ export interface IDeviceFileInfo {
 interface ILuaCommands {
 	listFiles: string
 	delete: (name: string) => string
+	rename: (oldName: string, newName: string) => string
 	fileCompile: (name: string) => string
 	fileRun: (name: string) => string
 	fileRunAndDelete: (name: string) => string
@@ -39,6 +40,8 @@ export default class NodeMcuCommands {
 		listFiles: 'local l=file.list()local s=";"for k,v in pairs(l)do s=s..k..":"..v..";"end;uart.write(0,s.."\\r\\n")',
 
 		delete: (name: string) => `file.remove("${name}")uart.write(0,"Done\\r\\n")`,
+
+		rename: (oldName: string, newName: string) => `file.rename("${oldName}","${newName}")uart.write(0,"Done\\r\\n")`,
 
 		fileCompile: (name: string) => `node.compile("${name}")uart.write(0,"Done\\r\\n")`,
 
@@ -85,6 +88,8 @@ export default class NodeMcuCommands {
 
 		delete: (name: string) => `file.remove("${name}")print("Done")`,
 
+		rename: (oldName: string, newName: string) => `file.rename("${oldName}","${newName}")print("Done")`,
+
 		fileCompile: (name: string) => `node.compile("${name}")print("Done")`,
 
 		fileRun: (name: string) => `dofile("${name}")`,
@@ -129,6 +134,8 @@ export default class NodeMcuCommands {
 		listFiles: 'local l=file.list()local s=";"for k,v in pairs(l)do s=s..k..":"..v..";"end;uart.write(0,s.."\\n")',
 
 		delete: (name: string) => `file.remove("${name}")uart.write(0,"Done\\n")`,
+
+		rename: (oldName: string, newName: string) => `file.rename("${oldName}","${newName}")uart.write(0,"Done\\n")`,
 
 		fileCompile: (name: string) => `node.compile("${name}")uart.write(0,"Done\\n")`,
 
@@ -227,6 +234,11 @@ export default class NodeMcuCommands {
 	public async delete(fileName: string): Promise<void> {
 		await this.checkReady()
 		await this._device.executeSingleLineCommand(this._luaCommands.delete(fileName))
+	}
+
+	public async rename(oldName: string, newName: string): Promise<void> {
+		await this.checkReady()
+		await this._device.executeSingleLineCommand(this._luaCommands.rename(oldName, newName))
 	}
 
 	public async upload(data: Buffer, remoteName: string, progressCb?: (percent: number) => void): Promise<void> {
