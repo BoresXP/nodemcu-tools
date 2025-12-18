@@ -227,7 +227,7 @@ export default class Flash {
 			return writeArgs
 		} catch (err) {
 			if (err instanceof Error) {
-				window.showErrorMessage(l10n.t('Can not open file "{0}"', flashArgsFile.path))
+				window.showErrorMessage(l10n.t('Cannot open file "{0}"', flashArgsFile.path))
 				return void 0
 			}
 		}

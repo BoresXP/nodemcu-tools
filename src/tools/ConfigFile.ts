@@ -176,7 +176,7 @@ export default class ConfigFile {
 			await workspace.fs.createDirectory(folder)
 			this._outChannel.appendLine(l10n.t('The {0} directory was created successfully.', folder.path))
 		} catch {
-			await window.showErrorMessage(l10n.t('Can not create the directory {0}', folder.path))
+			await window.showErrorMessage(l10n.t('Cannot create the directory {0}', folder.path))
 		}
 	}
 }
