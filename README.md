@@ -56,36 +56,35 @@ _(ALT commands are available by pressing ALT key when opening menu); on Linux yo
 * **Upload to device and set as LFS** upload selected file on device (see above) and reloads LFS with it.
 * [ALT] **Upload to device and set as LFS...** upload selected file on device with LFS refresh (see above) but lets you change name under which file will be saved.
 * **Upload to device and compile:** upload file to device (see above), compile it and remove source.
-* [ALT] **Run on device:** upload selected file to device, execute it with `dofile` command and immediately delete it from device. Usefull for executing long configuration scripts (for example, to reconfigure LFS and SSPIF sizes).
-* **Upload File as 'folder'/file.ext** The selected file will be written as 'upper_folder_name/file_name.ext' to ESP. Only one nesting level is allowed.
+* [ALT] **Run on device** upload selected file to device, execute it with `dofile` command and immediately delete it from device. Usefull for executing long configuration scripts (for example, to reconfigure LFS and SSPIF sizes).
+* **Upload File as 'folder/file.ext'** The selected file will be written as 'upper_folder_name/file_name.ext' to ESP. Only one nesting level is allowed.
 
 ### Device context menu:
 
-* **Connect:** connect to this device. This will also open main window for this device.
-* **Disconnect:** disconnect from device. This will also close main window for device. By the way, closing main window will disconnect device too.
+* **Connect** connect to this device. This will also open main window for this device.
+* **Disconnect** disconnect from device. This will also close main window for device. By the way, closing main window will disconnect device too.
 
 ### File on device context menu:
 
-* [On .lua files only] **Compile**: compile selected file on device and remove source.
-* **Delete:** delete selected file on device. No recovery possible.
+* **Compile** [for .lua files only] compile selected file on device and remove source.
+* **Delete** delete selected file on device. No recovery possible.
 * **Rename** renames a file on device.
-* **Download:** download file from device to host machine. File will be saved in the root of workspace.
-* [ALT] **Download as...:** download file to host machine (see above) but lets you change name under which file will be saved.
-* [On .lua and .lc files only] **Run:** run file on device. It just executes `dofile` command which you will see in terminal (1).
+* **Download** download file from device to host machine. File will be saved in the root of workspace.
+* [ALT] **Download as...** download file to host machine (see above) but lets you change name under which file will be saved.
+* **Run** [for .lua and .lc files only] run file on device. It just executes `dofile` command which you will see in terminal (1).
 * **Delete folder** delete all files under "folder". Since the "folder" is part of file_name it will also be deleted.
 
 ### Active editor window
 
-[On .lua files only] 
-* **Send line** Send current line to device
-* **Send block** Send selected block to device
+* **Send line** [for .lua files only] Send current line to device.
+* **Send block** [for .lua files only] Send selected block to device.
 
 ## Extension Settings
 
-* **Terminal:**
-  * **Scrollback Size:** how many lines of scrollback will terminal (1) have. Min - 10, max - 1000, default - 300.
-  * **Command History Size:** how many commands will be held in history. You can navigate command history by pressing up and down arrow keys in command input box (2). Min - 0, max - 100, default - 30.
-* **Snippets:** snippets are buttons at the bottom of main window (3). These are just commands to run on device. You can configure it yourself with this setting. Setting itself is an object with each property representing one snippet: name is shown on a button, value is command text. You can set different snippets for each workspace. Workspace snippets _overrides_ ones set in user settings and defaults. With this behavior you can remove some default snippets. 
+* **Terminal**
+  * **Scrollback Size** how many lines of scrollback will terminal (1) have. Min - 10, max - 1000, default - 300.
+  * **Command History Size** how many commands will be held in history. You can navigate command history by pressing up and down arrow keys in command input box (2). Min - 0, max - 100, default - 30.
+* **Snippets** snippets are buttons at the bottom of main window (3). These are just commands to run on device. You can configure it yourself with this setting. Setting itself is an object with each property representing one snippet: name is shown on a button, value is command text. You can set different snippets for each workspace. Workspace snippets _overrides_ ones set in user settings and defaults. With this behavior you can remove some default snippets. 
   * **overwriteSnippets** Controls whether snippets in workspace should overwrite ones in user settings and defaults.
 * **minifyLua.enabled**  Controls whether the Lua code should be minified before upload with 'sendLine' and 'sendBlock' commands.
 * **minifyJSON.enabled** Controls whether a JSON file should be minified before uploading to the device.
