@@ -86,6 +86,8 @@ export default defineConfig(
 			'@stylistic/quotes': ['error', 'single', { avoidEscape: true }], // Enforce the consistent use of either backticks, double, or single quotes
 			'@stylistic/function-call-spacing': ['error', 'never'], // Require or disallow spacing between function identifiers and their invocations
 
+			'import-x/no-named-as-default': 'off', // Forbid use of exported name as identifier of default export.
+
 			'no-shadow': ['error', { builtinGlobals: true }], // disallow variable declarations from shadowing variables declared in the outer scope
 			'no-duplicate-imports': ['error', { includeExports: true }], // disallow duplicate module imports
 			'no-template-curly-in-string': 'error', // disallow template literal placeholder syntax in regular strings
@@ -292,8 +294,6 @@ export default defineConfig(
 					format: ['PascalCase', 'camelCase'],
 				},
 			], // Enforces naming conventions for everything across a codebase
-
-			'import-x/no-named-as-default': 'off', // Forbid use of exported name as identifier of default export.
 		},
 	},
 )
